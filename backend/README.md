@@ -450,8 +450,8 @@ Create and return a new image for a group specified by id.
 * Require Authentication: true
 * Require proper authorization: Current User must be the organizer for the group
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: POST
+  * URL: /groups/:id/images
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -497,8 +497,8 @@ Updates and returns an existing group.
 * Require Authentication: true
 * Require proper authorization: Group must belong to the current user
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: PUT
+  * URL: /groups/:id
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -576,8 +576,8 @@ Deletes an existing group.
 * Require Authentication: true
 * Require proper authorization: Group must belong to the current user
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: DELETE
+  * URL: /groups/:id
   * Body: none
 
 * Successful Response
@@ -616,8 +616,8 @@ Returns all venues for a group specified by its id
 * Require Authentication: Current User must be the organizer of the group or a member of
   the group with a status of "co-host"
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: GET
+  * URL: /groups/:id/venues
   * Headers:
     * Content-Type: application/json
   * Body: none
@@ -666,8 +666,8 @@ Creates and returns a new venue for a group specified by its id
 * Require Authentication: Current User must be the organizer of the group or a member of
   the group with a status of "co-host"
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: POST
+  * URL: /groups/:id/venues
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -741,8 +741,8 @@ Edit a new venue specified by its id
 * Require Authentication: Current User must be the organizer of the group or a member of
   the group with a status of "co-host"
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: PUT
+  * URL: /venues/:id
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -816,8 +816,8 @@ Returns all the events.
 
 * Require Authentication: false
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: GET
+  * URL: /events
   * Body: none
 
 * Successful Response
@@ -879,8 +879,8 @@ Returns all the events of a group specified by its id
 
 * Require Authentication: false
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: GET
+  * URL: /groups/:id/events
   * Body: none
 
 * Successful Response
@@ -955,8 +955,8 @@ Returns the details of an event specified by its id.
 
 * Require Authentication: false
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: GET
+  * URL: /events/:id/details
   * Body: none
 
 * Successful Response
@@ -1029,8 +1029,8 @@ Creates and returns a new event for a group specified by its id
 * Require Authorization: Current User must be the organizer of the group or a member of
   the group with a status of "co-host"
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: POST
+  * URL: /group/:id/events
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1112,8 +1112,8 @@ Create and return a new image for an event specified by id.
 * Require Authentication: true
 * Require proper authorization: Current User must be an attendee of the event
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: POST
+  * URL: /events/:id/images
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1160,8 +1160,8 @@ Edit and returns an event specified by its id
 * Require Authorization: Current User must be the organizer of the group or a member of
   the group with a status of "co-host"
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: PUT
+  * URL: /events/:id
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1257,8 +1257,8 @@ Delete an event specified by its id
 * Require Authorization: Current User must be the organizer of the group or a member of
   the group with a status of "co-host"
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: DELETE
+  * URL: /events/:id
   * Body: none
 
 * Successful Response
@@ -1294,8 +1294,8 @@ Returns the members of a group specified by its id.
 
 * Require Authentication: false
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: GET
+  * URL: /groups/:id/members
   * Body: none
 
 * Successful Response: If you ARE the organizer or a co-host of the group. Shows
