@@ -956,7 +956,7 @@ Returns the details of an event specified by its id.
 * Require Authentication: false
 * Request
   * Method: GET
-  * URL: /events/:id/details
+  * URL: /events/:id
   * Body: none
 
 * Successful Response
@@ -1385,8 +1385,8 @@ Request a new membership for a group specified by id.
 
 * Require Authentication: true
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: POST
+  * URL: /groups/:id/members
   * Headers:
     * Content-Type: application/json
   * Body: none
@@ -1457,8 +1457,8 @@ Change the status of a membership for a group specified by id.
   * To change the status from "member" to "co-host":
     * Current User must already be the organizer
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: PUT
+  * URL: /groups/:id/members
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1551,8 +1551,8 @@ Delete a membership to a group specified by id.
 * Require proper authorization: Current User must be the host of the group, or
   the user whose membership is being deleted
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: DELETE
+  * URL: /groups/:groupId/members/:memberId
   * Headers:
     * Content-Type: application/json
   * Body:
