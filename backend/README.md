@@ -162,7 +162,7 @@ user's information.
 * Require Authentication: false
 * Request
   * Method: POST
-  * URL: /users
+  * URL: /sign-up
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -275,7 +275,7 @@ Returns all the groups.
 * Require Authentication: true
 * Request
   * Method: GET
-  * URL: /users/current/groups
+  * URL: /users/:userId/groups
   * Body: none
 
 * Successful Response
@@ -451,7 +451,7 @@ Create and return a new image for a group specified by id.
 * Require proper authorization: Current User must be the organizer for the group
 * Request
   * Method: POST
-  * URL: /groups/:id/images
+  * URL: /groups/:groupId/images
   * Headers:
     * Content-Type: application/json
   * Body:
