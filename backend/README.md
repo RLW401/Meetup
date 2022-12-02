@@ -2,7 +2,7 @@
 
 ## Database Schema Design
 
-`<insert database schema design here>`
+![Alt text](draft_02%20Meetup%20Clone%20Backend%20diagram.png)
 
 ## API Documentation
 
