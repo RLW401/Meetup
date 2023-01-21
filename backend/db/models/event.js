@@ -15,21 +15,11 @@ module.exports = (sequelize, DataTypes) => {
   Event.init({
     groupId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Groups",
-        key: "id"
-      },
-      onDelete: "CASCADE"
+      allowNull: false
     },
     venueId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Venues",
-        key: "id"
-      },
-      onDelete: "CASCADE"
+      allowNull: false
     },
     name: {
       type: DataTypes.STRING,

@@ -15,18 +15,23 @@ module.exports = (sequelize, DataTypes) => {
   Venue.init({
     groupId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Groups",
-        key: "id"
-      },
-      onDelete: "CASCADE"
+      allowNull: false
     },
-    address: DataTypes.STRING,
-    city: DataTypes.STRING,
-    state: DataTypes.STRING,
-    lat: DataTypes.FLOAT,
-    lng: DataTypes.FLOAT
+    address: {
+      type: DataTypes.STRING
+    },
+    city: {
+      type: DataTypes.STRING
+    },
+    state: {
+      type: DataTypes.STRING
+    },
+    lat: {
+      type: DataTypes.FLOAT
+    },
+    lng: {
+      type: DataTypes.FLOAT
+    }
   }, {
     sequelize,
     modelName: 'Venue',

@@ -15,19 +15,11 @@ module.exports = (sequelize, DataTypes) => {
   Image.init({
     groupId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: "Groups",
-        key: "id"
-      }
+      allowNull: true
     },
     eventId: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: "Events",
-        key: "id"
-      }
+      allowNull: true
     },
     url: {
       type: DataTypes.STRING,
@@ -35,11 +27,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     groupPreview: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: false
     },
     eventPreview: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      defaultValue: false
     }
   }, {
     sequelize,

@@ -15,21 +15,11 @@ module.exports = (sequelize, DataTypes) => {
   Attendee.init({
     userId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Users",
-        key: "id"
-      },
-      onDelete: "CASCADE"
+      allowNull: false
     },
     eventId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Events",
-        key: "id"
-      },
-      onDelete: "CASCADE"
+      allowNull: false
     },
     status: {
       type: DataTypes.STRING,

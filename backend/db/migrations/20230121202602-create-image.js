@@ -16,10 +16,20 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       groupId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "Groups",
+          key: "id"
+        }
       },
       eventId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "Events",
+          key: "id"
+        }
       },
       url: {
         type: Sequelize.STRING,

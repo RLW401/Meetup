@@ -16,11 +16,6 @@ module.exports = (sequelize, DataTypes) => {
     organizerId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: "Users",
-        key: "id"
-      },
-      onDelete: "CASCADE"
     },
     name: {type: DataTypes.STRING},
     about: {type: DataTypes.STRING},
