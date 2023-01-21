@@ -10,6 +10,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Event.belongsTo(models.Group, {foreignKey: "groupId"});
+
+      Event.belongsTo(models.Venue, {foreignKey: "venueId"});
+
+      Event.hasMany(models.Image, {foreignKey: "eventId"});
+
+      Event.belongsToMany(models.User, {through: models.Attendee});
     }
   }
   Event.init({
@@ -26,22 +33,28 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     description: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
     },
     type: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
     },
     capacity: {
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+      allowNull: false
     },
     price: {
-      type: DataTypes.DECIMAL
+      type: DataTypes.DECIMAL,
+      allowNull: false
     },
     startDate: {
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      allowNull: false
     },
     endDate: {
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      allowNull: false
     }
   }, {
     sequelize,

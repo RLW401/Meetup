@@ -21,7 +21,8 @@ module.exports = {
         references: {
           model: "Groups",
           key: "id"
-        }
+        },
+        onDelete: "SET NULL"
       },
       eventId: {
         type: Sequelize.INTEGER,
@@ -29,7 +30,8 @@ module.exports = {
         references: {
           model: "Events",
           key: "id"
-        }
+        },
+        onDelete: "SET NULL"
       },
       url: {
         type: Sequelize.STRING,

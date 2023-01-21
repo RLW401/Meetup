@@ -10,6 +10,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Venue.belongsTo(models.Group, {foreignKey: "groupId"});
+
+      Venue.hasMany(models.Event, {foreignKey: "venueId"});
     }
   }
   Venue.init({
@@ -18,19 +21,24 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     address: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
     },
     city: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
     },
     state: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
     },
     lat: {
-      type: DataTypes.FLOAT
+      type: DataTypes.FLOAT,
+      allowNull: false
     },
     lng: {
-      type: DataTypes.FLOAT
+      type: DataTypes.FLOAT,
+      allowNull: false
     }
   }, {
     sequelize,
