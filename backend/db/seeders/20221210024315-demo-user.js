@@ -61,6 +61,6 @@ module.exports = {
 
     await queryInterface.bulkDelete(options, {
       username: { [Op.in]: seedUsernames }
-    }, {})
+    }, {});
   }
 };
