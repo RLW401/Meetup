@@ -1,6 +1,10 @@
 'use strict';
 const { Model, Validator, Op } = require('sequelize');
 
+const maxNameLen = 60;
+const minAboutLen = 50;
+const validTypes = ["Online", "In person"];
+
 module.exports = (sequelize, DataTypes) => {
   class Group extends Model {
     /**
@@ -28,27 +32,42 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: { max: {
+        args: maxNameLen,
+        msg: `Name must be ${maxNameLen} characters or less`
+      } }
     },
     about: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: { min: {
+        args: minAboutLen,
+        msg: `About must be ${minAboutLen} characters or more`
+      } }
     },
     type: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: { isIn: {
+        args: [validTypes],
+        msg: `Type must be '${validTypes[0]}' or '${validTypes[1]}'`
+      } }
     },
+    // Need to add custom message for type error: "Private must be a boolean"
     private: {
       type: DataTypes.BOOLEAN,
       allowNull: false
     },
     city: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {notNull: {msg: "City is required"}}
     },
     state: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {notNull: {msg: "State is required"}}
     }
   }, {
     sequelize,
