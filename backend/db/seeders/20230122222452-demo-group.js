@@ -23,7 +23,8 @@ const groupObj2 = {
 }
 
 const groupObj3 = {
-  "organizerId": 3,
+  // "organizerId": 3,
+  "organizerId": null,
   "name": groupNames[2],
   "about": "Group X. Enjoy rounds of tennis with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
   "type": "Online",
