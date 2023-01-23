@@ -38,13 +38,15 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
     const Op = Sequelize.Op;
-
-    await queryInterface.bulkDelete(options, {
-      [Op.or]: {
+    const where = {
+      // check on this syntax
+      [Op.or]: [{
         [Op.and]: [{groupId: 1, userId: 1}],
         [Op.and]: [{groupId: 1, userId: 2}],
         [Op.and]: [{groupId: 3, userId: 3}]
-      }
-    }, {});
+      }]
+    }
+
+    await queryInterface.bulkDelete(options, where, {});
   }
 };
