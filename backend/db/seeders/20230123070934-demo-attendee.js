@@ -4,15 +4,14 @@ let options = {};
 if (process.env.NODE_ENV === "production") {
   options.schema = process.env.SCHEMA; // define schema in options object
 }
-options.tableName = "Memberships";
+options.tableName = "Attendees";
 
 const validStatus = ["pending", "waitlist", "member", "co-host"];
 
-const membership1 = { groupId: 1, userId: 1, status: validStatus[3]};
-const membership2 = { groupId: 1, userId: 2, status: validStatus[1]};
-const membership3 = { groupId: 2, userId: 3, status: validStatus[3]};
-const membership4 = { groupId: 3, userId: 3, status: validStatus[3]};
-
+const attendee1 = { userId: 1, eventId: 1, status: validStatus[2]};
+const attendee2 = { userId: 2, eventId: 1, status: validStatus[1]};
+const attendee3 = { userId: 3, eventId: 2, status: validStatus[2]};
+const attendee4 = { userId: 3, eventId: 3, status: validStatus[3]};
 
 
 /** @type {import('sequelize-cli').Migration} */
@@ -28,7 +27,7 @@ module.exports = {
      * }], {});
     */
     await queryInterface.bulkInsert(options, [
-      membership1, membership2, membership3, membership4
+      attendee1, attendee2, attendee3, attendee4
     ], {});
   },
 
@@ -43,10 +42,10 @@ module.exports = {
     const where = {
       // check on this syntax
       [Op.or]: [{
-        [Op.and]: [{groupId: 1, userId: 1}],
-        [Op.and]: [{groupId: 1, userId: 2}],
-        [Op.and]: [{groupId: 2, userId: 3}],
-        [Op.and]: [{groupId: 3, userId: 3}]
+        [Op.and]: [{userId: 1, eventId: 1}],
+        [Op.and]: [{userId: 2, eventId: 1}],
+        [Op.and]: [{userId: 3, eventId: 2}],
+        [Op.and]: [{userId: 3, eventId: 3}]
       }]
     };
 
