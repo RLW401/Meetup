@@ -2,11 +2,11 @@
 
 const bcrypt = require("bcryptjs");
 const seedUsernames = [
-  'Demo-lition', 'FakeUser1', 'FakeUser2'
+  'Demo-lition', 'FakeUser1', 'BobJohnson'
 ];
 
-const seedFirstNames = ["Demo", "Fake", "Fake"];
-const seedLastNames = ["Lition", "User1", "User2"];
+const seedFirstNames = ["Demo", "Fake", "Bob"];
+const seedLastNames = ["Lition", "User1", "Johnson"];
 
 let options = {};
 if (process.env.NODE_ENV === "production") {
@@ -38,14 +38,14 @@ module.exports = {
         username: seedUsernames[1],
         firstName: seedFirstNames[1],
         lastName: seedLastNames[1],
-        hashedPassword: bcrypt.hashSync('password2')
+        hashedPassword: bcrypt.hashSync('password')
       },
       {
-        email: 'user2@user.io',
+        email: 'bob@johnson.com',
         username: seedUsernames[2],
         firstName: seedFirstNames[2],
         lastName: seedLastNames[2],
-        hashedPassword: bcrypt.hashSync('password3')
+        hashedPassword: bcrypt.hashSync('password')
       }], {});
   },
 

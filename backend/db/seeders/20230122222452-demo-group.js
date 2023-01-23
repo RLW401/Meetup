@@ -1,6 +1,6 @@
 'use strict';
 
-const groupNames = ["Evening Tennis on the Water"]
+const groupNames = ["Evening Tennis on the Water", "Dog Group", "Group X"]
 
 const groupObj1 = {
   "organizerId": 1,
@@ -8,6 +8,26 @@ const groupObj1 = {
   "about": "Enjoy rounds of tennis with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
   "type": "In person",
   "private": true,
+  "city": "New York",
+  "state": "NY",
+}
+
+const groupObj2 = {
+  "organizerId": 3,
+  "name": groupNames[1],
+  "about": "I like dogs. Enjoy rounds of tennis with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
+  "type": "In person",
+  "private": true,
+  "city": "New York",
+  "state": "NY",
+}
+
+const groupObj3 = {
+  "organizerId": 3,
+  "name": groupNames[2],
+  "about": "Group X. Enjoy rounds of tennis with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
+  "type": "Online",
+  "private": false,
   "city": "New York",
   "state": "NY",
 }
@@ -31,7 +51,7 @@ module.exports = {
      * }], {});
     */
    await queryInterface.bulkInsert(options, [
-    groupObj1,
+    groupObj1, groupObj2, groupObj3
   ], {});
   },
 
