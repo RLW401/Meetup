@@ -10,9 +10,9 @@ const validStatus = ["pending", "waitlist", "member", "co-host"];
 
 const membership1 = { groupId: 1, userId: 1, status: validStatus[3]};
 const membership2 = { groupId: 1, userId: 2, status: validStatus[1]};
-// const membership3 = { groupId: 2, userId: 3, status: validStatus[3]};
-const membership3 = { groupId: 1, userId: 3, status: validStatus[3]};
-// const membership4 = { groupId: 3, userId: 3, status: validStatus[3]};
+const membership3 = { groupId: 2, userId: 3, status: validStatus[3]};
+// const membership3 = { groupId: 1, userId: 3, status: validStatus[3]};
+const membership4 = { groupId: 3, userId: 3, status: validStatus[3]};
 
 
 
@@ -29,7 +29,7 @@ module.exports = {
      * }], {});
     */
     await queryInterface.bulkInsert(options, [
-      membership1, membership2, membership3//, membership4
+      membership1, membership2, membership3, membership4
     ], {});
   },
 
