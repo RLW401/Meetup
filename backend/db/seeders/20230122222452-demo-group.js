@@ -1,11 +1,11 @@
 'use strict';
 
-const groupNames = ["Evening Tennis on the Water", "Dog Group", "Group X"]
+const groupNames = ["Evening Tennis in the aqua-zone", "Dog Group", "Group X"]
 
 const groupObj1 = {
   "organizerId": 1,
   "name": groupNames[0],
-  "about": "Enjoy rounds of tennis with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
+  "about": "!?! Enjoy rounds of tennis with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
   "type": "In person",
   "private": true,
   "city": "New York",
