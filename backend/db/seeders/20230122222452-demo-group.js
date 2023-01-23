@@ -21,7 +21,7 @@ const groupObj1 = {
 const groupObj2 = {
   "organizerId": 3,
   "name": groupNames[1],
-  "about": "I like dogs! Enjoy rounds of tennis with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
+  "about": "I like dogs. Enjoy rounds of tennis with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
   "type": "In person",
   "private": true,
   "city": "New York",
@@ -32,7 +32,7 @@ const groupObj3 = {
   "organizerId": 3,
   // "organizerId": null,
   "name": groupNames[2],
-  "about": "Group X. 1!?!1 Enjoy rounds of tennis with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
+  "about": `${groupNames[2]} Enjoy rounds of tennis with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.`,
   "type": "Online",
   "private": false,
   "city": "New York",
