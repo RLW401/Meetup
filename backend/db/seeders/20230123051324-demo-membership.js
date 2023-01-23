@@ -29,7 +29,7 @@ module.exports = {
      * }], {});
     */
     await queryInterface.bulkInsert(options, [
-      membership1, membership2, membership3, membership4
+      membership1, membership2, membership3//, membership4
     ], {});
   },
 
