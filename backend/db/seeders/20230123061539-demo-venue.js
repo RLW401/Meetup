@@ -8,7 +8,7 @@ options.tableName = "Venues";
 
 const venueAddresses = ["123 Disney Lane", "1 North Pole", "0 South Pole"]
 
-const Venue1 =     {
+const venue1 =     {
   "groupId": 1,
   "address": venueAddresses[0],
   "city": "New York",
@@ -17,7 +17,7 @@ const Venue1 =     {
   "lng": -122.4730327,
 }
 
-const Venue2 =     {
+const venue2 =     {
   "groupId": 2,
   "address": venueAddresses[1],
   "city": "North Pole",
@@ -26,7 +26,7 @@ const Venue2 =     {
   "lng": 0,
 }
 
-const Venue3 =     {
+const venue3 =     {
   "groupId": 3,
   "address": venueAddresses[2],
   "city": "South Pole",
@@ -48,7 +48,7 @@ module.exports = {
      * }], {});
     */
    await queryInterface.bulkInsert(options, [
-    Venue1, Venue2, Venue3
+    venue1, venue2, venue3
   ], {});
   },
 
