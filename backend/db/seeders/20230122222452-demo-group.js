@@ -1,5 +1,11 @@
 'use strict';
 
+let options = {};
+if (process.env.NODE_ENV === "production") {
+  options.schema = process.env.SCHEMA; // define schema in options object
+}
+options.tableName = "Groups";
+
 const groupNames = ["Evening Tennis in the aqua-zone", "Dog Group", "Group X"]
 
 const groupObj1 = {
@@ -32,12 +38,6 @@ const groupObj3 = {
   "city": "New York",
   "state": "NY",
 }
-
-let options = {};
-if (process.env.NODE_ENV === "production") {
-  options.schema = process.env.SCHEMA; // define schema in options object
-}
-options.tableName = "Groups";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
