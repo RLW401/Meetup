@@ -2,7 +2,7 @@
 const express = require('express')
 
 const { Event, Group, Venue, Image, User } = require('../../db/models');
-const { extractEventPreviewImageURL } = require('../../utils/misc');
+const { extractPreviewImageURL, formatDate } = require('../../utils/misc');
 
 // For Validating Signup Request Body
 const { check } = require('express-validator');
@@ -48,7 +48,7 @@ router.get("/:groupId/events", async (req, res, next) => {
         group.Events.forEach((event) => {
             const jsonEvent = event.toJSON();
 
-            const previewImage = extractEventPreviewImageURL(jsonEvent.Images);
+            const previewImage = extractPreviewImageURL(jsonEvent.Images, "event");
             const userList = jsonEvent.Users;
             const numAttending = userList.length;
             jsonEvent.numAttending = numAttending;
