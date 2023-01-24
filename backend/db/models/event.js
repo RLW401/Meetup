@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     venueId: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     name: {
       type: DataTypes.STRING,
@@ -59,6 +59,21 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Event',
+    defaultScope: {
+      attributes: {
+        exclude: [
+          "description", "capacity", "price",
+          "createdAt", "updatedAt"
+        ]
+      }
+    },
+    scopes: {
+      eventDetail: {
+        attributes: {
+          exclude: ["createdAt", "updatedAt"]
+        }
+      }
+    }
   });
   return Event;
 };

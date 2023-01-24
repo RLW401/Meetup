@@ -10,14 +10,14 @@ const eventNames = ["Tennis Group First Meet and Greet", "North Pole hangout", "
 
 const event1 = {
   "groupId": 1,
-  "venueId": 1,
+  // "venueId": 1,
   "name": "Tennis Group First Meet and Greet",
   "description": "First meet and greet event for the evening tennis on the water group! Join us online for happy times!",
   "type": "Online",
   "capacity": 10,
   "price": 18.50,
-  "startDate": "2021-11-19 20:00:00",
-  "endDate": "2021-11-19 22:00:00"
+  "startDate": new Date("2021-11-19 20:00:00"),
+  "endDate": new Date("2021-11-19 22:00:00")
 };
 
 const event2 = {
@@ -28,8 +28,8 @@ const event2 = {
   "type": "In person",
   "capacity": 999,
   "price": 19.50,
-  "startDate": "2022-11-19 20:00:00",
-  "endDate": "2022-11-19 22:00:00"
+  "startDate": new Date("2022-11-19 20:00:00"),
+  "endDate": new Date("2022-11-19 22:00:00")
 };
 
 const event3 = {
@@ -40,8 +40,8 @@ const event3 = {
   "type": "In person",
   "capacity": 9001,
   "price": 3.50,
-  "startDate": "2023-11-19 20:00:00",
-  "endDate": "3023-11-19 22:00:00"
+  "startDate": new Date("2023-11-19 20:00:00"),
+  "endDate": new Date("3023-11-19 22:00:00")
 };
 
 
