@@ -1,7 +1,7 @@
 // backend/routes/api/groups.js
 const express = require('express')
 
-const { Event, Group, Venue, Image, User } = require('../../db/models');
+const { Event, Group, Venue, Image, User, Membership } = require('../../db/models');
 const { extractPreviewImageURL, formatDate } = require('../../utils/misc');
 
 // For Validating Signup Request Body
@@ -12,9 +12,22 @@ const router = express.Router();
 
 // Get all Groups
 router.get('/', async (req, res) => {
-    const Groups = await Group.findAll({});
+    const Groups = await Group.findAll({
+        include: [{model: Membership}, {model: Image}]
+    });
+    const resGroups = [];
 
-    return res.json({Groups});
+    Groups.forEach((group) => {
+        const formattedGroup = group.toJSON()
+        formattedGroup.createdAt = formatDate(formattedGroup.createdAt);
+        formattedGroup.updatedAt = formatDate(formattedGroup.updatedAt);
+
+        resGroups.push(formattedGroup);
+    });
+
+
+
+    return res.json({Groups: resGroups});
 });
 
 // Get all Events of a Group specified by its id

@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Group.belongsTo(models.User, {foreignKey: "organizerId"});
       Group.belongsToMany(models.User, {through: models.Membership});
-      // Group.hasMany(models.Membership, {foreignKey: "groupId"})
+
+      Group.hasMany(models.Membership, {foreignKey: "groupId"})
 
       Group.hasMany(models.Image, {foreignKey: "groupId"});
 
