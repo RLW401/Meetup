@@ -36,4 +36,32 @@ const formatDate = (date) => {
     return dateStr;
 };
 
-module.exports = { extractPreviewImageURL, formatDate };
+// takes in a Group with Membership and Image
+// models included, and returns a formatted JSON
+// object with previewImage and numMembers keys
+// in place of the included model keys.
+// also formats timestamps
+const formatGroup = (group) => {
+    const formattedGroup = group.toJSON();
+
+    if (formattedGroup.createdAt) {
+        formattedGroup.createdAt = formatDate(formattedGroup.createdAt);
+    }
+    if (formattedGroup.updatedAt) {
+        formattedGroup.updatedAt = formatDate(formattedGroup.updatedAt);
+    }
+
+    if (formattedGroup.Memberships) {
+        formattedGroup.numMembers = formattedGroup.Memberships.length;
+        delete formattedGroup.Memberships;
+    }
+
+    if (formattedGroup.Images) {
+        formattedGroup.previewImage = extractPreviewImageURL(formattedGroup.Images, "group");
+        delete formattedGroup.Images;
+    }
+
+    return formattedGroup;
+};
+
+module.exports = { extractPreviewImageURL, formatDate, formatGroup };

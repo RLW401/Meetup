@@ -31,15 +31,28 @@ const validateSignup = [
 const router = express.Router();
 
 // Sign up
-router.post('/', validateSignup, async (req, res) => {
+router.post('/', validateSignup, async (req, res, next) => {
       const { email, password, username, firstName, lastName } = req.body;
-      const user = await User.signup({ email, username, password, firstName, lastName });
 
-      await setTokenCookie(res, user);
+      const userExists = await User.findOne({where: {email}});
 
-      return res.json({
-        user: user
-      });
+      if (!userExists) {
+        const user = await User.signup({ email, username, password, firstName, lastName });
+
+        await setTokenCookie(res, user);
+        // const token = await setTokenCookie(res, user);
+
+        // const userRes = user.toJSON();
+        // userRes.token = token;
+
+        return res.json(user);
+      } else {
+        const err = new Error("User already exists");
+        err.status = 403;
+        err.title = 'signup failed';
+        err.errors = {email: "User with that email already exists"};
+        return next(err);
+      }
     }
   );
 

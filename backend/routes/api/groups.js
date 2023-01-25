@@ -1,8 +1,10 @@
 // backend/routes/api/groups.js
 const express = require('express')
+const { requireAuth } = require('../../utils/auth');
+// const sequelize = require('sequelize');
 
 const { Event, Group, Venue, Image, User, Membership } = require('../../db/models');
-const { extractPreviewImageURL, formatDate } = require('../../utils/misc');
+const { extractPreviewImageURL, formatDate, formatGroup } = require('../../utils/misc');
 
 // For Validating Signup Request Body
 const { check } = require('express-validator');
@@ -18,14 +20,40 @@ router.get('/', async (req, res) => {
     const resGroups = [];
 
     Groups.forEach((group) => {
-        const formattedGroup = group.toJSON()
-        formattedGroup.createdAt = formatDate(formattedGroup.createdAt);
-        formattedGroup.updatedAt = formatDate(formattedGroup.updatedAt);
-
+        const formattedGroup = formatGroup(group);
         resGroups.push(formattedGroup);
     });
 
+    return res.json({Groups: resGroups});
+});
 
+// Get all Groups joined or organized by the Current User
+router.get("/current", requireAuth, async (req, res) => {
+    const { user } = req;
+    const userId = user.id;
+
+    const Groups = await Group.findAll({
+        include: [{model: Membership}, {model: Image}]
+    });
+
+    const resGroups = [];
+
+    // filter out all Groups of which the current
+    // user is not a member
+    const currentGroups = Groups.filter((group) => {
+        let current = false;
+        group.Memberships.forEach((membership) => {
+            if (membership.userId === userId) {
+                current = true;
+            }
+        });
+        return current;
+    });
+
+    currentGroups.forEach((group) => {
+        const formattedGroup = formatGroup(group);
+        resGroups.push(formattedGroup);
+    });
 
     return res.json({Groups: resGroups});
 });
@@ -75,5 +103,11 @@ router.get("/:groupId/events", async (req, res, next) => {
         return res.json({Events});
     }
 });
+
+// router.get("/:groupId", (req, res) => {
+//     const { groupId } = req.params;
+
+//     const
+// });
 
 module.exports = router;
