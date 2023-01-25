@@ -104,10 +104,18 @@ router.get("/:groupId/events", async (req, res, next) => {
     }
 });
 
-// router.get("/:groupId", (req, res) => {
-//     const { groupId } = req.params;
+// Get details of a Group from an id
+router.get("/:groupId", async (req, res) => {
+    const { groupId } = req.params;
 
-//     const
-// });
+    const group = await Group.findByPk(groupId, {
+        include: [
+            "Organizer", "Members",
+            {model: Venue}, "GroupImages"
+        ]
+    });
+
+    return res.json(group);
+});
 
 module.exports = router;
