@@ -2,7 +2,7 @@
 const { Model, Validator, Op } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Attendee extends Model {
+  class Attendance extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -10,11 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Attendee.belongsTo(models.User, {foreignKey: "userId"});
-      Attendee.belongsTo(models.Event, {foreignKey: "eventId"});
+      Attendance.belongsTo(models.User, {foreignKey: "userId"});
+      Attendance.belongsTo(models.Event, {foreignKey: "eventId"});
     }
   }
-  Attendee.init({
+  Attendance.init({
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false
@@ -29,12 +29,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Attendee',
+    modelName: 'Attendance',
     defaultScope: {
       attributes: {
         exclude: ["createdAt", "updatedAt"]
       }
     }
   });
-  return Attendee;
+  return Attendance;
 };
