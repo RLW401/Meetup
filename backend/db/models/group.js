@@ -14,16 +14,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Group.belongsTo(models.User, {as: "Organizer", foreignKey: "organizerId"});
-      Group.belongsToMany(models.User, {as: "Members", through: models.Membership});
+      Group.belongsTo(models.User, {as: 'Organizer', foreignKey: 'organizerId'});
+      Group.belongsToMany(models.User, {as: 'Members', through: models.Membership});
 
-      Group.hasMany(models.Membership, {foreignKey: "groupId"})
+      Group.hasMany(models.Membership, {foreignKey: 'groupId'})
 
-      Group.hasMany(models.Image, {as: "GroupImages", foreignKey: "groupId"});
+      Group.hasMany(models.Image, {as: 'GroupImages', foreignKey: 'groupId'});
 
-      Group.hasMany(models.Event, {foreignKey: "groupId"});
+      Group.hasMany(models.Event, {foreignKey: 'groupId'});
 
-      Group.hasMany(models.Venue, {foreignKey: "groupId"});
+      Group.hasMany(models.Venue, {foreignKey: 'groupId'});
     }
   }
   Group.init({
