@@ -23,8 +23,7 @@ router.get('/', async (req, res) => {
         //     {model: Image, as: "GroupImages"}
         // ]
         include: [
-            {model: Membership},
-            //"GroupImages"
+            {model: Membership}
         ]
     });
     const resGroups = [];
