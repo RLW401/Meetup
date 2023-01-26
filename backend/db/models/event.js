@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 
       Event.belongsTo(models.Venue, {foreignKey: "venueId"});
 
-      Event.hasMany(models.Image, {as: "EventImage", foreignKey: "eventId"});
+      Event.hasMany(models.Image, {as: "EventImages", foreignKey: "eventId"});
 
       Event.belongsToMany(models.User, {as: "Attendees", through: models.Attendance});
       Event.hasMany(models.Attendance, {foreignKey: "eventId"});
@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     price: {
-      type: DataTypes.DECIMAL,
+      type: DataTypes.DECIMAL(31, 2),
       allowNull: false
     },
     startDate: {

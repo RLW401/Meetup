@@ -86,6 +86,34 @@ const formatImage = (image, type) => {
     return fImage;
 };
 
+const formatEvent = (event) => {
+    const fEvent = event.toJSON();
+    if ("EventImages" in fEvent) {
+        const previewImage = extractPreviewImageURL(fEvent.EventImages, "event");
+        fEvent.previewImage = previewImage;
+        delete fEvent.EventImages;
+    }
+    if ("Attendees" in fEvent) {
+        const numAttending = fEvent.Attendees.length;
+        fEvent.numAttending = numAttending;
+        delete fEvent.Attendees;
+    }
+    if ("startDate" in fEvent) {
+        fEvent.startDate = formatDate(fEvent.startDate);
+    }
+    if ("endDate" in fEvent) {
+        fEvent.endDate = formatDate(fEvent.endDate);
+    }
+    if ("createdAt" in fEvent) {
+        fEvent.createdAt = formatDate(fEvent.createdAt);
+    }
+    if ("updatedAt" in fEvent) {
+        fEvent.updatedAt = formatDate(fEvent.updatedAt);
+    }
+
+    return fEvent;
+};
+
 // takes in a userId and a group and returns a boolean indicating
 // whether or not the user is the organizer of the group.
 const isGroupOrganizer = (userId, group) => {
@@ -108,6 +136,6 @@ const hasValidStatus = (userId, objArr, validStatus) => {
 };
 
 module.exports = { extractPreviewImageURL, formatDate,
-    formatGroup, formatImage, isGroupOrganizer,
-    hasValidStatus
+    formatGroup, formatImage, formatEvent,
+    isGroupOrganizer, hasValidStatus
  };
