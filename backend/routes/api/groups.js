@@ -7,24 +7,17 @@ const { Event, Group, Venue, Image, User, Membership } = require('../../db/model
 const { extractPreviewImageURL, formatGroup, formatImage,
     isGroupOrganizer, hasValidStatus } = require('../../utils/misc');
 
-// For Validating Signup Request Body
-const { check } = require('express-validator');
-const { handleValidationErrors,
-    validateGroupBody,
-    validateVenueBody } = require('../../utils/validation');
+// for request body validations
+const {
+    validateGroupBody, validateVenueBody
+    } = require('../../utils/validation');
 
 const router = express.Router();
 
 // Get all Groups
 router.get('/', async (req, res) => {
     const Groups = await Group.findAll({
-        // include: [
-        //     {model: User, as: "Members", include: [{model: Membership}]},
-        //     {model: Image, as: "GroupImages"}
-        // ]
-        include: [
-            {model: Membership}
-        ]
+        include: ["Members", "GroupImages"]
     });
     const resGroups = [];
 
