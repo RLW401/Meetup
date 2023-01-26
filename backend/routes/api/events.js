@@ -5,7 +5,7 @@ const sequelize = require('sequelize');
 const { Op } = sequelize;
 
 const { Event, Group, Venue, Image, User, Membership } = require('../../db/models');
-const { extractPreviewImageURL, formatGroup, formatImage,
+const { extractPreviewImageURL, formatGroup, formatImage, formatEvent
     isGroupOrganizer, hasValidStatus } = require('../../utils/misc');
 
 // for request body validations
@@ -31,22 +31,8 @@ router.get('/', async (_req, res) => {
     const eventList = [];
 
     Events.forEach((event) => {
-        eventList.push(event.toJSON());
+        eventList.push(formatEvent(event));
     });
-
-    eventList.forEach((event) => {
-        const previewImage = extractPreviewImageURL(event.Images, "event");
-        const userList = event.Users;
-        const numAttending = userList.length;
-
-        event.numAttending = numAttending;
-        event.previewImage = previewImage;
-        delete event.Users;
-        delete event.Images;
-
-        event.startDate = formatDate(event.startDate);
-        event.endDate = formatDate(event.endDate);
-        });
 
     return res.json({Events: eventList});
 });
