@@ -18,8 +18,10 @@ const router = express.Router();
 // Get all Groups
 router.get('/', async (req, res) => {
     const Groups = await Group.findAll({
-        include: [{model: User, as: "Members"},
-                    {model: Image, as: "GroupImages"}]
+        include: [
+            {model: User, as: "Members", include: [{model: Membership}]},
+            {model: Image, as: "GroupImages"}
+        ]
     });
     const resGroups = [];
 
