@@ -86,4 +86,28 @@ const formatImage = (image, type) => {
     return fImage;
 };
 
-module.exports = { extractPreviewImageURL, formatDate, formatGroup, formatImage };
+// takes in a userId and a group and returns a boolean indicating
+// whether or not the user is the organizer of the group.
+const isGroupOrganizer = (userId, group) => {
+    return (Number(userId) === Number(group.organizerId));
+};
+
+const hasValidStatus = (userId, objArr, validStatus) => {
+    let vStatus = false;
+    userId = Number(userId);
+    objArr.forEach((obj) => {
+        const currentStat = obj.status;
+        const currentUId = Number(obj.userId);
+        validStatus.forEach((vStat) => {
+            if ((userId === currentUId) && (currentStat === vStat)) {
+                vStatus = true;
+            }
+        });
+    });
+    return vStatus;
+};
+
+module.exports = { extractPreviewImageURL, formatDate,
+    formatGroup, formatImage, isGroupOrganizer,
+    hasValidStatus
+ };

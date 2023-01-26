@@ -4,46 +4,22 @@ const { requireAuth } = require('../../utils/auth');
 // const sequelize = require('sequelize');
 
 const { Event, Group, Venue, Image, User, Membership } = require('../../db/models');
-const { extractPreviewImageURL, formatGroup, formatImage } = require('../../utils/misc');
+const { extractPreviewImageURL, formatGroup, formatImage,
+    isGroupOrganizer, hasValidStatus } = require('../../utils/misc');
 
 // For Validating Signup Request Body
 const { check } = require('express-validator');
-const { handleValidationErrors } = require('../../utils/validation');
+const { handleValidationErrors,
+    validateGroupBody,
+    validateVenueBody } = require('../../utils/validation');
 
 const router = express.Router();
-
-const validateGroupBody = [
-    check('name')
-      .exists({ checkFalsy: true })
-      .isLength({ max: 60 })
-      .withMessage("Name must be 60 characters or less"),
-    check('about')
-      .exists({ checkFalsy: true })
-      .isLength({ min: 50 })
-      .withMessage("About must be 50 characters or more"),
-    check('type')
-      .exists({ checkFalsy: true })
-      .matches(/^Online|In person?/) // ?
-      .withMessage("Type must be 'Online' or 'In person'"),
-    check('private')
-      .exists({ checkFalsy: true })
-      .isBoolean()
-      .withMessage("Private must be a boolean"),
-    check('city')
-      .exists({ checkFalsy: true })
-      .withMessage("City is required"),
-    check('state')
-      .exists({ checkFalsy: true })
-      .withMessage("State is required"),
-
-
-    handleValidationErrors
-];
 
 // Get all Groups
 router.get('/', async (req, res) => {
     const Groups = await Group.findAll({
-        include: ["Members", "GroupImages"]
+        include: [{model: User, as: "Members"},
+                    {model: Image, as: "GroupImages"}]
     });
     const resGroups = [];
 
@@ -325,6 +301,104 @@ router.delete("/:groupId", requireAuth, async (req, res, next) => {
             "statusCode": 404
           });
     }
+});
+
+
+
+// Get All Venues for a Group specified by its id
+router.get("/:groupId/venues", requireAuth,
+    async (req, res, next) => {
+        const { groupId } = req.params;
+        const { user } = req;
+        const validStatus = ["co-host"];
+
+        const group = await Group.findByPk(groupId, {
+            include: ["Members", { model: Venue }]
+        });
+
+        if (group) {
+            const authenticated = (
+                isGroupOrganizer(user.id, group)
+                || hasValidStatus(user.id, group.Members, validStatus)
+                );
+
+            // group.Members.forEach((member) => {
+            //     if ((member.id === userId) && (member.status === "co-host")) {
+            //         authenticated = true;
+            //     }
+            // });
+
+            if (authenticated) {
+                const Venues = formatGroup(group).Venues;
+                return res.json({Venues});
+            } else {
+                const err = new Error("Only a group's organizer or a member of the group with a status of 'co-host' can perform this action.");
+                err.status = 403;
+                err.title = 'User not authorized';
+                err.errors = {userId: "Only a group's organizer or a member of the group with a status of 'co-host' can see the venues associated with a group."};
+                return next(err);
+            }
+        } else {
+            res.status(404);
+            return res.json({
+                "message": "Group couldn't be found",
+                "statusCode": 404
+              });
+        }
+});
+
+// Create a new Venue for a Group specified by its id
+router.post("/:groupId/venues",
+    requireAuth, validateVenueBody,
+    async (req, res, next) => {
+        const { groupId } = req.params;
+        const { user } = req;
+        const validStatus = ["co-host"];
+        const { address, city, state, lat, lng } = req.body;
+
+        const group = await Group.findByPk(groupId, {
+            include: ["Members", { model: Venue }]
+        });
+
+        if (group) {
+            const authenticated = (
+                isGroupOrganizer(user.id, group)
+                || hasValidStatus(user.id, group.Members, validStatus)
+                );
+                if (authenticated) {
+                    const venueExists = await Venue.findOne({where: {
+                        groupId, lat, lng
+                    }});
+                    if (venueExists) {
+                        const err = new Error(`The group "${group.name}" already has a venue at this location: ${venueExists.name}.`);
+                        err.status = 403;
+                        err.title = 'Venue creation failed';
+                        err.errors = {groupId: `The group "${group.name}" already has a venue at this location: ${venueExists.name}.`};
+                        return next(err);
+                    } else {
+                        await Venue.create({
+                            groupId, address, city, state, lat, lng
+                        });
+
+                        const newVenue = await Venue.findOne({
+                            where: { groupId, lat, lng }
+                        });
+                        return res.json(newVenue);
+                    }
+                } else {
+                    const err = new Error("Only a group's organizer or a member of the group with a status of 'co-host' can perform this action.");
+                    err.status = 403;
+                    err.title = 'User not authorized';
+                    err.errors = {userId: "Only a group's organizer or a member of the group with a status of 'co-host' can create a new venue for the group."};
+                    return next(err);
+                }
+            } else {
+                res.status(404);
+                return res.json({
+                    "message": "Group couldn't be found",
+                    "statusCode": 404
+                  });
+            }
 });
 
 module.exports = router;
