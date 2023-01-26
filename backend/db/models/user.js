@@ -1,7 +1,7 @@
 'use strict';
 const { Model, Validator, Op } = require('sequelize');
 
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -23,13 +23,13 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static getCurrentUserById(id) {
-      const currentUser = User.scope("currentUser").findByPk(id);
+      const currentUser = User.scope('currentUser').findByPk(id);
       return currentUser;
     }
 
     static async login({ credential, password }) {
       let passwordValid;
-      const user = await User.scope("loginUser").findOne({
+      const user = await User.scope('loginUser').findOne({
         where: {
           [Op.or]: {username: credential, email: credential}
         }
@@ -53,18 +53,18 @@ module.exports = (sequelize, DataTypes) => {
         firstName,
         lastName
       });
-      const currentUser = await User.scope("currentUser").findByPk(newUser.id);
+      const currentUser = await User.scope('currentUser').findByPk(newUser.id);
       return currentUser;
     }
     static associate(models) {
       // define association here
-      User.hasMany(models.Group, {as: "organizedGroups", foreignKey: "organizerId"});
+      User.hasMany(models.Group, {as: 'organizedGroups', foreignKey: 'organizerId'});
 
-      User.belongsToMany(models.Group, {as: "joinedGroups", through: models.Membership});
-      User.hasMany(models.Membership, {foreignKey: "userId"});
+      User.belongsToMany(models.Group, {as: 'joinedGroups', through: models.Membership});
+      User.hasMany(models.Membership, {foreignKey: 'userId'});
 
       User.belongsToMany(models.Event, {through: models.Attendance});
-      User.hasMany(models.Attendance, {foreignKey: "userId"});
+      User.hasMany(models.Attendance, {foreignKey: 'userId'});
     }
   }
   User.init({
