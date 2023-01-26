@@ -256,8 +256,9 @@ router.put("/:groupId",
                 group.set({ name, about, type, private, city, state });
                 await group.validate();
                 await group.save();
+                const updatedGroup = await Group.findByPk(groupId);
 
-                const resGroup = formatGroup(group);
+                const resGroup = formatGroup(updatedGroup);
 
                 return res.json(resGroup);
             }
@@ -365,13 +366,13 @@ router.post("/:groupId/venues",
                 );
                 if (authenticated) {
                     const venueExists = await Venue.findOne({where: {
-                        groupId, lat, lng
+                        groupId, address, city, state, lat, lng
                     }});
                     if (venueExists) {
-                        const err = new Error(`The group "${group.name}" already has a venue at this location: ${venueExists.name}.`);
+                        const err = new Error(`The group "${group.name}" already has a venue at this location: ${venueExists.address}.`);
                         err.status = 403;
                         err.title = 'Venue creation failed';
-                        err.errors = {groupId: `The group "${group.name}" already has a venue at this location: ${venueExists.name}.`};
+                        err.errors = {groupId: `The group "${group.name}" already has a venue at this location: ${venueExists.address}.`};
                         return next(err);
                     } else {
                         await Venue.create({
