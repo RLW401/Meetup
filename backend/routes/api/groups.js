@@ -4,7 +4,7 @@ const { requireAuth } = require('../../utils/auth');
 // const sequelize = require('sequelize');
 
 const { Event, Group, Venue, Image, User, Membership } = require('../../db/models');
-const { extractPreviewImageURL, formatGroup, formatImage,
+const { extractPreviewImageURL, formatGroup, formatImage, formatEvent,
     isGroupOrganizer, hasValidStatus } = require('../../utils/misc');
 
 // for request body validations
@@ -61,14 +61,14 @@ router.get("/current", requireAuth, async (req, res) => {
 });
 
 // Get all Events of a Group specified by its id
-router.get("/:groupId/events", async (req, res, next) => {
+router.get("/:groupId/events", async (req, res) => {
     const { groupId } = req.params;
     const group = await Group.findByPk(groupId, {
         include: [
             {model: Event,
                 include: [
                     "Attendees",
-                    {model: Image},
+                    "EventImages",
                     { model: Group,
                     attributes: ["id", "name", "city", "state"] },
                     { model: Venue,
@@ -86,20 +86,9 @@ router.get("/:groupId/events", async (req, res, next) => {
         return res.json({message: "Group couldn't be found",
         statusCode: 404
     });
-        // next(err);
     } else {
         group.Events.forEach((event) => {
-            const jsonEvent = event.toJSON();
-
-            const previewImage = extractPreviewImageURL(jsonEvent.Images, "event");
-            const userList = jsonEvent.Users;
-            const numAttending = userList.length;
-            jsonEvent.numAttending = numAttending;
-            jsonEvent.previewImage = previewImage;
-            delete jsonEvent.Users;
-            delete jsonEvent.Images;
-
-            Events.push(jsonEvent);
+            Events.push(formatEvent(event));
         });
 
         return res.json({Events});

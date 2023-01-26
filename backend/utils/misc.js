@@ -88,15 +88,21 @@ const formatImage = (image, type) => {
 
 const formatEvent = (event) => {
     const fEvent = event.toJSON();
-    if ("Images" in fEvent) {
-        const previewImage = extractPreviewImageURL(fEvent.Images, "event");
+    if ("EventImages" in fEvent) {
+        const previewImage = extractPreviewImageURL(fEvent.EventImages, "event");
         fEvent.previewImage = previewImage;
-        delete fEvent.Images;
+        delete fEvent.EventImages;
     }
-    if ("Users" in fEvent) {
-        const numAttending = fEvent.Users.length;
+    if ("Attendees" in fEvent) {
+        const numAttending = fEvent.Attendees.length;
         fEvent.numAttending = numAttending;
-        delete fEvent.Users;
+        delete fEvent.Attendees;
+    }
+    if ("startDate" in fEvent) {
+        fEvent.startDate = formatDate(fEvent.startDate);
+    }
+    if ("endDate" in fEvent) {
+        fEvent.endDate = formatDate(fEvent.endDate);
     }
     if ("createdAt" in fEvent) {
         fEvent.createdAt = formatDate(fEvent.createdAt);
