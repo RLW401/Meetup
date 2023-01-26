@@ -86,17 +86,4 @@ const formatImage = (image, type) => {
     return fImage;
 };
 
-// const formatMembership = (membership) => {
-//     const formattedMembership = membership.toJSON();
-
-//     if ("UserId" in formattedMembership) {
-//         delete formattedMembership.UserId;
-//     }
-//     if ("GroupId" in formattedMembership) {
-//         delete formattedMembership.GroupId;
-//     }
-
-//     return formattedMembership;
-// };
-
 module.exports = { extractPreviewImageURL, formatDate, formatGroup, formatImage };
