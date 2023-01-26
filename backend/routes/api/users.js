@@ -8,6 +8,9 @@ const { User } = require('../../db/models');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
+const nameMinLen = 1;
+const nameMaxLen = 32;
+
 const validateSignup = [
     check('email')
       .exists({ checkFalsy: true })
@@ -25,6 +28,14 @@ const validateSignup = [
       .exists({ checkFalsy: true })
       .isLength({ min: 6 })
       .withMessage('Password must be 6 characters or more.'),
+    check('firstName')
+      .exists({ checkFalsy: true })
+      .isLength({ min: nameMinLen, max: nameMaxLen})
+      .withMessage(`First name must be between ${nameMinLen} and ${nameMaxLen} characters long.`),
+    check('lastName')
+      .exists({ checkFalsy: true })
+      .isLength({ min: nameMinLen, max: nameMaxLen})
+      .withMessage(`Last name must be between ${nameMinLen} and ${nameMaxLen} characters long.`),
     handleValidationErrors
   ];
 

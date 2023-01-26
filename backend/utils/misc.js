@@ -1,5 +1,7 @@
 // backend/utils/misc.js
 
+const membership = require("../db/models/membership");
+
 // takes in an array of image json objects and a
 // string indicating the image type (group or event)
 // and returns the url of a preview image
@@ -44,24 +46,57 @@ const formatDate = (date) => {
 const formatGroup = (group) => {
     const formattedGroup = group.toJSON();
 
-    if (formattedGroup.createdAt) {
+    if ("createdAt" in formattedGroup) {
         formattedGroup.createdAt = formatDate(formattedGroup.createdAt);
     }
-    if (formattedGroup.updatedAt) {
+    if ("updatedAt" in formattedGroup) {
         formattedGroup.updatedAt = formatDate(formattedGroup.updatedAt);
     }
 
-    if (formattedGroup.Memberships) {
-        formattedGroup.numMembers = formattedGroup.Memberships.length;
-        delete formattedGroup.Memberships;
+    if ("Members" in formattedGroup) {
+        formattedGroup.numMembers = formattedGroup.Members.length;
+        delete formattedGroup.Members;
     }
 
-    if (formattedGroup.Images) {
-        formattedGroup.previewImage = extractPreviewImageURL(formattedGroup.Images, "group");
-        delete formattedGroup.Images;
+    if ("GroupImages" in formattedGroup) {
+        formattedGroup.previewImage = extractPreviewImageURL(formattedGroup.GroupImages, "group");
+        delete formattedGroup.GroupImages;
     }
 
     return formattedGroup;
 };
 
-module.exports = { extractPreviewImageURL, formatDate, formatGroup };
+// Takes in an image and a string indicating the image
+// type (group or event) and returns a json image object
+// with only id, url, and the appropriate preview keys
+const formatImage = (image, type) => {
+    const fImage = image.toJSON();
+    const validTypes = ["group", "event"];
+    const trashKeys = ["Id", "Preview"]
+    const previewKey = (type + trashKeys[1]);
+
+    fImage.preview = fImage[previewKey];
+
+    for (let i = 0; i < validTypes.length; i++) {
+        for (let j = 0; j < trashKeys.length; j++) {
+            const trash = (validTypes[i] + trashKeys[j]);
+            if (trash in fImage) delete fImage[trash];
+        }
+    }
+    return fImage;
+};
+
+// const formatMembership = (membership) => {
+//     const formattedMembership = membership.toJSON();
+
+//     if ("UserId" in formattedMembership) {
+//         delete formattedMembership.UserId;
+//     }
+//     if ("GroupId" in formattedMembership) {
+//         delete formattedMembership.GroupId;
+//     }
+
+//     return formattedMembership;
+// };
+
+module.exports = { extractPreviewImageURL, formatDate, formatGroup, formatImage };
