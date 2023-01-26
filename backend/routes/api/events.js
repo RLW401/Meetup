@@ -1,12 +1,17 @@
 // backend/routes/api/events.js
 const express = require('express')
+const { requireAuth } = require('../../utils/auth');
+const sequelize = require('sequelize');
+const { Op } = sequelize;
 
-const { Event, Group, Venue, Image, User } = require('../../db/models');
-const { extractPreviewImageURL, formatDate } = require('../../utils/misc');
+const { Event, Group, Venue, Image, User, Membership } = require('../../db/models');
+const { extractPreviewImageURL, formatGroup, formatImage,
+    isGroupOrganizer, hasValidStatus } = require('../../utils/misc');
 
-// For Validating Signup Request Body
-const { check } = require('express-validator');
-const { handleValidationErrors } = require('../../utils/validation');
+// for request body validations
+const {
+    validateGroupBody, validateVenueBody
+    } = require('../../utils/validation');
 
 const router = express.Router();
 
