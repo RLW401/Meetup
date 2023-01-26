@@ -7,21 +7,17 @@ const { Event, Group, Venue, Image, User, Membership } = require('../../db/model
 const { extractPreviewImageURL, formatGroup, formatImage,
     isGroupOrganizer, hasValidStatus } = require('../../utils/misc');
 
-// For Validating Signup Request Body
-const { check } = require('express-validator');
-const { handleValidationErrors,
-    validateGroupBody,
-    validateVenueBody } = require('../../utils/validation');
+// for request body validations
+const {
+    validateGroupBody, validateVenueBody
+    } = require('../../utils/validation');
 
 const router = express.Router();
 
 // Get all Groups
 router.get('/', async (req, res) => {
     const Groups = await Group.findAll({
-        include: [
-            {model: User, as: "Members", include: [{model: Membership}]},
-            {model: Image, as: "GroupImages"}
-        ]
+        include: ["Members", "GroupImages"]
     });
     const resGroups = [];
 
@@ -260,8 +256,9 @@ router.put("/:groupId",
                 group.set({ name, about, type, private, city, state });
                 await group.validate();
                 await group.save();
+                const updatedGroup = await Group.findByPk(groupId);
 
-                const resGroup = formatGroup(group);
+                const resGroup = formatGroup(updatedGroup);
 
                 return res.json(resGroup);
             }
@@ -369,13 +366,13 @@ router.post("/:groupId/venues",
                 );
                 if (authenticated) {
                     const venueExists = await Venue.findOne({where: {
-                        groupId, lat, lng
+                        groupId, address, city, state, lat, lng
                     }});
                     if (venueExists) {
-                        const err = new Error(`The group "${group.name}" already has a venue at this location: ${venueExists.name}.`);
+                        const err = new Error(`The group "${group.name}" already has a venue at this location: ${venueExists.address}.`);
                         err.status = 403;
                         err.title = 'Venue creation failed';
-                        err.errors = {groupId: `The group "${group.name}" already has a venue at this location: ${venueExists.name}.`};
+                        err.errors = {groupId: `The group "${group.name}" already has a venue at this location: ${venueExists.address}.`};
                         return next(err);
                     } else {
                         await Venue.create({
