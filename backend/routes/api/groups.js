@@ -437,7 +437,7 @@ router.post("/:groupId/events", requireAuth, validateEventBody, async (req, res,
 
             const eventAttendance = await Attendance.findOne({ where: { userId, eventId } });
 
-            const createdEvent = formatEvent(await Event.scope("eventDetail").findByPk(eventAttendance.eventId));
+            const createdEvent = formatEvent(await Event.scope("eventDetails").findByPk(eventAttendance.eventId));
 
 
             return res.json(createdEvent);

@@ -42,7 +42,7 @@ router.get('/', async (_req, res) => {
 // Get details of an Event specified by its id
 router.get("/:eventId", async (req, res) => {
     const { eventId } = req.params;
-    const event = await Event.scope("eventDetail").findByPk(eventId, {
+    const event = await Event.scope("eventDetails").findByPk(eventId, {
         include: [
             { model: User, as: "Attendees" },
             { model: Group,
@@ -118,18 +118,16 @@ router.put("/:eventId", requireAuth, validateEventBody, async (req, res, next) =
     const eventId = Number(req.params.eventId);
     const { venueId, name, type, capacity, price,
         description, startDate, endDate } = req.body;
-    const validStatus = ["co-host", "member"];
+    const validStatus = ["co-host"];
 
     const event = await Event.findByPk(eventId);
 
     if (event) {
         const groupId = event.groupId;
         const group = await Group.findByPk(groupId, {
-            include: [{model: Membership}, { model: Venue }]
-            // include: ["Members", { model: Venue }]
+            include: [{model: Membership.scope("membershipDetails")}, { model: Venue }]
 
         });
-        console.log(group.Memberships);
         const authenticated = (
             isGroupOrganizer(user.id, group)
             && hasValidStatus(user.id, group.Memberships, validStatus)
@@ -154,7 +152,7 @@ router.put("/:eventId", requireAuth, validateEventBody, async (req, res, next) =
                 description, startDate, endDate });
 
             await event.save();
-            const updatedEvent = await Event.scope("eventDetail").findByPk(event.id);
+            const updatedEvent = await Event.scope("eventDetails").findByPk(event.id);
 
             return res.json(formatEvent(updatedEvent));
         } else {

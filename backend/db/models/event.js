@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     scopes: {
-      eventDetail: {
+      eventDetails: {
         attributes: {
           exclude: ["createdAt", "updatedAt"]
         }
