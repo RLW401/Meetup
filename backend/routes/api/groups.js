@@ -3,13 +3,13 @@ const express = require('express')
 const { requireAuth } = require('../../utils/auth');
 // const sequelize = require('sequelize');
 
-const { Event, Group, Venue, Image, User, Membership } = require('../../db/models');
+const { Event, Group, Venue, Image, User, Membership, Attendance } = require('../../db/models');
 const { extractPreviewImageURL, formatGroup, formatImage, formatEvent,
     isGroupOrganizer, hasValidStatus } = require('../../utils/misc');
 
 // for request body validations
 const {
-    validateGroupBody, validateVenueBody
+    validateGroupBody, validateVenueBody, validateEventBody
     } = require('../../utils/validation');
 
 const router = express.Router();
@@ -203,8 +203,9 @@ router.post("/:groupId/images", requireAuth, async (req, res, next) => {
             err.errors = {url: "This image has already been added to this group."};
             return next(err);
         } else {
-            await Image.create({groupId, url, groupPreview: preview});
-            const newImage = await Image.findOne({where: {groupId, url}});
+            const image = await Image.create({groupId, url, groupPreview: preview});
+            // const newImage = await Image.find({where: {groupId, url}});
+            const newImage = await Image.findByPk(image.id);
             return res.json(formatImage(newImage, "group"));
         }
     } else {
@@ -277,10 +278,20 @@ router.delete("/:groupId", requireAuth, async (req, res, next) => {
             return next(err);
         } else {
             await group.destroy();
-            return res.json({
-                "message": "Successfully deleted",
-                "statusCode": 200
-              });
+            const groupRemains = await Group.findByPk(groupId);
+            if (groupRemains) {
+                res.status(400);
+                return res.json({
+                    "message": "Group was not successfully deleted",
+                    "statusCode": 400,
+                    Group: groupRemains
+                  });
+            } else {
+                return res.json({
+                    "message": "Successfully deleted",
+                    "statusCode": 200
+                  });
+            }
         }
     } else {
         res.status(404);
@@ -390,6 +401,60 @@ router.post("/:groupId/venues",
 });
 
 // Create an Event for a Group specified by its id
-router.post("/:groupId/events", )
+router.post("/:groupId/events", requireAuth, validateEventBody, async (req, res, next) => {
+    const { user } = req;
+    const userId = user.id;
+    const { venueId, name, type, capacity, price,
+            description, startDate, endDate } = req.body;
+    const groupId = Number(req.params.groupId);
+    const validStatus = ["co-host"];
+    const attendanceStatus = "host";
+    const group = await Group.findByPk(groupId, {
+        include: ["Members", { model: Venue }]
+    });
+
+    if (group) {
+        const authenticated = (
+            isGroupOrganizer(userId, group)
+            || hasValidStatus(userId, group.Members, validStatus)
+            );
+        if (authenticated) {
+            if (venueId) {
+                const venue = await Venue.findByPk(venueId, { where: { groupId } });
+                if (!venue) {
+                    res.status(404);
+                    return res.json({
+                        "message": "Venue couldn't be found",
+                        "statusCode": 404
+                      });
+                }
+            }
+            const event = await Event.create({ groupId, venueId, name, type, capacity, price,
+                description, startDate, endDate });
+            const eventId = event.id;
+
+            await Attendance.create({ userId, eventId, status: attendanceStatus });
+
+            const eventAttendance = await Attendance.findOne({ where: { userId, eventId } });
+
+            const createdEvent = formatEvent(await Event.scope("eventDetail").findByPk(eventAttendance.eventId));
+
+
+            return res.json(createdEvent);
+        } else {
+            const err = new Error("Only a group's organizer or a member of the group with a status of 'co-host' can perform this action.");
+            err.status = 403;
+            err.title = 'User not authorized';
+            err.errors = {userId: "Only a group's organizer or a member of the group with a status of 'co-host' can create a new event for the group."};
+            return next(err);
+        }
+    } else {
+        res.status(400);
+        return res.json({
+            "message": "Group couldn't be found",
+            "statusCode": 404
+          });
+    }
+});
 
 module.exports = router;

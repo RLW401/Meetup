@@ -36,7 +36,7 @@ module.exports = {
       url: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        //unique: true
       },
       groupPreview: {
         type: Sequelize.BOOLEAN,
