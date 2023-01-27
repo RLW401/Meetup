@@ -4,7 +4,7 @@ const { requireAuth } = require('../../utils/auth');
 const sequelize = require('sequelize');
 const { Op } = sequelize;
 
-const { Event, Group, Venue, Image, User, Membership } = require('../../db/models');
+const { Event, Group, Venue, Image, User, Membership, Attendance } = require('../../db/models');
 const { extractPreviewImageURL, formatGroup, formatImage, formatEvent,
     isGroupOrganizer, hasValidStatus } = require('../../utils/misc');
 
@@ -20,6 +20,7 @@ router.get('/', async (_req, res) => {
     const Events = await Event.findAll({
         include: [
             "Attendees",
+           // { model: Attendance },
             "EventImages",
             { model: Group,
             attributes: ["id", "name", "city", "state"] },
@@ -32,7 +33,7 @@ router.get('/', async (_req, res) => {
 
     Events.forEach((event) => {
         eventList.push(formatEvent(event));
-        // eventList.push(event)
+        //eventList.push(event)
     });
 
     return res.json({Events: eventList});
@@ -77,22 +78,24 @@ router.get("/:eventId", async (req, res) => {
 });
 
 // Add an Image to an Event based on the Event's id
-router.post("/:eventId/images", requireAuth, async (req, res) => {
+router.post("/:eventId/images", requireAuth, async (req, res, next) => {
     const eventId = Number(req.params.eventId);
     const { user } = req;
     const { url, preview } = req.body;
     const validStatus = ["attendee", "host", "co-host"];
     const event = await Event.findByPk(eventId, {
-        include: ["Attendees"]
+        include: [{ model: Attendance }]
     });
 
+    console.log(event);
+
     if (event) {
-        const authenticated = hasValidStatus(user.id, event.Attendees, validStatus);
+        const authenticated = hasValidStatus(user.id, event.Attendances, validStatus);
 
         if (authenticated) {
-            const image = Image.create({ url, eventPreview: preview});
-            const resImage = formatImage(await Image.findByPk(image.id));
-            return res.json(resImage);
+            const image = await Image.create({eventId, url, eventPreview: preview});
+            const newImage = await Image.findByPk(image.id);
+            return res.json(formatImage(newImage, "event"));
         } else {
             const err = new Error("Current User must be an attendee, host, or co-host of the event to add an image.");
             err.status = 403;
@@ -115,18 +118,21 @@ router.put("/:eventId", requireAuth, validateEventBody, async (req, res, next) =
     const eventId = Number(req.params.eventId);
     const { venueId, name, type, capacity, price,
         description, startDate, endDate } = req.body;
-    const validStatus = ["co-host"];
+    const validStatus = ["co-host", "member"];
 
-    const event = Event.findByPk(eventId);
+    const event = await Event.findByPk(eventId);
 
     if (event) {
         const groupId = event.groupId;
-        const group = Group.findByPk(groupId, {
-            include: ["Members", { model: Venue }]
+        const group = await Group.findByPk(groupId, {
+            include: [{model: Membership}, { model: Venue }]
+            // include: ["Members", { model: Venue }]
+
         });
+        console.log(group.Memberships);
         const authenticated = (
             isGroupOrganizer(user.id, group)
-            || hasValidStatus(user.id, group.Members, validStatus)
+            && hasValidStatus(user.id, group.Memberships, validStatus)
             );
         if (authenticated) {
             // check to see if venueId was supplied in body
@@ -148,9 +154,9 @@ router.put("/:eventId", requireAuth, validateEventBody, async (req, res, next) =
                 description, startDate, endDate });
 
             await event.save();
-            const updatedEvent = formatEvent(await Event.findByPk(event.id));
+            const updatedEvent = await Event.scope("eventDetail").findByPk(event.id);
 
-            return res.json(updatedEvent);
+            return res.json(formatEvent(updatedEvent));
         } else {
             // not an authenticated user
             const err = new Error("Only a group's organizer or a member of the group with a status of 'co-host' can perform this action.");

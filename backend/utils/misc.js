@@ -123,8 +123,10 @@ const isGroupOrganizer = (userId, group) => {
 const hasValidStatus = (userId, objArr, validStatus) => {
     let vStatus = false;
     userId = Number(userId);
+    console.log(`objArr: ${objArr}`);
     objArr.forEach((obj) => {
         const currentStat = obj.status;
+        console.log(`objArr: ${obj}`);
         const currentUId = Number(obj.userId);
         validStatus.forEach((vStat) => {
             if ((userId === currentUId) && (currentStat === vStat)) {

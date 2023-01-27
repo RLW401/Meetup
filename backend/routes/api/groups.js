@@ -3,7 +3,7 @@ const express = require('express')
 const { requireAuth } = require('../../utils/auth');
 // const sequelize = require('sequelize');
 
-const { Event, Group, Venue, Image, User, Membership } = require('../../db/models');
+const { Event, Group, Venue, Image, User, Membership, Attendance } = require('../../db/models');
 const { extractPreviewImageURL, formatGroup, formatImage, formatEvent,
     isGroupOrganizer, hasValidStatus } = require('../../utils/misc');
 
@@ -403,18 +403,20 @@ router.post("/:groupId/venues",
 // Create an Event for a Group specified by its id
 router.post("/:groupId/events", requireAuth, validateEventBody, async (req, res, next) => {
     const { user } = req;
+    const userId = user.id;
     const { venueId, name, type, capacity, price,
             description, startDate, endDate } = req.body;
     const groupId = Number(req.params.groupId);
     const validStatus = ["co-host"];
+    const attendanceStatus = "host";
     const group = await Group.findByPk(groupId, {
         include: ["Members", { model: Venue }]
     });
 
     if (group) {
         const authenticated = (
-            isGroupOrganizer(user.id, group)
-            || hasValidStatus(user.id, group.Members, validStatus)
+            isGroupOrganizer(userId, group)
+            || hasValidStatus(userId, group.Members, validStatus)
             );
         if (authenticated) {
             if (venueId) {
@@ -429,7 +431,14 @@ router.post("/:groupId/events", requireAuth, validateEventBody, async (req, res,
             }
             const event = await Event.create({ groupId, venueId, name, type, capacity, price,
                 description, startDate, endDate });
-            const createdEvent = formatEvent(await Event.findByPk(event.id));
+            const eventId = event.id;
+
+            await Attendance.create({ userId, eventId, status: attendanceStatus });
+
+            const eventAttendance = await Attendance.findOne({ where: { userId, eventId } });
+
+            const createdEvent = formatEvent(await Event.scope("eventDetail").findByPk(eventAttendance.eventId));
+
 
             return res.json(createdEvent);
         } else {

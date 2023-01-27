@@ -82,23 +82,25 @@ const validateEventBody = [
     .exists({ checkFalsy: true })
     .isInt()
     .withMessage("Capacity must be an integer"),
-  check('price')
-    .exists({ checkFalsy: true })
-    .isCurrency()
-    .withMessage("Price is invalid"),
+  // check('price')
+  //   .exists({ checkFalsy: true })
+  //   // .isCurrency() !!!!!!!!!!!!!!!!
+  //   .isFloat()
+  //   .withMessage("Price is invalid"),
   check('description')
     .exists({ checkFalsy: true })
     .withMessage("Description is required"),
-  check('startDate')
-    .exists({ checkFalsy: true })
-    .isDate()
-    .isAfter()
-    .withMessage("Start date must be in the future"),
-  check('endDate')
-    .exists({ checkFalsy: true })
-    .isDate()
-    .isAfter('startDate')
-    .withMessage("End date is less than start date"),
+  // check('startDate')
+  //   .exists({ checkFalsy: true })
+  //   .isDate()
+  //   .isAfter()
+  //   .withMessage("Start date must be in the future"),
+  // check('endDate')
+  //   .exists({ checkFalsy: true })
+  //   .isDate()
+  //   // .isAfter('startDate') !!!!!!!!!!!
+  //   .isAfter()
+  //   .withMessage("End date is less than start date"),
 
     handleValidationErrors
 ];
