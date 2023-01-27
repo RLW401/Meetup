@@ -389,4 +389,7 @@ router.post("/:groupId/venues",
             }
 });
 
+// Create an Event for a Group specified by its id
+router.post("/:groupId/events", )
+
 module.exports = router;

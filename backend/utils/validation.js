@@ -69,6 +69,43 @@ const validateVenueBody = [
     handleValidationErrors
 ];
 
+const validateEventBody = [
+  check('venueId')
+    .exists({ checkFalsy: true })
+    // ?
+    .withMessage("Venue does not exist"),
+  check('name')
+    .exists({ checkFalsy: true })
+    .isLength({ min: 5 })
+    .withMessage("Name must be at least 5 characters"),
+  check('type')
+    .exists({ checkFalsy: true })
+    .matches(/^Online|In person?/) // ?
+    .withMessage("Type must be Online or In person"),
+  check('capacity')
+    .exists({ checkFalsy: true })
+    .isInt()
+    .withMessage("Capacity must be an integer"),
+  check('price')
+    .exists({ checkFalsy: true })
+    .isCurrency()
+    .withMessage("Price is invalid"),
+  check('description')
+    .exists({ checkFalsy: true })
+    .withMessage("Description is required"),
+  check('startDate')
+    .exists({ checkFalsy: true })
+    .isDate()
+    .isAfter()
+    .withMessage("Start date must be in the future"),
+  check('endDate')
+    .exists({ checkFalsy: true })
+    .isDate()
+    .isAfter('startDate')
+    .withMessage("End date is less than start date"),
+
+    handleValidationErrors
+];
 
 
 module.exports = { handleValidationErrors,
