@@ -70,10 +70,6 @@ const validateVenueBody = [
 ];
 
 const validateEventBody = [
-  check('venueId')
-    .exists({ checkFalsy: true })
-    // ?
-    .withMessage("Venue does not exist"),
   check('name')
     .exists({ checkFalsy: true })
     .isLength({ min: 5 })
@@ -109,5 +105,5 @@ const validateEventBody = [
 
 
 module.exports = { handleValidationErrors,
-  validateGroupBody,
-  validateVenueBody };
+  validateGroupBody, validateVenueBody,
+  validateEventBody };
