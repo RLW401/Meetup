@@ -128,11 +128,10 @@ const hasValidStatus = (userId, objArr, validStatus) => {
         const currentStat = obj.status;
         console.log(`objArr: ${obj}`);
         const currentUId = Number(obj.userId);
-        validStatus.forEach((vStat) => {
-            if ((userId === currentUId) && (currentStat === vStat)) {
-                vStatus = true;
-            }
-        });
+
+        if ((userId === currentUId) && validStatus.includes(currentStat)) {
+            vStatus = true;
+        }
     });
     return vStatus;
 };
