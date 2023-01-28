@@ -114,6 +114,20 @@ const formatEvent = (event) => {
     return fEvent;
 };
 
+const formatMember = (member) => {
+    const fMember = member.toJSON();
+    if ("Membership" in fMember) {
+        const Membership = fMember.Membership;
+
+        Object.keys(Membership).forEach((key) => {
+            if (key !== "status") {
+                delete Membership[key];
+            }
+        });
+    }
+    return fMember;
+};
+
 // takes in a userId and a group and returns a boolean indicating
 // whether or not the user is the organizer of the group.
 const isGroupOrganizer = (userId, group) => {
@@ -136,5 +150,5 @@ const hasValidStatus = (userId, objArr, validStatus) => {
 
 module.exports = { extractPreviewImageURL, formatDate,
     formatGroup, formatImage, formatEvent,
-    isGroupOrganizer, hasValidStatus
+    isGroupOrganizer, hasValidStatus, formatMember
  };

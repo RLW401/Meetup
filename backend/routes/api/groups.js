@@ -5,7 +5,7 @@ const { requireAuth } = require('../../utils/auth');
 
 const { Event, Group, Venue, Image, User, Membership, Attendance } = require('../../db/models');
 const { extractPreviewImageURL, formatGroup, formatImage, formatEvent,
-    isGroupOrganizer, hasValidStatus } = require('../../utils/misc');
+    isGroupOrganizer, hasValidStatus, formatMember } = require('../../utils/misc');
 
 // for request body validations
 const {
@@ -471,14 +471,14 @@ router.get("/:groupId/members", async (req, res) => {
             excludedStatus.push("pending");
         }
 
-        group.members.forEach((member) => {
+        group.Members.forEach((member) => {
             const memStat = member.Membership.status;
             if (!excludedStatus.includes(memStat)) {
-                Members.push(member);
+                Members.push(formatMember(member));
             }
         });
 
-        return res.json(Members);
+        return res.json({Members});
     } else {
         res.status(404);
         return res.json({
@@ -495,7 +495,7 @@ router.post("/:groupId/membership", requireAuth, async (req, res) => {
     const initStatus = "pending";
     const userId = user.id;
     const group = await Group.findByPk(groupId, {
-        include: [{model: Membership}]
+        include: [{model: Membership.scope("membershipDetails")}]
     });
     let membership = null;
     if (group) {
@@ -521,7 +521,7 @@ router.post("/:groupId/membership", requireAuth, async (req, res) => {
             }
         } else {
             await Membership.create({ userId, groupId, status: initStatus });
-            membership = await Membership.findOne({
+            membership = await Membership.scope("membershipDetails").findOne({
                 where: { userId, groupId }
             });
             return res.json({
@@ -540,7 +540,7 @@ router.post("/:groupId/membership", requireAuth, async (req, res) => {
 // Change the status of a membership for a group specified by id
 router.put("/:groupId/membership", requireAuth, async (req, res, next) => {
     const groupId = Number(req.params.groupId);
-    const user = { req }
+    const { user } = req;
     const userId = user.id;
     const { memberId, status } = req.body;
     // valid membership statuses for the request body
@@ -549,10 +549,10 @@ router.put("/:groupId/membership", requireAuth, async (req, res, next) => {
     const validUserStatus = ["co-host"];
 
     const group = await Group.findByPk(groupId, {
-        include: [{model: Membership}]
+        include: [{model: Membership.scope("membershipDetails")}]
     });
 
-    const membership = await Membership.findOne({
+    const membership = await Membership.scope("membershipDetails").findOne({
          where: { userId: memberId, groupId }
         });
 
@@ -561,13 +561,17 @@ router.put("/:groupId/membership", requireAuth, async (req, res, next) => {
             const oldStatus = membership.status;
             if (validReqStatus.includes(status)) {
                 let authorized = isGroupOrganizer(userId, group);
+
                 if ((oldStatus === "pending") && (status === "member")) {
                     authorized = (authorized || hasValidStatus(userId, group.Memberships, validUserStatus));
                 }
+
                 if (authorized) {
                     membership.set({status});
                     await membership.save();
-                    let updatedMembership = await Membership.scope("membershipDetails").findByPk(membership.id);
+                    let updatedMembership = await Membership.scope("membershipDetails").findOne({
+                        where: { userId: membership.userId, groupId: membership.groupId }
+                       });
                     updatedMembership = updatedMembership.toJSON();
                     if ("userId" in updatedMembership) {
                         updatedMembership.memberId = updatedMembership.userId;
