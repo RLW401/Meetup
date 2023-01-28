@@ -5,7 +5,7 @@ const { requireAuth } = require('../../utils/auth');
 
 const { Event, Group, Venue, Image, User, Membership, Attendance } = require('../../db/models');
 const { extractPreviewImageURL, formatGroup, formatImage, formatEvent,
-    isGroupOrganizer, hasValidStatus, removeKeysExcept /* formatMember */ } = require('../../utils/misc');
+    isGroupOrganizer, hasValidStatus, removeKeysExcept, deleteImage } = require('../../utils/misc');
 
 // for request body validations
 const {
@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get all Groups joined or organized by the Current User
-router.get("/current", requireAuth, async (req, res) => {
+router.get("/current", requireAuth, async (req, res, next) => {
     const { user } = req;
     const userId = user.id;
 
@@ -493,7 +493,7 @@ router.get("/:groupId/members", async (req, res) => {
 });
 
 // Request a new Membership for a Group based on the Group's id
-router.post("/:groupId/membership", requireAuth, async (req, res) => {
+router.post("/:groupId/membership", requireAuth, async (req, res, next) => {
     const groupId = Number(req.params.groupId);
     const { user } = req;
     const initStatus = "pending";
@@ -685,6 +685,5 @@ router.delete("/:groupId/membership", requireAuth, async (req, res, next) => {
           });
     }
 });
-
 
 module.exports = router;

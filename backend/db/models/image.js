@@ -45,6 +45,13 @@ module.exports = (sequelize, DataTypes) => {
       attributes: {
         exclude: ["createdAt", "updatedAt"]
       }
+    },
+    validate: {
+      mustHaveGroupOrEvent() {
+        if (!((this.groupId) || (this.eventId))) {
+          this.destroy();
+        }
+      }
     }
   });
   return Image;
