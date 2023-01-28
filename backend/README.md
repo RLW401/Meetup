@@ -1878,7 +1878,7 @@ Delete an attendance to an event specified by id.
     }
     ```
 
-* Error response: Attendance does not exist for this User
+* Error response: Attendance between the user and the event does not exist
   * Status Code: 404
   * Headers:
     * Content-Type: application/json
@@ -1886,7 +1886,7 @@ Delete an attendance to an event specified by id.
 
     ```json
     {
-      "message": "Attendance does not exist for this User",
+      "message": "Attendance between the user and the event does not exist",
       "statusCode": 404
     }
     ```

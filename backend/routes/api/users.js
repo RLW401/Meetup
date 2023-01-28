@@ -1,5 +1,6 @@
 // backend/routes/api/users.js
 const express = require('express')
+const { Op } = require('sequelize');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
 const { User } = require('../../db/models');
@@ -45,7 +46,10 @@ const router = express.Router();
 router.post('/', validateSignup, async (req, res, next) => {
       const { email, password, username, firstName, lastName } = req.body;
 
-      const userExists = await User.findOne({where: {email}});
+      const userExists = await User.findOne({
+        where: {[Op.or]: [{email}, {username}]},
+        attributes: ["email", "username"]
+      });
 
       if (!userExists) {
         const user = await User.signup({ email, username, password, firstName, lastName });
@@ -58,13 +62,28 @@ router.post('/', validateSignup, async (req, res, next) => {
 
         return res.json(user);
       } else {
-        const err = new Error("User already exists");
-        err.status = 403;
-        err.title = 'signup failed';
-        err.errors = {email: "User with that email already exists"};
-        return next(err);
+        // const err = new Error("User already exists");
+        // err.status = 403;
+        // err.title = 'signup failed';
+        // err.errors = {email: "User with that email already exists"};
+        // return next(err);
+
+      const errObj = {
+        "message": "User already exists",
+        "statusCode": 403,
+        "errors": {}
       }
+
+      if (userExists.email === email) {
+        errObj.errors["email"] = "User with that email already exists";
+      }
+      if (userExists.username === username) {
+        errObj.errors["username"] = "User with that username already exists";
+      }
+
+      res.status(403);
+      return res.json(errObj);
     }
-  );
+  });
 
 module.exports = router;

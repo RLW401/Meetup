@@ -272,11 +272,6 @@ router.post("/:eventId/attendance", requireAuth, async (req, res, next) => {
     });
 
     if (event) {
-        const { groupId } = event;
-        // const membership = await Membership.findOne({
-        //     where: { userId, groupId }
-        // });
-
         const membership = determineStatus(userId, event.Group.Members);
 
         if (membership && (membership !== initStatus)) {
@@ -286,7 +281,7 @@ router.post("/:eventId/attendance", requireAuth, async (req, res, next) => {
                 const newAttendance = await Attendance.findOne({
                     where: {userId, eventId}
                 });
-                const resAtt = removeKeysExcept(newAttendance.toJSON(), ["userId", "status"]);
+                const resAtt = removeKeysExcept(newAttendance.toJSON(), ["userId", "status", "id"]);
 
                 return res.json(resAtt);
 

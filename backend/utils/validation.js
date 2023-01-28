@@ -76,30 +76,29 @@ const validateEventBody = [
     .withMessage("Name must be at least 5 characters"),
   check('type')
     .exists({ checkFalsy: true })
-    .matches(/^Online|In person?/) // ?
+    .matches(/^Online|In person?/)
     .withMessage("Type must be Online or In person"),
   check('capacity')
     .exists({ checkFalsy: true })
     .isInt()
     .withMessage("Capacity must be an integer"),
-  // check('price')
+  // check('price')  // ????
   //   .exists({ checkFalsy: true })
-  //   // .isCurrency() !!!!!!!!!!!!!!!!
-  //   .isFloat()
+  //   .isCurrency() // ???????????????
+  //   // .isFloat()
   //   .withMessage("Price is invalid"),
   check('description')
     .exists({ checkFalsy: true })
     .withMessage("Description is required"),
-  // check('startDate')
+  // check('startDate') // ?????
   //   .exists({ checkFalsy: true })
   //   .isDate()
   //   .isAfter()
   //   .withMessage("Start date must be in the future"),
-  // check('endDate')
+  // check('endDate') // ?????
   //   .exists({ checkFalsy: true })
   //   .isDate()
-  //   // .isAfter('startDate') !!!!!!!!!!!
-  //   .isAfter()
+  //   .isAfter('startDate') // ??????????
   //   .withMessage("End date is less than start date"),
 
     handleValidationErrors
