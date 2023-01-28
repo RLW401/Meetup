@@ -1,6 +1,11 @@
 // backend/utils/misc.js
 
-const membership = require("../db/models/membership");
+const { Event, Group, Venue, Image, User, Membership, Attendance } = require('../../db/models');
+
+const defaultUnauthorized = {
+    "message": "Forbidden",
+    "statusCode": 403
+  };
 
 // takes in an array of image json objects and a
 // string indicating the image type (group or event)
@@ -114,31 +119,9 @@ const formatEvent = (event) => {
     return fEvent;
 };
 
-const formatMember = (member) => {
-    const fMember = member.toJSON();
-    if ("Membership" in fMember) {
-        const Membership = fMember.Membership;
-
-        Object.keys(Membership).forEach((key) => {
-            if (key !== "status") {
-                delete Membership[key];
-            }
-        });
-    }
-    return fMember;
-};
-
 // takes in an object and an array of strings and removes
 // all keys except for those specified by the array.
 const removeKeysExcept = (obj, keyArr) => {
-    // const newObj = obj.toJSON();
-
-    // Object.keys(newObj).forEach((key) => {
-    //     if (!keyArr.includes(key)) {
-    //         delete newObj[key];
-    //     }
-    // });
-    // return newObj;
     Object.keys(obj).forEach((key) => {
         if (!keyArr.includes(key)) {
             delete obj[key];
@@ -166,8 +149,88 @@ const hasValidStatus = (userId, objArr, validStatus) => {
     return vStatus;
 };
 
+const determineStatus = (userId, objArr) => {
+    let status = null;
+    objArr.forEach((obj) => {
+        let objStatus = null;
+        const currentUId = obj.userId;
+        if ("status" in obj) {
+            objStatus = obj.status;
+        } else if ("Membership" in obj) {
+            objStatus = obj.Membership.status;
+        } else if ("Attendance" in obj) {
+            objStatus = obj.Attendance.status;
+        }
+
+        if (objStatus && (Number(currentUId) === Number(userId))) {
+            status = objStatus;
+        }
+    });
+    return status;
+};
+
+const instanceNotFound = (modelName) => {
+    return {
+        "message": `${modelName} couldn't be found`,
+        "statusCode": 404
+      }
+};
+
+const deleteImage = async (imageId, userId, imageType) => {
+    const image = await Image.findByPk(imageId);
+    const validImageTypes = ["group", "event"];
+    const validMemStat = ["co-host"];
+    let group = null;
+    let event = null;
+
+    if (image) {
+        const { groupId, eventId, url } = image;
+        if (imageType === validImageTypes[0]) {
+            group = await Group.findByPk(groupId, {
+                include: ["Members"]
+            });
+        } else if (imageType === validImageTypes[1]) {
+            event = await Event.findByPk(eventId, {
+                include: ["Attendees", {
+                    model: Group, include: ["Members"]
+                }]
+            });
+            group = event.Group;
+        }
+        const members = group.members;
+        const organizer = isGroupOrganizer(userId, group);
+        const memStat = determineStatus(userId, members);
+
+        if (validMemStat.includes(memStat) || organizer) {
+            image[imageType + "Preview"] = false;
+            image[imageType + "Id"] = null;
+            await image.save();
+
+            const targetRemains = await Image.findByPk(imageId);
+
+            if (targetRemains) {
+                return { Image: targetRemains };
+            } else {
+                return {
+                    "message": "Successfully deleted",
+                    "statusCode": 200
+                  };
+            }
+
+        } else {
+            return defaultUnauthorized;
+        }
+    } else {
+        return {
+            "message": `${imageType.slice(0, 1).toUpperCase()
+                        + imageType.slice(1)} Image couldn't be found`,
+            "statusCode": 404
+          }
+    }
+};
+
 module.exports = { extractPreviewImageURL, formatDate,
     formatGroup, formatImage, formatEvent,
-    isGroupOrganizer, hasValidStatus, /* formatMember, */
-    removeKeysExcept
+    isGroupOrganizer, hasValidStatus, instanceNotFound,
+    removeKeysExcept, determineStatus, deleteImage
  };
