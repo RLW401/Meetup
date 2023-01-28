@@ -34,7 +34,8 @@ module.exports = (sequelize, DataTypes) => {
       attributes: {
         exclude: ["createdAt", "updatedAt"]
       }
-    }
+    },
+    indexes: [{unique: true, fields: ["userId", "eventId"]}]
   });
   return Attendance;
 };

@@ -87,8 +87,6 @@ router.post("/:eventId/images", requireAuth, async (req, res, next) => {
         include: [{ model: Attendance }]
     });
 
-    console.log(event);
-
     if (event) {
         const authenticated = hasValidStatus(user.id, event.Attendances, validStatus);
 
@@ -129,8 +127,8 @@ router.put("/:eventId", requireAuth, validateEventBody, async (req, res, next) =
 
         });
         const authenticated = (
-            isGroupOrganizer(user.id, group)
-            && hasValidStatus(user.id, group.Memberships, validStatus)
+            hasValidStatus(user.id, group.Memberships, validStatus)
+            || isGroupOrganizer(user.id, group)
             );
         if (authenticated) {
             // check to see if venueId was supplied in body
@@ -184,11 +182,11 @@ router.delete("/:eventId", requireAuth, async (req, res) => {
     if (event) {
         const groupId = event.groupId;
         const group = Group.findByPk(groupId, {
-            include: ["Members"]
+            include: [{model: Membership}]
         });
         const authenticated = (
             isGroupOrganizer(user.id, group)
-            || hasValidStatus(user.id, group.Members, validStatus)
+            || hasValidStatus(user.id, group.Memberships, validStatus)
             );
         if (authenticated) {
             await event.destroy();
