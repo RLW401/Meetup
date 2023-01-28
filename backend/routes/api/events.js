@@ -273,4 +273,9 @@ router.get("/:eventId/attendees", async (req, res) => {
     }
 });
 
+// Request to Attend an Event based on the Event's id
+router.post("/:eventId/attendance", requireAuth, async (req, res, next) => {
+
+});
+
 module.exports = router;
