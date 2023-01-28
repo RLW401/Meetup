@@ -623,7 +623,7 @@ Returns all venues for a group specified by its id
       }
     ]
   }
-  
+
   ```
 
 * Error response: Couldn't find a Group with the specified id
@@ -1849,7 +1849,7 @@ Delete an attendance to an event specified by id.
 
     ```json
     {
-      "userId": 1
+      "memberId": 1
     }
     ```
 

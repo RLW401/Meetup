@@ -169,22 +169,22 @@ router.put("/:eventId", requireAuth, validateEventBody, async (req, res, next) =
 router.delete("/:eventId", requireAuth, async (req, res) => {
     const eventId = Number(req.params.eventId);
     const { user } = req;
+    const userId = user.id;
     const validStatus = ["co-host"];
 
-    const event = Event.findByPk(eventId);
+    const event = await Event.findByPk(eventId, {
+        include: [{model: Group, include: [{model: Membership}]}]
+    });
 
     if (event) {
-        const groupId = event.groupId;
-        const group = Group.findByPk(groupId, {
-            include: [{model: Membership}]
-        });
-        const authenticated = (
-            isGroupOrganizer(user.id, group)
-            || hasValidStatus(user.id, group.Memberships, validStatus)
-            );
+        const group = event.Group;
+        const memberships = group.Memberships;
+        const organizer = isGroupOrganizer(userId, group);
+        const memStat = determineStatus(userId, memberships);
+        const authenticated = (validStatus.includes(memStat) || organizer);
         if (authenticated) {
             await event.destroy();
-            const eventRemains = Event.findByPk(eventId);
+            const eventRemains = await Event.findByPk(eventId);
             if (eventRemains) {
                 res.status(400);
                 return res.json({
@@ -262,7 +262,7 @@ router.get("/:eventId/attendees", async (req, res) => {
 });
 
 // Request to Attend an Event based on the Event's id
-router.post("/:eventId/attendance", requireAuth, async (req, res) => {
+router.post("/:eventId/attendance", requireAuth, async (req, res, next) => {
     const eventId = Number(req.params.eventId);
     const { user } = req;
     const userId = user.id;
@@ -286,8 +286,9 @@ router.post("/:eventId/attendance", requireAuth, async (req, res) => {
                 const newAttendance = await Attendance.findOne({
                     where: {userId, eventId}
                 });
+                const resAtt = removeKeysExcept(newAttendance.toJSON(), ["userId", "status"]);
 
-                return res.json(removeKeysExcept(newAttendance, ["userId", "status"]));
+                return res.json(resAtt);
 
             } else if (attendance === initStatus) {
                 res.status(400);
@@ -375,7 +376,7 @@ router.delete("/:eventId/attendance", requireAuth, async (req, res) => {
     const eventId = Number(req.params.eventId);
     const { user } = req;
     const userId = user.id;
-    const attendeeId = req.body.userId;
+    const { memberId } = req.body;
     const event = await Event.findByPk(eventId, {
         include: ["Attendees", { model: Group, include: ["Members"]}]
     });
@@ -384,16 +385,16 @@ router.delete("/:eventId/attendance", requireAuth, async (req, res) => {
         const group = event.Group;
         const organizer = isGroupOrganizer(userId, group);
 
-        if ((userId === attendeeId) || organizer) {
+        if ((userId === memberId) || organizer) {
             const attendance = await Attendance.findOne({
-                where: { userId: attendeeId, eventId }
+                where: { userId: memberId, eventId }
             });
 
             if (attendance) {
                 await attendance.destroy();
 
                 const targetRemains = await Attendance.findOne({
-                    where: { userId: attendeeId, eventId }
+                    where: { userId: memberId, eventId }
                 });
 
                 if (targetRemains) {

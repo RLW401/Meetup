@@ -1,6 +1,6 @@
 // backend/utils/misc.js
 
-const { Event, Group, Venue, Image, User, Membership, Attendance } = require('../../db/models');
+const { Event, Group, Venue, Image, User, Membership, Attendance } = require('../db/models');
 
 const defaultUnauthorized = {
     "message": "Forbidden",
@@ -122,7 +122,7 @@ const formatEvent = (event) => {
 // takes in an object and an array of strings and removes
 // all keys except for those specified by the array.
 const removeKeysExcept = (obj, keyArr) => {
-    Object.keys(obj).forEach((key) => {
+ Object.keys(obj).forEach((key) => {
         if (!keyArr.includes(key)) {
             delete obj[key];
         }
@@ -153,13 +153,15 @@ const determineStatus = (userId, objArr) => {
     let status = null;
     objArr.forEach((obj) => {
         let objStatus = null;
-        const currentUId = obj.userId;
+        let currentUId = obj.userId;
         if ("status" in obj) {
             objStatus = obj.status;
         } else if ("Membership" in obj) {
             objStatus = obj.Membership.status;
+            currentUId = obj.Membership.userId;
         } else if ("Attendance" in obj) {
             objStatus = obj.Attendance.status;
+            currentUId = obj.Attendance.userId;
         }
 
         if (objStatus && (Number(currentUId) === Number(userId))) {
@@ -197,7 +199,7 @@ const deleteImage = async (imageId, userId, imageType) => {
             });
             group = event.Group;
         }
-        const members = group.members;
+        const members = group.Members;
         const organizer = isGroupOrganizer(userId, group);
         const memStat = determineStatus(userId, members);
 
