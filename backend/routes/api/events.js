@@ -184,11 +184,11 @@ router.delete("/:eventId", requireAuth, async (req, res) => {
     if (event) {
         const groupId = event.groupId;
         const group = Group.findByPk(groupId, {
-            include: ["Members"]
+            include: [{model: Membership}]
         });
         const authenticated = (
             isGroupOrganizer(user.id, group)
-            || hasValidStatus(user.id, group.Members, validStatus)
+            || hasValidStatus(user.id, group.Memberships, validStatus)
             );
         if (authenticated) {
             await event.destroy();

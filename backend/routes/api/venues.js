@@ -25,13 +25,13 @@ router.put("/:venueId", requireAuth, validateVenueBody, async (req, res, next) =
     const venue = await Venue.findByPk(venueId);
     if (venue) {
         const { groupId } = venue;
-        const group = await Group.findByPk(groupId, {include: ["Members"]});
+        const group = await Group.findByPk(groupId, {include: [{ model: Membership }]});
         const venueExists = await Venue.findOne({
             where: { address, city, state, lat, lng, [Op.not]: [{groupId}] }
         });
         const authenticated = (
             isGroupOrganizer(user.id, group)
-            || hasValidStatus(user.id, group.Members, validStatus)
+            || hasValidStatus(user.id, group.Memberships, validStatus)
             );
 
             if (authenticated) {
