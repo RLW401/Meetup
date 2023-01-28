@@ -5,7 +5,7 @@ const { requireAuth } = require('../../utils/auth');
 
 const { Event, Group, Venue, Image, User, Membership, Attendance } = require('../../db/models');
 const { extractPreviewImageURL, formatGroup, formatImage, formatEvent,
-    isGroupOrganizer, hasValidStatus, formatMember } = require('../../utils/misc');
+    isGroupOrganizer, hasValidStatus, removeKeysExcept /* formatMember */ } = require('../../utils/misc');
 
 // for request body validations
 const {
@@ -474,7 +474,11 @@ router.get("/:groupId/members", async (req, res) => {
         group.Members.forEach((member) => {
             const memStat = member.Membership.status;
             if (!excludedStatus.includes(memStat)) {
-                Members.push(formatMember(member));
+                const formattedMember = member.toJSON();
+                const Membership = formattedMember.Membership;
+                removeKeysExcept(Membership, ["status"]);
+                Members.push(formattedMember)
+                // Members.push(formatMember(member));
             }
         });
 

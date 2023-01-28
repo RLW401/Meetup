@@ -5,7 +5,7 @@ const sequelize = require('sequelize');
 const { Op } = sequelize;
 
 const { Event, Group, Venue, Image, User, Membership, Attendance } = require('../../db/models');
-const { extractPreviewImageURL, formatGroup, formatImage, formatEvent,
+const { extractPreviewImageURL, formatGroup, formatImage, formatEvent, removeKeysExcept,
     isGroupOrganizer, hasValidStatus } = require('../../utils/misc');
 
 // for request body validations
@@ -218,5 +218,59 @@ router.delete("/:eventId", requireAuth, async (req, res) => {
     }
 });
 
+// Get all Attendees of an Event specified by its id
+router.get("/:eventId/attendees", async (req, res) => {
+    const eventId = Number(req.params.eventId);
+    const { user } = req;
+    const excludedStatus = [];
+    const Attendees = [];
+    const validMemStat = ["co-host"];
+
+    const event = await Event.findByPk(eventId, {
+        include: ["Attendees"]
+    });
+
+    if (event) {
+        const { groupId } = event;
+        const group = await Group.findByPk(groupId, {
+            include: { model: Membership }
+        });
+
+        // if there is no user logged in
+        if (!user) {
+            // do not show attendees with pending status
+            excludedStatus.push["pending"];
+        } else {
+            const userId = user.id;
+            const organizer = isGroupOrganizer(userId, group);
+            const authMemStat = hasValidStatus(userId, group.Memberships, validMemStat);
+
+            // if the current user is neither the group organizer,
+            // nor a member of the group with the appropriate status
+            if (!((organizer) || (authMemStat))) {
+                // do not show attendees with pending status
+                excludedStatus.push["pending"];
+            }
+        }
+
+        event.Attendees.forEach((attendee) => {
+            const formattedAttendee = attendee.toJSON()
+            const attStat = formattedAttendee.Attendance.status;
+            if (!excludedStatus.includes(attStat)) {
+                const Attendance = formattedAttendee.Attendance;
+                removeKeysExcept(Attendance, ["status"]);
+                Attendees.push(formattedAttendee);
+            }
+        });
+
+        return res.json({Attendees});
+    } else {
+        res.status(404);
+        return res.json({
+            "message": "Event couldn't be found",
+            "statusCode": 404
+          });
+    }
+});
 
 module.exports = router;
