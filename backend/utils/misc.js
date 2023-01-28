@@ -128,6 +128,24 @@ const formatMember = (member) => {
     return fMember;
 };
 
+// takes in an object and an array of strings and removes
+// all keys except for those specified by the array.
+const removeKeysExcept = (obj, keyArr) => {
+    // const newObj = obj.toJSON();
+
+    // Object.keys(newObj).forEach((key) => {
+    //     if (!keyArr.includes(key)) {
+    //         delete newObj[key];
+    //     }
+    // });
+    // return newObj;
+    Object.keys(obj).forEach((key) => {
+        if (!keyArr.includes(key)) {
+            delete obj[key];
+        }
+    });
+};
+
 // takes in a userId and a group and returns a boolean indicating
 // whether or not the user is the organizer of the group.
 const isGroupOrganizer = (userId, group) => {
@@ -150,5 +168,6 @@ const hasValidStatus = (userId, objArr, validStatus) => {
 
 module.exports = { extractPreviewImageURL, formatDate,
     formatGroup, formatImage, formatEvent,
-    isGroupOrganizer, hasValidStatus, formatMember
+    isGroupOrganizer, hasValidStatus, /* formatMember, */
+    removeKeysExcept
  };
