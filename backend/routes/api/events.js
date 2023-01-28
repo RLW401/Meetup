@@ -281,7 +281,9 @@ router.post("/:eventId/attendance", requireAuth, async (req, res, next) => {
                 const newAttendance = await Attendance.findOne({
                     where: {userId, eventId}
                 });
-                const resAtt = removeKeysExcept(newAttendance.toJSON(), ["userId", "status", "id"]);
+                const resAtt = newAttendance.toJSON()
+
+                removeKeysExcept(resAtt, ["userId", "status", "id"]);
 
                 return res.json(resAtt);
 
