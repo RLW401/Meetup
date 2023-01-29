@@ -6,7 +6,7 @@ const { Op } = sequelize;
 
 const { Event, Group, Venue, Image, User, Membership } = require('../../db/models');
 const { extractPreviewImageURL, formatGroup, formatImage,
-    isGroupOrganizer, hasValidStatus } = require('../../utils/misc');
+    isGroupOrganizer, determineStatus } = require('../../utils/misc');
 
 // for request body validations
 const {
@@ -19,6 +19,7 @@ const router = express.Router();
 router.put("/:venueId", requireAuth, validateVenueBody, async (req, res, next) => {
     const { venueId } = req.params
     const { user } = req;
+    const userId = user.id;
     const validStatus = ["co-host"];
     const { address, city, state, lat, lng } = req.body;
 
@@ -29,10 +30,10 @@ router.put("/:venueId", requireAuth, validateVenueBody, async (req, res, next) =
         const venueExists = await Venue.findOne({
             where: { address, city, state, lat, lng, [Op.not]: [{groupId}] }
         });
-        const authenticated = (
-            isGroupOrganizer(user.id, group)
-            || hasValidStatus(user.id, group.Memberships, validStatus)
-            );
+
+        const memStat = determineStatus(userId, group.Memberships);
+        const organizer = isGroupOrganizer(user.id, group);
+        const authenticated = (validStatus.includes(memStat) || organizer);
 
             if (authenticated) {
                 if (venueExists) {
