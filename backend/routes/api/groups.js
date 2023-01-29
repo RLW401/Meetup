@@ -5,7 +5,7 @@ const { requireAuth } = require('../../utils/auth');
 
 const { Event, Group, Venue, Image, User, Membership, Attendance } = require('../../db/models');
 const { extractPreviewImageURL, formatGroup, formatImage, formatEvent,
-    isGroupOrganizer, hasValidStatus, removeKeysExcept, deleteImage } = require('../../utils/misc');
+    isGroupOrganizer, removeKeysExcept, determineStatus } = require('../../utils/misc');
 
 // for request body validations
 const {
@@ -189,8 +189,7 @@ router.post("/:groupId/images", requireAuth, async (req, res, next) => {
     const group = await Group.findByPk(groupId);
 
     if (group) {
-        const organizerId = group.organizerId;
-        if (userId !== organizerId) {
+        if (!isGroupOrganizer(userId, group)) {
             const err = new Error("Only a group's organizer can add an image");
             err.status = 403;
             err.title = 'User not authorized';
@@ -308,6 +307,7 @@ router.get("/:groupId/venues", requireAuth,
     async (req, res, next) => {
         const { groupId } = req.params;
         const { user } = req;
+        const userId = user.id;
         const validStatus = ["co-host"];
 
         const group = await Group.findByPk(groupId, {
@@ -315,16 +315,9 @@ router.get("/:groupId/venues", requireAuth,
         });
 
         if (group) {
-            const authenticated = (
-                isGroupOrganizer(user.id, group)
-                || hasValidStatus(user.id, group.Memberships, validStatus)
-                );
-
-            // group.Members.forEach((member) => {
-            //     if ((member.id === userId) && (member.status === "co-host")) {
-            //         authenticated = true;
-            //     }
-            // });
+            const organizer = isGroupOrganizer(userId, group);
+            const memStat = determineStatus(userId, group.Memberships);
+            const authenticated = (validStatus.includes(memStat) || organizer);
 
             if (authenticated) {
                 const Venues = formatGroup(group).Venues;
@@ -351,6 +344,7 @@ router.post("/:groupId/venues",
     async (req, res, next) => {
         const { groupId } = req.params;
         const { user } = req;
+        const userId = user.id;
         const validStatus = ["co-host"];
         const { address, city, state, lat, lng } = req.body;
 
@@ -359,10 +353,9 @@ router.post("/:groupId/venues",
         });
 
         if (group) {
-            const authenticated = (
-                isGroupOrganizer(user.id, group)
-                || hasValidStatus(user.id, group.Memberships, validStatus)
-                );
+            const organizer = isGroupOrganizer(userId, group);
+            const memStat = determineStatus(userId, group.Memberships);
+            const authenticated = (validStatus.includes(memStat) || organizer);
                 if (authenticated) {
                     const venueExists = await Venue.findOne({where: {
                         groupId, address, city, state, lat, lng
@@ -413,10 +406,9 @@ router.post("/:groupId/events", requireAuth, validateEventBody, async (req, res,
     });
 
     if (group) {
-        const authenticated = (
-            isGroupOrganizer(userId, group)
-            || hasValidStatus(userId, group.Memberships, validStatus)
-            );
+        const organizer = isGroupOrganizer(userId, group);
+        const memStat = determineStatus(userId, group.Memberships);
+        const authenticated = (validStatus.includes(memStat) || organizer);
         if (authenticated) {
             if (venueId) {
                 const venue = await Venue.findByPk(venueId, { where: { groupId } });
@@ -499,7 +491,7 @@ router.post("/:groupId/membership", requireAuth, async (req, res, next) => {
     const initStatus = "pending";
     const userId = user.id;
     const group = await Group.findByPk(groupId, {
-        include: [{model: Membership.scope("membershipDetails")}]
+        include: [{model: Membership}]
     });
     let membership = null;
     if (group) {
@@ -525,11 +517,11 @@ router.post("/:groupId/membership", requireAuth, async (req, res, next) => {
             }
         } else {
             await Membership.create({ userId, groupId, status: initStatus });
-            membership = await Membership.scope("membershipDetails").findOne({
+            membership = await Membership.findOne({
                 where: { userId, groupId }
             });
             return res.json({
-                memberId: membership.userId, status: membership.status
+                id: membership.id, memberId: membership.userId, status: membership.status
             });
         }
     } else {
@@ -553,27 +545,28 @@ router.put("/:groupId/membership", requireAuth, async (req, res, next) => {
     const validUserStatus = ["co-host"];
 
     const group = await Group.findByPk(groupId, {
-        include: [{model: Membership.scope("membershipDetails")}]
+        include: [{model: Membership}]
     });
 
-    const membership = await Membership.scope("membershipDetails").findOne({
+    const membership = await Membership.findOne({
          where: { userId: memberId, groupId }
         });
 
     if (group) {
         if (membership) {
             const oldStatus = membership.status;
+            const memStat = determineStatus(userId, group.Memberships);
             if (validReqStatus.includes(status)) {
                 let authorized = isGroupOrganizer(userId, group);
 
                 if ((oldStatus === "pending") && (status === "member")) {
-                    authorized = (authorized || hasValidStatus(userId, group.Memberships, validUserStatus));
+                    authorized = (validUserStatus.includes(memStat) || authorized);
                 }
 
                 if (authorized) {
                     membership.set({status});
                     await membership.save();
-                    let updatedMembership = await Membership.scope("membershipDetails").findOne({
+                    let updatedMembership = await Membership.findOne({
                         where: { userId: membership.userId, groupId: membership.groupId }
                        });
                     updatedMembership = updatedMembership.toJSON();

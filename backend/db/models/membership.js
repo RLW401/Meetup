@@ -42,11 +42,6 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     scopes: {
-      membershipDetails: {
-        attributes: {
-          exclude: ["createdAt", "updatedAt"]
-        }
-      }
     },
     indexes: [{unique: true, fields: ["userId", "groupId"]}]
   });

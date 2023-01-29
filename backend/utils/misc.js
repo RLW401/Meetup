@@ -43,6 +43,28 @@ const formatDate = (date) => {
     return dateStr;
 };
 
+const formatPrice = (price) => {
+    const decimalPlaces = 2;
+    let fPrice = "";
+    fPrice += price;
+    if (fPrice.indexOf('.') === -1) fPrice = (fPrice + '.');
+
+    const decimalIndex = fPrice.indexOf('.');
+    const len = fPrice.length;
+
+    const offset = ((decimalPlaces + 1) - (len - decimalIndex));
+
+    if (offset < 0) {
+        fPrice = fPrice.slice(0, (len + offset));
+    } else {
+        for (let i = 0; i < offset; i++) {
+            fPrice += '0';
+        }
+    }
+    if (decimalIndex === 0) fPrice = ('0' + fPrice);
+    return fPrice;
+};
+
 // takes in a Group with Membership and Image
 // models included, and returns a formatted JSON
 // object with previewImage and numMembers keys
@@ -103,6 +125,10 @@ const formatEvent = (event) => {
         fEvent.numAttending = numAttending;
         delete fEvent.Attendees;
     }
+    if ("price" in fEvent) {
+        const fPrice = formatPrice(fEvent.price);
+        fEvent.price = fPrice;
+    }
     if ("startDate" in fEvent) {
         fEvent.startDate = formatDate(fEvent.startDate);
     }
@@ -133,20 +159,6 @@ const removeKeysExcept = (obj, keyArr) => {
 // whether or not the user is the organizer of the group.
 const isGroupOrganizer = (userId, group) => {
     return (Number(userId) === Number(group.organizerId));
-};
-
-const hasValidStatus = (userId, objArr, validStatus) => {
-    let vStatus = false;
-    userId = Number(userId);
-    objArr.forEach((obj) => {
-        const currentStat = obj.status;
-        const currentUId = Number(obj.userId);
-
-        if ((userId === currentUId) && validStatus.includes(currentStat)) {
-            vStatus = true;
-        }
-    });
-    return vStatus;
 };
 
 const determineStatus = (userId, objArr) => {
@@ -233,6 +245,6 @@ const deleteImage = async (imageId, userId, imageType) => {
 
 module.exports = { extractPreviewImageURL, formatDate,
     formatGroup, formatImage, formatEvent,
-    isGroupOrganizer, hasValidStatus, instanceNotFound,
+    isGroupOrganizer, instanceNotFound,
     removeKeysExcept, determineStatus, deleteImage
  };

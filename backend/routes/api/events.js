@@ -6,8 +6,7 @@ const { Op } = sequelize;
 
 const { Event, Group, Venue, Image, User, Membership, Attendance } = require('../../db/models');
 const { extractPreviewImageURL, formatGroup, formatImage, formatEvent, removeKeysExcept,
-    isGroupOrganizer, hasValidStatus, determineStatus, deleteImage,
-    instanceNotFound } = require('../../utils/misc');
+    isGroupOrganizer, determineStatus, instanceNotFound } = require('../../utils/misc');
 
 // for request body validations
 const {
@@ -84,6 +83,7 @@ router.get("/:eventId", async (req, res) => {
 router.post("/:eventId/images", requireAuth, async (req, res, next) => {
     const eventId = Number(req.params.eventId);
     const { user } = req;
+    const userId = user.id;
     const { url, preview } = req.body;
     const validStatus = ["attendee", "host", "co-host"];
     const event = await Event.findByPk(eventId, {
@@ -91,7 +91,8 @@ router.post("/:eventId/images", requireAuth, async (req, res, next) => {
     });
 
     if (event) {
-        const authenticated = hasValidStatus(user.id, event.Attendances, validStatus);
+        const attStat = determineStatus(userId, event.Attendances);
+        const authenticated = validStatus.includes(attStat);
 
         if (authenticated) {
             const image = await Image.create({eventId, url, eventPreview: preview});
@@ -113,6 +114,7 @@ router.post("/:eventId/images", requireAuth, async (req, res, next) => {
 // Edit an Event specified by its id
 router.put("/:eventId", requireAuth, validateEventBody, async (req, res, next) => {
     const { user } = req;
+    const userId = user.id;
     const eventId = Number(req.params.eventId);
     const { venueId, name, type, capacity, price,
         description, startDate, endDate } = req.body;
@@ -123,13 +125,12 @@ router.put("/:eventId", requireAuth, validateEventBody, async (req, res, next) =
     if (event) {
         const groupId = event.groupId;
         const group = await Group.findByPk(groupId, {
-            include: [{model: Membership.scope("membershipDetails")}, { model: Venue }]
+            include: [{model: Membership}, { model: Venue }]
 
         });
-        const authenticated = (
-            hasValidStatus(user.id, group.Memberships, validStatus)
-            || isGroupOrganizer(user.id, group)
-            );
+        const organizer = isGroupOrganizer(userId, group);
+        const memStat = determineStatus(userId, group.Memberships);
+        const authenticated = (validStatus.includes(memStat) || organizer);
         if (authenticated) {
             // check to see if venueId was supplied in body
             if (venueId) {
@@ -215,7 +216,7 @@ router.get("/:eventId/attendees", async (req, res) => {
     const { user } = req;
     const excludedStatus = [];
     const Attendees = [];
-    const validMemStat = ["co-host"];
+    const authMemStat = ["co-host"];
 
     const event = await Event.findByPk(eventId, {
         include: ["Attendees"]
@@ -234,11 +235,11 @@ router.get("/:eventId/attendees", async (req, res) => {
         } else {
             const userId = user.id;
             const organizer = isGroupOrganizer(userId, group);
-            const authMemStat = hasValidStatus(userId, group.Memberships, validMemStat);
+            const memStat = determineStatus(userId, group.Memberships);
 
             // if the current user is neither the group organizer,
             // nor a member of the group with the appropriate status
-            if (!((organizer) || (authMemStat))) {
+            if (!(authMemStat.includes(memStat) || (organizer))) {
                 // do not show attendees with pending status
                 excludedStatus.push["pending"];
             }
