@@ -21,6 +21,9 @@ const extractPreviewImageURL = (images, type) => {
     return previewImage;
 };
 
+// Date.toString() has output of form:
+// "Tue Aug 19 1975 23:15:30 GMT+0200 (CEST)"
+// Want output of form: "1975-08-19 23:15:30"
 const formatDate = (date) => {
     const months = [
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -28,11 +31,6 @@ const formatDate = (date) => {
     ];
     let dateStr = "";
     let month = ""
-
-    // Date.toString() has output of form:
-    // "Tue Aug 19 1975 23:15:30 GMT+0200 (CEST)"
-    // Want output of form: "1975-08-19 23:15:30"
-
     const dateArr = date.toString().split(' ');
 
     month += (months.indexOf(dateArr[1]) + 1);
@@ -43,16 +41,21 @@ const formatDate = (date) => {
     return dateStr;
 };
 
-const formatPrice = (price) => {
-    const decimalPlaces = 2;
-    let fPrice = "";
-    fPrice += price;
+// takes in a number and returns a string representation of the
+// number with the specified number of digits after the decimal point.
+// Extra decimal digits are truncated, not rounded, and
+// "decimalDigitsWanted" is assumed to be a positive integer.
+const formatPrice = (price, decimalDigitsWanted = 2) => {
+    let fPrice = "" + Number(price);
+
     if (fPrice.indexOf('.') === -1) fPrice = (fPrice + '.');
 
     const decimalIndex = fPrice.indexOf('.');
     const len = fPrice.length;
 
-    const offset = ((decimalPlaces + 1) - (len - decimalIndex));
+  	const decimalDigitsFound = ((len - 1) - decimalIndex);
+
+  	const offset = (decimalDigitsWanted - decimalDigitsFound);
 
     if (offset < 0) {
         fPrice = fPrice.slice(0, (len + offset));
