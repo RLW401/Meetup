@@ -11,7 +11,7 @@ import configureStore from './store'
 
 const store = configureStore();
 
-if (ProcessingInstruction.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
   window.store = store;
 }
 
