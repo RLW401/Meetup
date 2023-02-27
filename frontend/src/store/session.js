@@ -60,8 +60,7 @@ export const logout = () => async (dispatch) => {
     const response = await csrfFetch("/api/session", {
         method: "DELETE"
     });
-    // const data = await response.json();
-    // if (!("user" in data)) data.user = {...data};
+
     dispatch(removeUser());
 
     return response;
