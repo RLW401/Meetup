@@ -34,9 +34,10 @@ router.get("/csrf/restore", (req, res) => {
   });
 });
 
-router.post('/test', (req, res) => {
-  res.json({ requestBody: req.body });
-});
+// Used to test CSRF protection on the frontend
+// router.post('/test', (req, res) => {
+//   res.json({ requestBody: req.body });
+// });
 
 // Delete an Image for a Group
 router.delete("/group-images/:imageId", requireAuth, async (req, res, next) => {
