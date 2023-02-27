@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import './Navigation.css';
 
+const logo_url = "../../../../assets/Meetup_logo.png";
+
 const Navigation = ({ isLoaded }) => {
     const sessionUser = useSelector((state) => state.session.user);
 

@@ -35,7 +35,6 @@ const ProfileButton = ({ user }) => {
 
     return (
       <Fragment>
-        {/* <button style={{ color: "darkblue", fontSize: "100px" }}> */}
         <button onClick={openMenu}>
           <i className="fas fa-user-circle" />
         </button>

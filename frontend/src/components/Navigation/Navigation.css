@@ -1,8 +1,12 @@
 .fa-user-circle {
-    color: "darkblue";
-    font-size: "100px"
+    color: darkblue;
+    font-size: 100px;
 }
 
 .hidden {
-    display: none
+    display: none;
+}
+
+.logo {
+    font-size: 24px;
 }
