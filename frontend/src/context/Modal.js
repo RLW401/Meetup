@@ -12,7 +12,7 @@ export const ModalProvider = ({ children }) => {
         setValue(modalRef.current);
     }, []);
 
-    const modalProvider = (
+    const mProvider = (
         <Fragment>
             <ModalContext.Provider value={value}>
                 { children }
@@ -21,7 +21,7 @@ export const ModalProvider = ({ children }) => {
         </Fragment>
     );
 
-    return modalProvider;
+    return mProvider;
 };
 
 export const Modal = ({ onClose, children }) => {
