@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
+import LoginFormModal from '../LoginFormModal';
 import './Navigation.css';
-
-const logo_url = "../../../../assets/Meetup_logo.png";
 
 const Navigation = ({ isLoaded }) => {
     const sessionUser = useSelector((state) => state.session.user);
@@ -12,16 +11,14 @@ const Navigation = ({ isLoaded }) => {
     let sessionLinks;
     if (sessionUser) {
       sessionLinks = (
-        <li>
-          <ProfileButton user={sessionUser} />
-        </li>
+        <ProfileButton user={sessionUser} />
       );
     } else {
       sessionLinks = (
-        <li>
-          <NavLink to="/login">Log In</NavLink>
+        <Fragment>
+          <LoginFormModal />
           <NavLink to="/signup">Sign Up</NavLink>
-        </li>
+        </Fragment>
       );
     }
 
@@ -29,8 +26,8 @@ const Navigation = ({ isLoaded }) => {
       <ul>
         <li>
           <NavLink exact to="/">Home</NavLink>
+          {(isLoaded && sessionLinks)}
         </li>
-        {(isLoaded && sessionLinks)}
       </ul>
     );
 };
