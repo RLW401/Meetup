@@ -3,9 +3,11 @@ import { legacy_createStore as createStore, combineReducers, applyMiddleware, co
 import thunk from 'redux-thunk';
 
 import sessionReducer from './session';
+import groupReducer from './groups';
 
 const rootReducer = combineReducers({
-    session: sessionReducer
+    session: sessionReducer,
+    groups: groupReducer
 });
 
 let enhancer;
