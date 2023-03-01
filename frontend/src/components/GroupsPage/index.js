@@ -16,8 +16,6 @@ const GroupsPage = () => {
 
     if (!groups) return <h1>no groups</h1>
 
-    console.log("groups from GroupsPage", groups);
-
     let gPage;
 
     if (groups) {
