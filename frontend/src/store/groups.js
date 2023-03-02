@@ -18,19 +18,18 @@ export const getAllGroups = () => async (dispatch) => {
     }
 };
 
-const initialState = [];
+const initialState = {};
 
 const groupReducer = (state = initialState, action) => {
-    const newState = [ ...state ];
     switch (action.type) {
         case LOAD:
             // action.payload.forEach((group) => newState[group.id] = group);
             // newState.groups = action.payload;
             // console.log("action in group reducer: ", action);
             // console.log("newState in group reducer: ", newState);
-            return [...action.payload];
+            return {...state, ...action.payload};
         default:
-        return newState;
+        return {...state};
     }
 };
 

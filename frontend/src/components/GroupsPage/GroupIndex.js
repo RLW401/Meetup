@@ -20,7 +20,7 @@ const GroupsPage = () => {
     let gPage;
 
     if (groups) {
-        gPage = groups.map((group) => (
+        gPage = Object.values(groups).map((group) => (
             <GroupIndexItem group={group} key={group.id} />
 
         ));
