@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from 'react-router-dom';
 
 import { getAllGroups } from "../../store/groups";
+import GroupIndexItem from "./GroupIndexItem";
 
 const GroupsPage = () => {
     const dispatch = useDispatch();
@@ -20,19 +21,16 @@ const GroupsPage = () => {
 
     if (groups) {
         gPage = groups.map((group) => (
-            <NavLink key={group.id} to={`/groups/${group.id}`}>
-                <h2>{group.name}</h2>
-                <h3>{`Location: ${group.city}, ${group.state}`}</h3>
-                <p className="group-description">{group.about}</p>
-                <div className="group-events-public">
-                    <NavLink to={`/groups/${group.id}/events`}>## events</NavLink>
-                    <p>{group.private? "Private" : "Public"}</p>
-                </div>
-            </NavLink>)
-        )
+            <GroupIndexItem group={group} key={group.id} />
+
+        ));
     }
 
-    return gPage;
+    return (
+        <ul>
+            {gPage}
+        </ul>
+        );
 };
 
 export default GroupsPage;
