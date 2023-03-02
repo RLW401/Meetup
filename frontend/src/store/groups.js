@@ -1,8 +1,14 @@
 const LOAD = "groups/LOAD";
+const DETAIL = "groups/DETAIL";
 
 const load = (groups) => ({
     type: LOAD,
     payload: groups
+});
+
+const detail = (group) => ({
+    type: DETAIL,
+    payload: group
 });
 
 export const getAllGroups = () => async (dispatch) => {
@@ -18,7 +24,28 @@ export const getAllGroups = () => async (dispatch) => {
     }
 };
 
-const initialState = {};
+export const getGroupDetails = (groupId) => async (dispatch) => {
+    const response = await fetch(`/api/groups/${groupId}`);
+
+    if (response.ok) {
+        const detailedGroup = await response.json();
+        dispatch(detail(detailedGroup));
+        return detailedGroup;
+    }
+};
+
+const makeGroupIdList = (groups) => {
+    groups.sort((groupX, groupY) => {
+        return (groupX.id - groupY.id);
+    });
+    const groupIdList = groups.map((group) => group.id);
+    return groupIdList;
+};
+
+const initialState = {
+    allIds: [],
+    groupDetails: {}
+};
 
 const groupReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -27,7 +54,14 @@ const groupReducer = (state = initialState, action) => {
             // newState.groups = action.payload;
             // console.log("action in group reducer: ", action);
             // console.log("newState in group reducer: ", newState);
-            return {...state, ...action.payload};
+            const allIds = makeGroupIdList(action.payload);
+            const allGroups = {};
+            action.payload.forEach((group) => {
+                allGroups[group.id] = group;
+            });
+            return {...state, ...allGroups, allIds};
+        case DETAIL:
+            return {...state, groupDetails: {...action.payload}}
         default:
         return {...state};
     }

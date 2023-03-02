@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import SignupFormPage from "./components/SignupFormPage";
 import Navigation from "./components/Navigation";
 import GroupsPage from "./components/GroupsPage/GroupIndex";
+import GroupDetailPage from "./components/GroupDetailPage/GroupDetailIndex";
 import LandingPage from "./components/LandingPage";
 import * as sessionActions from "./store/session";
 
@@ -26,6 +27,9 @@ function App() {
             </Route>
             <Route exact path="/groups">
               <GroupsPage />
+            </Route>
+            <Route path="/groups/:groupId">
+              <GroupDetailPage />
             </Route>
           </Switch>
         ))}

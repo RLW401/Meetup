@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useEffect, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from 'react-router-dom';
 
@@ -7,7 +7,7 @@ import GroupIndexItem from "./GroupIndexItem";
 
 const GroupsPage = () => {
     const dispatch = useDispatch();
-    const groups = useSelector((state) => {
+    const groupState = useSelector((state) => {
         return state.groups;
     });
 
@@ -15,15 +15,14 @@ const GroupsPage = () => {
         dispatch(getAllGroups());
     }, [dispatch]);
 
-    if (!Object.keys(groups).length) return <h1>no groups</h1>
+    if (!groupState.allIds.length) return <h1>no groups</h1>
 
     let gPage;
 
-    if (groups) {
-        gPage = Object.values(groups).map((group) => (
-            <GroupIndexItem group={group} key={group.id} />
-
-        ));
+    if (groupState.allIds) {
+        gPage = groupState.allIds.map((groupId) => {
+            return <GroupIndexItem group={groupState[groupId]} key={groupId} />
+        });
     }
 
     return (
