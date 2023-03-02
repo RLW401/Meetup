@@ -15,7 +15,7 @@ const GroupsPage = () => {
         dispatch(getAllGroups());
     }, [dispatch]);
 
-    if (!groups) return <h1>no groups</h1>
+    if (!Object.keys(groups).length) return <h1>no groups</h1>
 
     let gPage;
 
@@ -27,9 +27,15 @@ const GroupsPage = () => {
     }
 
     return (
-        <ul>
-            {gPage}
-        </ul>
+        <Fragment>
+            <div className="event-group-links">
+                <NavLink to="/events">Events </NavLink>
+                <NavLink to="/groups"> Groups</NavLink>
+            </div>
+            <ul>
+                {gPage}
+            </ul>
+        </Fragment>
         );
 };
 
