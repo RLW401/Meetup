@@ -1,8 +1,12 @@
+import { Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
 
 const LandingPage = () => {
     return (
-        <NavLink to="/groups">See All Groups</NavLink>
+        <Fragment>
+            <NavLink to="/groups">See all groups</NavLink>
+            <NavLink to="/events">Find an event</NavLink>
+        </Fragment>
     );
 };
 
