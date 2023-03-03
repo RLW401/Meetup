@@ -3,9 +3,10 @@ import { useDispatch } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import SignupFormPage from "./components/SignupFormPage";
 import Navigation from "./components/Navigation";
+import LandingPage from "./components/LandingPage";
 import GroupsPage from "./components/GroupsPage/GroupIndex";
 import GroupDetailPage from "./components/GroupDetailPage/GroupDetailIndex";
-import LandingPage from "./components/LandingPage";
+import EventsPage from "./components/EventsPage/EventIndex";
 import * as sessionActions from "./store/session";
 
 function App() {
@@ -30,6 +31,9 @@ function App() {
             </Route>
             <Route path="/groups/:groupId">
               <GroupDetailPage />
+            </Route>
+            <Route exact path="/events">
+              <EventsPage />
             </Route>
           </Switch>
         ))}
