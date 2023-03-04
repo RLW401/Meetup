@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
+import { login } from "../../store/session";
 import * as sessionActions from "../../store/session";
 import "./LoginForm.css";
 
@@ -21,7 +22,12 @@ const LoginForm = () => {
         });
     };
 
-    const lForm = (
+    const logInDemo = () => {
+      return dispatch(sessionActions.login({credential: "Demo-lition", password: "password"}));
+    };
+
+    return (
+      <>
         <form className="login-form" onSubmit={handleSubmit}>
         <ul>
           {errors.map((error, idx) => <li key={idx}>{error}</li>)}
@@ -46,9 +52,9 @@ const LoginForm = () => {
         </label>
         <button type="submit">Log In</button>
       </form>
+      <button onClick={logInDemo}>Demo User</button>
+      </>
     );
-
-    return lForm;
 };
 
 export default LoginForm;

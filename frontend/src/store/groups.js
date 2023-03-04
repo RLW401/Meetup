@@ -2,6 +2,8 @@ import { normalizeAll } from "../utils/normalization";
 
 const LOAD = "groups/LOAD";
 const DETAIL = "groups/DETAIL";
+const ADD_GROUP = "groups/ADD_GROUP";
+const REMOVE_GROUP = "REMOVE_GROUP";
 
 const load = (groups) => ({
     type: LOAD,
@@ -13,24 +15,69 @@ const detail = (group) => ({
     payload: group
 });
 
+const addGroup = (group) => ({
+    type: ADD_GROUP,
+    payload: group
+});
+
 export const getAllGroups = () => async (dispatch) => {
-    const response = await fetch("/api/groups");
-    if (response.ok) {
-        // all groups returned in an object with a single
-        // key "Groups" whose value is an array
-        const groupsObj = await response.json();
-        dispatch(load(groupsObj));
-        return groupsObj;
+    try {
+        const response = await fetch("/api/groups");
+        if (response.ok) {
+            // all groups returned in an object with a single
+            // key "Groups" whose value is an array
+            const groupsObj = await response.json();
+            dispatch(load(groupsObj));
+            return groupsObj;
+        }
+    } catch (error) {
+        throw error;
     }
 };
 
 export const getGroupDetails = (groupId) => async (dispatch) => {
-    const response = await fetch(`/api/groups/${groupId}`);
+    try {
+        const response = await fetch(`/api/groups/${groupId}`);
 
-    if (response.ok) {
-        const detailedGroup = await response.json();
-        dispatch(detail(detailedGroup));
-        return detailedGroup;
+        if (response.ok) {
+            const detailedGroup = await response.json();
+            dispatch(detail(detailedGroup));
+            return detailedGroup;
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const createGroup = (groupData) => async (dispatch) => {
+    try {
+        const response = await fetch("/api/groups", {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(groupData)
+        });
+
+        if (!response.ok) {
+            const error = await response.text();
+            let errorJSON;
+            try {
+                // check to see if error is JSON
+                errorJSON = JSON.parse(error);
+            } catch {
+                // error was not from server
+                throw new Error(error);
+            }
+            throw new Error(`${errorJSON.title}: ${errorJSON.message}`);
+        }
+
+        const newGroup = await response.json();
+        dispatch(addGroup(newGroup));
+        return newGroup;
+
+    } catch (error) {
+        throw error;
     }
 };
 
@@ -50,6 +97,13 @@ const groupReducer = (state = initialState, action) => {
 
         case DETAIL:
             return {...state, groupDetails: {...action.payload}}
+        case ADD_GROUP:
+            const groupId = action.payload.id;
+            if (state.groups[groupId]) {
+                console.log("group already exists: ", state.groups[groupId]);
+            } else {
+                return {...state, ...action.payload}
+            }
         default:
             return state;
     }

@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import { useDispatch } from 'react-redux';
+import { login } from "../../store/session";
 import * as sessionActions from '../../store/session';
 
 const ProfileButton = ({ user }) => {
