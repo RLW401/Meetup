@@ -41,7 +41,7 @@ const GroupForm = ({ group, formType }) => {
     }
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const cityState = location.split(", ");
         const city = cityState[0];
@@ -51,8 +51,9 @@ const GroupForm = ({ group, formType }) => {
                 private: isPrivate, city, state};
 
         if (formType === "Create group") {
-            const createdGroup = dispatch(createGroup(group));
+            const createdGroup = await dispatch(createGroup(group));
             history.push(`/groups/${createdGroup.id}`);
+            // history.push(`/`);
         } else if (formType === "Update group") {
             console.log("Update group not yet implemented");
             return null;

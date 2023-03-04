@@ -1,3 +1,4 @@
+import { csrfFetch } from "./csrf";
 import { normalizeAll } from "../utils/normalization";
 
 const LOAD = "groups/LOAD";
@@ -51,7 +52,7 @@ export const getGroupDetails = (groupId) => async (dispatch) => {
 
 export const createGroup = (groupData) => async (dispatch) => {
     try {
-        const response = await fetch("/api/groups", {
+        const response = await csrfFetch("/api/groups", {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
@@ -73,6 +74,7 @@ export const createGroup = (groupData) => async (dispatch) => {
         }
 
         const newGroup = await response.json();
+
         dispatch(addGroup(newGroup));
         return newGroup;
 
@@ -99,11 +101,13 @@ const groupReducer = (state = initialState, action) => {
             return {...state, groupDetails: {...action.payload}}
         case ADD_GROUP:
             const groupId = action.payload.id;
-            if (state.groups[groupId]) {
-                console.log("group already exists: ", state.groups[groupId]);
-            } else {
-                return {...state, ...action.payload}
-            }
+            return {...state, [groupId]: {...action.payload}}
+            // const groupId = action.payload.id;
+            // if (state.groups[groupId]) {
+            //     console.log("group already exists: ", state.groups[groupId]);
+            // } else {
+            //     return {...state, ...action.payload}
+            // }
         default:
             return state;
     }
