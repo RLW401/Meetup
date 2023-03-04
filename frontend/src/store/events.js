@@ -14,13 +14,17 @@ const detail = (event) => ({
 });
 
 export const getAllEvents = () => async (dispatch) => {
-    const response = await fetch("/api/events");
-    if (response.ok) {
-        // all events returned in an object with a single
-        // key "Events" whose value is an array
-        const eventsObj = await response.json();
-        dispatch(load(eventsObj));
-        return eventsObj;
+    try {
+        const response = await fetch("/api/events");
+        if (response.ok) {
+            // all events returned in an object with a single
+            // key "Events" whose value is an array
+            const eventsObj = await response.json();
+            dispatch(load(eventsObj));
+            return eventsObj;
+        }
+    } catch (error) {
+        throw error;
     }
 };
 
