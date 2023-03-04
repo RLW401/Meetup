@@ -12,47 +12,70 @@ const GroupForm = ({ group, formType }) => {
     const [about, setAbout] = useState(group.about);
     const [type, setType] = useState(group.type);
     const [isPrivate, setIsPrivate] = useState(group.private);
-    const [city, setCity] = useState(group.city);
-    const [state, setState] = useState(group.state);
+    // const [city, setCity] = useState(group.city);
+    // const [state, setState] = useState(group.state);
+    const [location, setLocation] = useState('');
 
     const formIntroStart = "We'll walk you through a few steps to";
+
+    if (group.city && group.state) {
+        setLocation(`${group.city}, ${group.state}`);
+    }
 
     let groupFormHeader = null;
 
     if (formType === "Create group") {
         groupFormHeader = (
-            <div className='group-form header'>
+            <Fragment>
                 <h4>BECOME AN ORGANIZER</h4>
                 <h2>{`${formIntroStart} build your local community`}</h2>
-            </div>
+            </Fragment>
         );
     } else if (formType === "Update group") {
         groupFormHeader = (
-            <div className='group-form header'>
+            <Fragment>
                 <h4>UPDATE YOUR GROUP'S INFORMATION</h4>
                 <h2>{`${formIntroStart} update your group's information`}</h2>
-            </div>
+            </Fragment>
         );
     }
 
 
     const handleSubmit = (e) => {
-        console.log("You Clicked Submit!")
-    };
+        e.preventDefault();
+        const cityState = location.split(", ");
+        const city = cityState[0];
+        const state = cityState[1];
 
-    const changeType = (e) => setType(e.target.value);
-    const changePrivate = (e) => setIsPrivate(e.target.value);
+        group = {...group, name, about, type,
+                private: isPrivate, city, state};
+
+        if (formType === "Create group") {
+            const createdGroup = dispatch(createGroup(group));
+            history.push(`/groups/${createdGroup.id}`);
+        } else if (formType === "Update group") {
+            console.log("Update group not yet implemented");
+            return null;
+        }
+    };
 
     return (
         <form onSubmit={handleSubmit}>
-            {groupFormHeader}
+            <div className='group-form header'>
+                {groupFormHeader}
+            </div>
             <div className='group-form location'>
                 <h2>First, set your group's location.</h2>
                 <p>Meetup groups meet locally, in person and online.
                     We'll connect you with people in your area, and
                     more can join you online.</p>
                 <label>
-                    <input name='groupLocation' placeholder='City, STATE' />
+                    <input
+                    type='text'
+                    value={location}
+                    placeholder='City, STATE'
+                    onChange={(e) => setLocation(e.target.value)} />
+
                 </label>
             </div>
             <div className='group-form name'>
@@ -62,7 +85,11 @@ const GroupForm = ({ group, formType }) => {
                     creative! You can edit this later if you change
                     your mind.</p>
                 <label>
-                    <input name='groupName' placeholder='What is your group name?' />
+                    <input
+                        placeholder='What is your group name?'
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        />
                 </label>
             </div>
             <div className='group-form about'>
@@ -82,8 +109,9 @@ const GroupForm = ({ group, formType }) => {
                     </ol>
                     <label>
                         <textarea
-                            name='aboutGroup'
-                            defaultValue='Please write at least 30 characters'
+                            value={about}
+                            onChange={(e) => setAbout(e.target.value)}
+                            placeholder='Please write at least 30 characters'
                             rows={10}
                             cols={60}
                         />
@@ -93,7 +121,7 @@ const GroupForm = ({ group, formType }) => {
                 <h2>Final steps...</h2>
                 <p>Is this an in person or online group?</p>
                 <label>
-                    <select value={type} onChange={changeType}>
+                    <select value={type} onChange={(e) => setType(e.target.value)}>
                         <option disabled={true} value='' >(choose one)</option>
                         <option value="In person">In Person</option>
                         <option value="Online">Online</option>
@@ -101,7 +129,7 @@ const GroupForm = ({ group, formType }) => {
                 </label>
                 <p>Is this group private or public?</p>
                 <label>
-                    <select value={isPrivate} onChange={changePrivate}>
+                    <select value={isPrivate} onChange={(e) => setIsPrivate(e.target.value)}>
                         <option disabled={true} value='' >(choose one)</option>
                         <option value={true}>Private</option>
                         <option value={false}>Public</option>
