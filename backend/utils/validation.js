@@ -27,14 +27,14 @@ const validateGroupBody = [
     .withMessage("Name must be 60 characters or less"),
   check('about')
     .exists({ checkFalsy: true })
-    .isLength({ min: 50 })
+    .isLength({ min: 30 })
     .withMessage("About must be 50 characters or more"),
   check('type')
     .exists({ checkFalsy: true })
     .matches(/^Online|In person?/) // ?
     .withMessage("Type must be 'Online' or 'In person'"),
   check('private')
-    .exists({ checkFalsy: true })
+    .exists({ checkFalsy: false })
     .isBoolean()
     .withMessage("Private must be a boolean"),
   check('city')
