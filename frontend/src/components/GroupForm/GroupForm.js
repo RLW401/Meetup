@@ -12,15 +12,15 @@ const GroupForm = ({ group, formType }) => {
     const [about, setAbout] = useState(group.about);
     const [type, setType] = useState(group.type);
     const [isPrivate, setIsPrivate] = useState(group.private);
-    // const [city, setCity] = useState(group.city);
-    // const [state, setState] = useState(group.state);
     const [location, setLocation] = useState('');
 
     const formIntroStart = "We'll walk you through a few steps to";
 
-    if (group.city && group.state) {
-        setLocation(`${group.city}, ${group.state}`);
-    }
+    useEffect(() => {
+        if (group.city && group.state) {
+            setLocation(`${group.city}, ${group.state}`);
+        }
+    });
 
     let groupFormHeader = null;
 
