@@ -1,11 +1,11 @@
 import React, { useEffect, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink, useParams } from 'react-router-dom';
-
+import { NavLink, useParams, useHistory } from 'react-router-dom';
 import { getGroupDetails } from "../../store/groups";
 
 const GroupDetailPage = () => {
     const dispatch = useDispatch();
+    const history = useHistory();
     const { groupId } = useParams();
 
     const group = useSelector((state) => {
@@ -32,7 +32,7 @@ const GroupDetailPage = () => {
     const organizerButtons = (
         <div className="organizer-buttons">
             <button>Create event</button>
-            <button>Update</button>
+            <button onClick={() => history.push(`/groups/${groupId}/edit`)}>Update</button>
             <button>Delete</button>
         </div>
     );

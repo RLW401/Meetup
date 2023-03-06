@@ -2,7 +2,7 @@ import { useState, useEffect, Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { createGroup, getAllGroups } from '../../store/groups';
+import { createGroup, getAllGroups, editGroup } from '../../store/groups';
 
 const GroupForm = ({ group, formType }) => {
     const history = useHistory();
@@ -22,7 +22,7 @@ const GroupForm = ({ group, formType }) => {
         if (group.city && group.state) {
             setLocation(`${group.city}, ${group.state}`);
         }
-    });
+    }, [group.city, group.state]);
 
     let groupFormHeader = null;
 
@@ -53,7 +53,6 @@ const GroupForm = ({ group, formType }) => {
                 private: isPrivate, city, state};
 
         // if no groups have yet been loaded into state
-        console.log("allIds from GroupForm: ", allIds);
         if (!allIds.length) {
             await dispatch(getAllGroups());
         }
@@ -63,8 +62,8 @@ const GroupForm = ({ group, formType }) => {
             history.push(`/groups/${createdGroup.id}`);
             // history.push(`/`);
         } else if (formType === "Update group") {
-            console.log("Update group not yet implemented");
-            return null;
+            const changedGroup = await dispatch(editGroup(group));
+            history.push(`/groups/${changedGroup.id}`);
         }
     };
 
