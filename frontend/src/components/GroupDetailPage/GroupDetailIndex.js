@@ -12,6 +12,11 @@ const GroupDetailPage = () => {
         return state.groups.groupDetails;
     });
 
+    const currentUser = useSelector((state) =>{
+        return state.session.user;
+    });
+
+
     useEffect(() => {
         dispatch(getGroupDetails(groupId));
     }, [dispatch]);
@@ -21,6 +26,16 @@ const GroupDetailPage = () => {
     const organizer = group.Organizer;
     const images = group.Images;
     const venues = group.Venues;
+    const authorized = (currentUser && (currentUser.id === organizer.id));
+
+    const joinGroupButton = <button>Join this group</button>;
+    const organizerButtons = (
+        <div className="organizer-buttons">
+            <button>Create event</button>
+            <button>Update</button>
+            <button>Delete</button>
+        </div>
+    );
 
     return (
         <Fragment>
@@ -36,7 +51,7 @@ const GroupDetailPage = () => {
                         <p>{group.private? "Private" : "Public"}</p>
                 </div>
                 <p>{`Organized by ${organizer.firstName} ${organizer.lastName}`}</p>
-                <button>Join this group</button>
+                {authorized ? organizerButtons : joinGroupButton}
             </div>
             <div className="group-detail-middle">
                 <h2>Organizer</h2>

@@ -2,7 +2,7 @@ import { useState, useEffect, Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { createGroup } from '../../store/groups';
+import { createGroup, getAllGroups } from '../../store/groups';
 
 const GroupForm = ({ group, formType }) => {
     const history = useHistory();
@@ -15,6 +15,8 @@ const GroupForm = ({ group, formType }) => {
     const [location, setLocation] = useState('');
 
     const formIntroStart = "We'll walk you through a few steps to";
+
+    const allIds = useSelector((state) => state.groups.allIds);
 
     useEffect(() => {
         if (group.city && group.state) {
@@ -49,6 +51,12 @@ const GroupForm = ({ group, formType }) => {
 
         group = {...group, name, about, type,
                 private: isPrivate, city, state};
+
+        // if no groups have yet been loaded into state
+        console.log("allIds from GroupForm: ", allIds);
+        if (!allIds.length) {
+            await dispatch(getAllGroups());
+        }
 
         if (formType === "Create group") {
             const createdGroup = await dispatch(createGroup(group));

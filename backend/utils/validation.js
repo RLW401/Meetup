@@ -28,7 +28,7 @@ const validateGroupBody = [
   check('about')
     .exists({ checkFalsy: true })
     .isLength({ min: 30 })
-    .withMessage("About must be 50 characters or more"),
+    .withMessage("About must be 30 characters or more"),
   check('type')
     .exists({ checkFalsy: true })
     .matches(/^Online|In person?/) // ?
@@ -89,7 +89,8 @@ const validateEventBody = [
   //   .withMessage("Price is invalid"),
   check('description')
     .exists({ checkFalsy: true })
-    .withMessage("Description is required"),
+    .isLength({ min: 30 })
+    .withMessage("Description must be at least 30 characters long"),
   // check('startDate') // ?????
   //   .exists({ checkFalsy: true })
   //   .isDate()

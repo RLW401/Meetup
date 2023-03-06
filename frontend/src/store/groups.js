@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { csrfFetch } from "./csrf";
 import { normalizeAll } from "../utils/normalization";
 
@@ -39,7 +40,6 @@ export const getAllGroups = () => async (dispatch) => {
 export const getGroupDetails = (groupId) => async (dispatch) => {
     try {
         const response = await fetch(`/api/groups/${groupId}`);
-
         if (response.ok) {
             const detailedGroup = await response.json();
             dispatch(detail(detailedGroup));
@@ -101,7 +101,7 @@ const groupReducer = (state = initialState, action) => {
             return {...state, groupDetails: {...action.payload}}
         case ADD_GROUP:
             const groupId = action.payload.id;
-            return {...state, [groupId]: {...action.payload}}
+            return {...state, [groupId]: {...action.payload}, allIds: [...state.allIds, groupId]}
             // const groupId = action.payload.id;
             // if (state.groups[groupId]) {
             //     console.log("group already exists: ", state.groups[groupId]);
