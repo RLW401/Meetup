@@ -22,8 +22,9 @@ export const login = (user) => async (dispatch) => {
     const data = await response.json();
     if (!("user" in data)) data.user = {...data};
     dispatch(setUser(data.user));
+    console.log("data from session login: ", data);
 
-    return response;
+    return data;
 };
 
 export const restoreUser = () => async (dispatch) => {
