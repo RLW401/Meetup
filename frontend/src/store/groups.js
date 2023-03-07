@@ -28,6 +28,11 @@ const updateGroup = (group) => ({
     payload: group
 });
 
+const removeGroup = (groupId) => ({
+    type: REMOVE_GROUP,
+    groupId
+});
+
 export const getAllGroups = () => async (dispatch) => {
     try {
         const response = await fetch("/api/groups");
@@ -122,6 +127,34 @@ export const editGroup = (groupData) => async (dispatch) => {
     }
 };
 
+export const deleteGroup = (groupId) => async (dispatch) => {
+    try {
+        const response = await csrfFetch(`/api/groups/${groupId}`, {
+            method: 'delete',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            const error = await response.text();
+            let errorJSON;
+            try {
+                // check to see if error is JSON
+                errorJSON = JSON.parse(error);
+            } catch {
+                // error was not from server
+                throw new Error(error);
+            }
+            throw new Error(`${errorJSON.title}: ${errorJSON.message}`);
+        }
+        const deleteMessage = await response.json();
+        dispatch(removeGroup(groupId));
+        return deleteMessage;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const initialState = {
     allIds: [],
     groupDetails: {}
@@ -149,6 +182,16 @@ const groupReducer = (state = initialState, action) => {
             // }
         case UPDATE_GROUP:
             return {...state, [action.payload.id]: {...action.payload}};
+        case REMOVE_GROUP:
+            const newState = {...state};
+            const newIds = [];
+            state.allIds.forEach((id) => {
+                if (id !== action.groupId) newIds.push(id);
+            });
+
+            delete newState[action.groupId];
+
+            return {...newState, allIds: newIds};
         default:
             return state;
     }

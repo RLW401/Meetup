@@ -2,6 +2,7 @@ import React, { useEffect, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useParams, useHistory } from 'react-router-dom';
 import { getGroupDetails } from "../../store/groups";
+import GroupDeleteModal from "../GroupDelete";
 
 const GroupDetailPage = () => {
     const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const GroupDetailPage = () => {
         <div className="organizer-buttons">
             <button>Create event</button>
             <button onClick={() => history.push(`/groups/${groupId}/edit`)}>Update</button>
-            <button>Delete</button>
+            <GroupDeleteModal />
         </div>
     );
 
