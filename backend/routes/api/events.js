@@ -1,4 +1,3 @@
-// backend/routes/api/events.js
 const express = require('express')
 const { requireAuth } = require('../../utils/auth');
 const sequelize = require('sequelize');
