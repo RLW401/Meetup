@@ -20,7 +20,7 @@ const GroupDetailPage = () => {
 
     useEffect(() => {
         dispatch(getGroupDetails(groupId));
-    }, [dispatch]);
+    }, [dispatch, groupId]);
 
     if (!Object.keys(group).length) return null;
 
