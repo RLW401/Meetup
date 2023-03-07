@@ -1,12 +1,12 @@
+// type must be either "group" or "event" -- not case sensitive
 const getImages = async (type, id) => {
     const images = [];
     const url = (
-        "/api/" + type.slice(0,1).toLowerCase()
-        + type.slice(1) + "s/" + id
+        "/api/" + type.toLowerCase() + "s/" + id
     );
     const imageKey = (
         type.slice(0, 1).toUpperCase()
-        + type.slice(1) + "Images"
+        + type.slice(1).toLowerCase() + "Images"
     );
 
     try {

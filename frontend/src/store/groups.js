@@ -2,11 +2,14 @@ import { useSelector } from "react-redux";
 import { csrfFetch } from "./csrf";
 import { normalizeAll } from "../utils/normalization";
 
-const LOAD = "groups/LOAD";
-const DETAIL = "groups/DETAIL";
-const ADD_GROUP = "groups/ADD_GROUP";
-const UPDATE_GROUP = "groups/UPDATE_GROUP";
-const REMOVE_GROUP = "REMOVE_GROUP";
+const groupActionPrefix = "groups/";
+const LOAD = groupActionPrefix + "LOAD";
+const DETAIL = groupActionPrefix + "DETAIL";
+const ADD_GROUP = groupActionPrefix + "ADD_GROUP";
+const UPDATE_GROUP = groupActionPrefix + "UPDATE_GROUP";
+const REMOVE_GROUP = groupActionPrefix + "REMOVE_GROUP";
+const ADD_GROUP_IMAGE = groupActionPrefix + "ADD_GROUP_IMAGE";
+const REMOVE_GROUP_IMAGE = groupActionPrefix + "REMOVE_GROUP_IMAGE";
 
 const load = (groups) => ({
     type: LOAD,
@@ -31,6 +34,11 @@ const updateGroup = (group) => ({
 const removeGroup = (groupId) => ({
     type: REMOVE_GROUP,
     groupId
+});
+
+const addGroupImage = (group) => ({
+    type: ADD_GROUP_IMAGE,
+    payload: group
 });
 
 export const getAllGroups = () => async (dispatch) => {
@@ -150,6 +158,38 @@ export const deleteGroup = (groupId) => async (dispatch) => {
         const deleteMessage = await response.json();
         dispatch(removeGroup(groupId));
         return deleteMessage;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const groupImageAdd = (url, isPreview, groupId) => async (dispatch) => {
+    const imgData = { url, preview: isPreview };
+    try {
+        const response = await csrfFetch(`/api/groups/${groupId}/images`, {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: imgData
+        });
+
+        if (!response.ok) {
+            const error = await response.text();
+            let errorJSON;
+            try {
+                // check to see if error is JSON
+                errorJSON = JSON.parse(error);
+            } catch {
+                // error was not from server
+                throw new Error(error);
+            }
+            throw new Error(`${errorJSON.title}: ${errorJSON.message}`);
+        }
+
+        const newImg = await response.json();
+        dispatch();
+
     } catch (error) {
         throw error;
     }
