@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { createGroup, getAllGroups, editGroup } from '../../store/groups';
+import getImages from '../../utils/getImages';
 
 const GroupForm = ({ group, formType }) => {
     const history = useHistory();
@@ -13,6 +14,7 @@ const GroupForm = ({ group, formType }) => {
     const [type, setType] = useState(group.type);
     const [isPrivate, setIsPrivate] = useState(group.private);
     const [location, setLocation] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
 
     const formIntroStart = "We'll walk you through a few steps to";
 
@@ -23,6 +25,20 @@ const GroupForm = ({ group, formType }) => {
             setLocation(`${group.city}, ${group.state}`);
         }
     }, [group.city, group.state]);
+
+    useEffect(() => {
+        if (group.id) {
+            const getImg = async () => {
+                const images = await getImages("Group", group.id);
+                images.forEach((img) => {
+                    if (img.preview) {
+                        setImageUrl(img.url);
+                    }
+                });
+            };
+            getImg().catch(console.error);
+        }
+    }, []);
 
     let groupFormHeader = null;
 
@@ -142,6 +158,14 @@ const GroupForm = ({ group, formType }) => {
                         <option value={true}>Private</option>
                         <option value={false}>Public</option>
                     </select>
+                </label>
+                <label>
+                    <input
+                        type="text"
+                        value={imageUrl}
+                        placeholder="https://somewhere.com/image.gif"
+                        onChange={(e) => setImageUrl(e.target.value)}
+                    />
                 </label>
             </div>
             <input type="submit" value={formType} />
