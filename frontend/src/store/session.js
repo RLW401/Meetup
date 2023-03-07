@@ -23,7 +23,7 @@ export const login = (user) => async (dispatch) => {
     if (!("user" in data)) data.user = {...data};
     dispatch(setUser(data.user));
 
-    return response;
+    return data;
 };
 
 export const restoreUser = () => async (dispatch) => {

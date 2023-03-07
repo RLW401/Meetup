@@ -17,7 +17,7 @@ const GroupIndexItem = ({ group }) => {
                 <div className="group-events-public">
                         <NavLink to={`/groups/${groupId}/events`}>## events</NavLink>
                         {/* <p onClick={() => history.push(`/groups/${groupId}/events`)}>## events</p> */}
-                        <p>{group.private? "Private" : "Public"}</p>
+                        <p>{group.private? " · Private" : " · Public"}</p>
                 </div>
             </div>
         </li>

@@ -1,9 +1,11 @@
+import { useSelector } from "react-redux";
 import { csrfFetch } from "./csrf";
 import { normalizeAll } from "../utils/normalization";
 
 const LOAD = "groups/LOAD";
 const DETAIL = "groups/DETAIL";
 const ADD_GROUP = "groups/ADD_GROUP";
+const UPDATE_GROUP = "groups/UPDATE_GROUP";
 const REMOVE_GROUP = "REMOVE_GROUP";
 
 const load = (groups) => ({
@@ -19,6 +21,16 @@ const detail = (group) => ({
 const addGroup = (group) => ({
     type: ADD_GROUP,
     payload: group
+});
+
+const updateGroup = (group) => ({
+    type: UPDATE_GROUP,
+    payload: group
+});
+
+const removeGroup = (groupId) => ({
+    type: REMOVE_GROUP,
+    groupId
 });
 
 export const getAllGroups = () => async (dispatch) => {
@@ -39,7 +51,6 @@ export const getAllGroups = () => async (dispatch) => {
 export const getGroupDetails = (groupId) => async (dispatch) => {
     try {
         const response = await fetch(`/api/groups/${groupId}`);
-
         if (response.ok) {
             const detailedGroup = await response.json();
             dispatch(detail(detailedGroup));
@@ -83,6 +94,67 @@ export const createGroup = (groupData) => async (dispatch) => {
     }
 };
 
+export const editGroup = (groupData) => async (dispatch) => {
+    try {
+        const groupId = groupData.id;
+        const response = await csrfFetch(`/api/groups/${groupId}`, {
+            method: 'put',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(groupData)
+        });
+
+        if (!response.ok) {
+            const error = await response.text();
+            let errorJSON;
+            try {
+                // check to see if error is JSON
+                errorJSON = JSON.parse(error);
+            } catch {
+                // error was not from server
+                throw new Error(error);
+            }
+            throw new Error(`${errorJSON.title}: ${errorJSON.message}`);
+        }
+
+        const changedGroup = await response.json();
+        dispatch(updateGroup(changedGroup));
+        return changedGroup;
+
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteGroup = (groupId) => async (dispatch) => {
+    try {
+        const response = await csrfFetch(`/api/groups/${groupId}`, {
+            method: 'delete',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            const error = await response.text();
+            let errorJSON;
+            try {
+                // check to see if error is JSON
+                errorJSON = JSON.parse(error);
+            } catch {
+                // error was not from server
+                throw new Error(error);
+            }
+            throw new Error(`${errorJSON.title}: ${errorJSON.message}`);
+        }
+        const deleteMessage = await response.json();
+        dispatch(removeGroup(groupId));
+        return deleteMessage;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const initialState = {
     allIds: [],
     groupDetails: {}
@@ -98,16 +170,28 @@ const groupReducer = (state = initialState, action) => {
             return {...state, ...allGroups, allIds};
 
         case DETAIL:
-            return {...state, groupDetails: {...action.payload}}
+            return {...state, groupDetails: {...action.payload}};
         case ADD_GROUP:
             const groupId = action.payload.id;
-            return {...state, [groupId]: {...action.payload}}
+            return {...state, [groupId]: {...action.payload}, allIds: [...state.allIds, groupId]};
             // const groupId = action.payload.id;
             // if (state.groups[groupId]) {
             //     console.log("group already exists: ", state.groups[groupId]);
             // } else {
             //     return {...state, ...action.payload}
             // }
+        case UPDATE_GROUP:
+            return {...state, [action.payload.id]: {...action.payload}};
+        case REMOVE_GROUP:
+            const newState = {...state};
+            const newIds = [];
+            state.allIds.forEach((id) => {
+                if (id !== action.groupId) newIds.push(id);
+            });
+
+            delete newState[action.groupId];
+
+            return {...newState, allIds: newIds};
         default:
             return state;
     }

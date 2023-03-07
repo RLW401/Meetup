@@ -2,7 +2,8 @@ import { useState, useEffect, Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { createGroup } from '../../store/groups';
+import { createGroup, getAllGroups, editGroup } from '../../store/groups';
+import getImages from '../../utils/getImages';
 
 const GroupForm = ({ group, formType }) => {
     const history = useHistory();
@@ -13,14 +14,31 @@ const GroupForm = ({ group, formType }) => {
     const [type, setType] = useState(group.type);
     const [isPrivate, setIsPrivate] = useState(group.private);
     const [location, setLocation] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
 
     const formIntroStart = "We'll walk you through a few steps to";
+
+    const allIds = useSelector((state) => state.groups.allIds);
 
     useEffect(() => {
         if (group.city && group.state) {
             setLocation(`${group.city}, ${group.state}`);
         }
-    });
+    }, [group.city, group.state]);
+
+    useEffect(() => {
+        if (group.id) {
+            const getImg = async () => {
+                const images = await getImages("Group", group.id);
+                images.forEach((img) => {
+                    if (img.preview) {
+                        setImageUrl(img.url);
+                    }
+                });
+            };
+            getImg().catch(console.error);
+        }
+    }, []);
 
     let groupFormHeader = null;
 
@@ -50,13 +68,18 @@ const GroupForm = ({ group, formType }) => {
         group = {...group, name, about, type,
                 private: isPrivate, city, state};
 
+        // if no groups have yet been loaded into state
+        if (!allIds.length) {
+            await dispatch(getAllGroups());
+        }
+
         if (formType === "Create group") {
             const createdGroup = await dispatch(createGroup(group));
             history.push(`/groups/${createdGroup.id}`);
             // history.push(`/`);
         } else if (formType === "Update group") {
-            console.log("Update group not yet implemented");
-            return null;
+            const changedGroup = await dispatch(editGroup(group));
+            history.push(`/groups/${changedGroup.id}`);
         }
     };
 
@@ -135,6 +158,14 @@ const GroupForm = ({ group, formType }) => {
                         <option value={true}>Private</option>
                         <option value={false}>Public</option>
                     </select>
+                </label>
+                <label>
+                    <input
+                        type="text"
+                        value={imageUrl}
+                        placeholder="https://somewhere.com/image.gif"
+                        onChange={(e) => setImageUrl(e.target.value)}
+                    />
                 </label>
             </div>
             <input type="submit" value={formType} />

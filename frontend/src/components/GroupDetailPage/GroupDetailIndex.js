@@ -1,26 +1,42 @@
 import React, { useEffect, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink, useParams } from 'react-router-dom';
-
+import { NavLink, useParams, useHistory } from 'react-router-dom';
 import { getGroupDetails } from "../../store/groups";
+import GroupDeleteModal from "../GroupDelete";
 
 const GroupDetailPage = () => {
     const dispatch = useDispatch();
+    const history = useHistory();
     const { groupId } = useParams();
 
     const group = useSelector((state) => {
         return state.groups.groupDetails;
     });
 
+    const currentUser = useSelector((state) =>{
+        return state.session.user;
+    });
+
+
     useEffect(() => {
         dispatch(getGroupDetails(groupId));
-    }, [dispatch]);
+    }, [dispatch, groupId]);
 
     if (!Object.keys(group).length) return null;
 
     const organizer = group.Organizer;
     const images = group.Images;
     const venues = group.Venues;
+    const authorized = (currentUser && (currentUser.id === organizer.id));
+
+    const joinGroupButton = <button>Join this group</button>;
+    const organizerButtons = (
+        <div className="organizer-buttons">
+            <button>Create event</button>
+            <button onClick={() => history.push(`/groups/${groupId}/edit`)}>Update</button>
+            <GroupDeleteModal />
+        </div>
+    );
 
     return (
         <Fragment>
@@ -33,10 +49,10 @@ const GroupDetailPage = () => {
                 <div className="group-events-public">
                         <NavLink to={`/groups/${groupId}/events`}>## events</NavLink>
                         {/* <p onClick={() => history.push(`/groups/${groupId}/events`)}>## events</p> */}
-                        <p>{group.private? "Private" : "Public"}</p>
+                        <p>{group.private? " · Private" : " · Public"}</p>
                 </div>
                 <p>{`Organized by ${organizer.firstName} ${organizer.lastName}`}</p>
-                <button>Join this group</button>
+                {authorized ? organizerButtons : joinGroupButton}
             </div>
             <div className="group-detail-middle">
                 <h2>Organizer</h2>
