@@ -201,40 +201,44 @@ const initialState = {
 };
 
 const groupReducer = (state = initialState, action) => {
-    const groupId = action.payload.groupId;
     switch (action.type) {
         case LOAD:
             const normalizedGroups = normalizeAll(action.payload);
             const allGroups = normalizedGroups[0];
             const allIds = normalizedGroups[1];
-
             return {...state, ...allGroups, allIds};
 
         case DETAIL:
             return {...state, groupDetails: {...action.payload}};
+
         case ADD_GROUP:
-            return {...state, [groupId]: {...action.payload.group}, allIds: [...state.allIds, groupId]};
+            const groupId = action.payload.id;
+            return {...state, [groupId]: {...action.payload}, allIds: [...state.allIds, groupId]};
+
         case UPDATE_GROUP:
-            return {...state, [groupId]: {...action.payload.group}};
+            return {...state, [action.payload.id]: {...action.payload}};
+
         case REMOVE_GROUP:
             const stateMinusGroup = {...state};
             const newIds = [];
             state.allIds.forEach((id) => {
-                if (id !== groupId) newIds.push(id);
+                if (id !== action.groupId) newIds.push(id);
             });
 
-            delete stateMinusGroup[groupId];
+            delete stateMinusGroup[action.groupId];
 
             return {...stateMinusGroup, allIds: newIds};
+
         case ADD_GROUP_IMAGE:
             const newImageState = {
                 ...state,
-                [groupId]: {
-                    ...state[groupId],
+                [action.payload.groupId]: {
+                    ...state[action.payload.groupId],
                     previewImage: action.payload.img.url
                 }
             }
             return newImageState;
+
         default:
             return state;
     }
