@@ -23,22 +23,22 @@ const detail = (group) => ({
 
 const addGroup = (group) => ({
     type: ADD_GROUP,
-    payload: group
+    payload: { group, groupId: group.id }
 });
 
 const updateGroup = (group) => ({
     type: UPDATE_GROUP,
-    payload: group
+    payload: { group, groupId: group.id }
 });
 
 const removeGroup = (groupId) => ({
     type: REMOVE_GROUP,
-    groupId
+    payload: { groupId }
 });
 
-const addGroupImage = (group) => ({
+const addGroupImage = (groupId, img) => ({
     type: ADD_GROUP_IMAGE,
-    payload: group
+    payload: { groupId, img }
 });
 
 export const getAllGroups = () => async (dispatch) => {
@@ -188,7 +188,7 @@ export const groupImageAdd = (url, isPreview, groupId) => async (dispatch) => {
         }
 
         const newImg = await response.json();
-        dispatch();
+        dispatch(addGroupImage(groupId, newImg));
 
     } catch (error) {
         throw error;
@@ -201,6 +201,7 @@ const initialState = {
 };
 
 const groupReducer = (state = initialState, action) => {
+    const groupId = action.payload.groupId;
     switch (action.type) {
         case LOAD:
             const normalizedGroups = normalizeAll(action.payload);
@@ -212,26 +213,28 @@ const groupReducer = (state = initialState, action) => {
         case DETAIL:
             return {...state, groupDetails: {...action.payload}};
         case ADD_GROUP:
-            const groupId = action.payload.id;
-            return {...state, [groupId]: {...action.payload}, allIds: [...state.allIds, groupId]};
-            // const groupId = action.payload.id;
-            // if (state.groups[groupId]) {
-            //     console.log("group already exists: ", state.groups[groupId]);
-            // } else {
-            //     return {...state, ...action.payload}
-            // }
+            return {...state, [groupId]: {...action.payload.group}, allIds: [...state.allIds, groupId]};
         case UPDATE_GROUP:
-            return {...state, [action.payload.id]: {...action.payload}};
+            return {...state, [groupId]: {...action.payload.group}};
         case REMOVE_GROUP:
-            const newState = {...state};
+            const stateMinusGroup = {...state};
             const newIds = [];
             state.allIds.forEach((id) => {
-                if (id !== action.groupId) newIds.push(id);
+                if (id !== groupId) newIds.push(id);
             });
 
-            delete newState[action.groupId];
+            delete stateMinusGroup[groupId];
 
-            return {...newState, allIds: newIds};
+            return {...stateMinusGroup, allIds: newIds};
+        case ADD_GROUP_IMAGE:
+            const newImageState = {
+                ...state,
+                [groupId]: {
+                    ...state[groupId],
+                    previewImage: action.payload.img.url
+                }
+            }
+            return newImageState;
         default:
             return state;
     }
