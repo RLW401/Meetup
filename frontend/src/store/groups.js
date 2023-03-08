@@ -23,17 +23,17 @@ const detail = (group) => ({
 
 const addGroup = (group) => ({
     type: ADD_GROUP,
-    payload: { group, groupId: group.id }
+    payload: group
 });
 
 const updateGroup = (group) => ({
     type: UPDATE_GROUP,
-    payload: { group, groupId: group.id }
+    payload: group
 });
 
 const removeGroup = (groupId) => ({
     type: REMOVE_GROUP,
-    payload: { groupId }
+    groupId
 });
 
 const addGroupImage = (groupId, img) => ({
