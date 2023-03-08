@@ -6,7 +6,13 @@ if (process.env.NODE_ENV === "production") {
 }
 options.tableName = "Images";
 
-const imageURLs = ["./images/tennis", "./images/north-pole", "./images/south-pole.jpg", "./images/sanic-hedgehog.jpg"]
+const imageURLs = [
+  "https://res.cloudinary.com/dqswruico/image/upload/v1678298111/initial_meetup_seeder/Tennis_aqua_zone_elxpcl.jpg",
+  "./images/north-pole",
+  "./images/south-pole.jpg",
+  "https://res.cloudinary.com/dqswruico/image/upload/v1678298110/initial_meetup_seeder/Group_X_image_fp5src.jpg",
+  "https://res.cloudinary.com/dqswruico/image/upload/v1678298110/initial_meetup_seeder/Dog_Group_image_o4afwe.jpg"
+]
 
 const image1 = {
   groupId: 1,
@@ -33,6 +39,12 @@ const image4 = {
   groupPreview: true,
   eventPreview: true
 };
+const image5 = {
+  groupId: 2,
+  url: imageURLs[4],
+  groupPreview: true,
+  eventPreview: false
+};
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -47,7 +59,7 @@ module.exports = {
      * }], {});
     */
    await queryInterface.bulkInsert(options, [
-    image1, image2, image3, image4
+    image1, image2, image3, image4, image5
    ], {});
   },
 

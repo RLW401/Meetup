@@ -1,6 +1,6 @@
-import { useSelector } from "react-redux";
 import { csrfFetch } from "./csrf";
 import { normalizeAll } from "../utils/normalization";
+import { REMOVE_IMAGE } from "./images";
 
 const groupActionPrefix = "groups/";
 const LOAD = groupActionPrefix + "LOAD";
@@ -10,6 +10,7 @@ const UPDATE_GROUP = groupActionPrefix + "UPDATE_GROUP";
 const REMOVE_GROUP = groupActionPrefix + "REMOVE_GROUP";
 const ADD_GROUP_IMAGE = groupActionPrefix + "ADD_GROUP_IMAGE";
 const REMOVE_GROUP_IMAGE = groupActionPrefix + "REMOVE_GROUP_IMAGE";
+const groupImageType = "group";
 
 const load = (groups) => ({
     type: LOAD,
@@ -36,9 +37,9 @@ const removeGroup = (groupId) => ({
     groupId
 });
 
-const addGroupImage = (group) => ({
+const addGroupImage = (groupId, img) => ({
     type: ADD_GROUP_IMAGE,
-    payload: group
+    payload: { groupId, img }
 });
 
 export const getAllGroups = () => async (dispatch) => {
@@ -163,7 +164,7 @@ export const deleteGroup = (groupId) => async (dispatch) => {
     }
 };
 
-export const groupImageAdd = (url, isPreview, groupId) => async (dispatch) => {
+export const groupImageAdd = (url, groupId, isPreview = true) => async (dispatch) => {
     const imgData = { url, preview: isPreview };
     try {
         const response = await csrfFetch(`/api/groups/${groupId}/images`, {
@@ -171,7 +172,7 @@ export const groupImageAdd = (url, isPreview, groupId) => async (dispatch) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: imgData
+            body: JSON.stringify(imgData)
         });
 
         if (!response.ok) {
@@ -188,12 +189,14 @@ export const groupImageAdd = (url, isPreview, groupId) => async (dispatch) => {
         }
 
         const newImg = await response.json();
-        dispatch();
+        dispatch(addGroupImage(groupId, newImg));
 
     } catch (error) {
         throw error;
     }
 };
+
+// export const groupImageDelete
 
 const initialState = {
     allIds: [],
@@ -206,32 +209,65 @@ const groupReducer = (state = initialState, action) => {
             const normalizedGroups = normalizeAll(action.payload);
             const allGroups = normalizedGroups[0];
             const allIds = normalizedGroups[1];
-
             return {...state, ...allGroups, allIds};
 
         case DETAIL:
             return {...state, groupDetails: {...action.payload}};
+
         case ADD_GROUP:
             const groupId = action.payload.id;
             return {...state, [groupId]: {...action.payload}, allIds: [...state.allIds, groupId]};
-            // const groupId = action.payload.id;
-            // if (state.groups[groupId]) {
-            //     console.log("group already exists: ", state.groups[groupId]);
-            // } else {
-            //     return {...state, ...action.payload}
-            // }
+
         case UPDATE_GROUP:
             return {...state, [action.payload.id]: {...action.payload}};
+
         case REMOVE_GROUP:
-            const newState = {...state};
+            const stateMinusGroup = {...state};
             const newIds = [];
             state.allIds.forEach((id) => {
                 if (id !== action.groupId) newIds.push(id);
             });
 
-            delete newState[action.groupId];
+            delete stateMinusGroup[action.groupId];
 
-            return {...newState, allIds: newIds};
+            return {...stateMinusGroup, allIds: newIds};
+
+        case ADD_GROUP_IMAGE:
+            const newImageState = {
+                ...state,
+                [action.payload.groupId]: {
+                    ...state[action.payload.groupId],
+                    previewImage: action.payload.img.url
+                }
+            }
+            return newImageState;
+        case REMOVE_IMAGE:
+            if ((action.payload.imageType === groupImageType)
+                && (state.groupDetails.id === action.payload.objId)) {
+                const removeImgState = { ...state };
+                const removeImageArr = [];
+                let previewImage = "No preview image";
+                state.groupDetails.GroupImages.forEach((img) => {
+                    if (img.id !== action.payload.imageId) {
+                        removeImageArr.push(img);
+                        if (img.preview) previewImage = img.url;
+                    }
+                });
+                // if the group the image belonged to has already been
+                // loaded into state
+                if (state[action.payload.objId]) {
+                    // update its preview image value
+                    removeImgState[action.payload.objId] = {
+                        ...removeImgState[action.payload.objId],
+                        previewImage
+                    };
+                }
+                removeImgState.groupDetails = {
+                    ...removeImgState.groupDetails,
+                    GroupImages: removeImageArr
+                };
+                return removeImgState;
+            }
         default:
             return state;
     }

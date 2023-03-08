@@ -2,7 +2,8 @@ import { useState, useEffect, Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { createGroup, getAllGroups, editGroup } from '../../store/groups';
+import { createGroup, getAllGroups, editGroup, groupImageAdd } from '../../store/groups';
+import { deleteImage } from '../../store/images';
 import getImages from '../../utils/getImages';
 
 const GroupForm = ({ group, formType }) => {
@@ -14,6 +15,7 @@ const GroupForm = ({ group, formType }) => {
     const [type, setType] = useState(group.type);
     const [isPrivate, setIsPrivate] = useState(group.private);
     const [location, setLocation] = useState('');
+    const [prevImage, setPrevImage] = useState(null);
     const [imageUrl, setImageUrl] = useState('');
 
     const formIntroStart = "We'll walk you through a few steps to";
@@ -32,13 +34,14 @@ const GroupForm = ({ group, formType }) => {
                 const images = await getImages("Group", group.id);
                 images.forEach((img) => {
                     if (img.preview) {
+                        setPrevImage(img);
                         setImageUrl(img.url);
                     }
                 });
             };
             getImg().catch(console.error);
         }
-    }, []);
+    }, [group.id]);
 
     let groupFormHeader = null;
 
@@ -74,11 +77,23 @@ const GroupForm = ({ group, formType }) => {
         }
 
         if (formType === "Create group") {
-            const createdGroup = await dispatch(createGroup(group));
-            history.push(`/groups/${createdGroup.id}`);
-            // history.push(`/`);
+            const newGroup = await dispatch(createGroup(group));
+            await dispatch(groupImageAdd(imageUrl, newGroup.id));
+            history.push(`/groups/${newGroup.id}`);
         } else if (formType === "Update group") {
             const changedGroup = await dispatch(editGroup(group));
+            // if (imageUrl && (!prevImage || (imageUrl !== prevImage.url))) {
+            //     await dispatch(deleteImage(prevImage.id, "group", changedGroup.id));
+            //     await dispatch(groupImageAdd(imageUrl, changedGroup.id));
+            // }
+            if (imageUrl) {
+                if (prevImage && (imageUrl !== prevImage.url)) {
+                    await dispatch(deleteImage(prevImage.id, "group", changedGroup.id));
+                    await dispatch(groupImageAdd(imageUrl, changedGroup.id));
+                } else if (!prevImage) {
+                    await dispatch(groupImageAdd(imageUrl, changedGroup.id));
+                }
+            }
             history.push(`/groups/${changedGroup.id}`);
         }
     };
