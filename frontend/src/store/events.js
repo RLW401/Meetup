@@ -28,6 +28,29 @@ export const getAllEvents = () => async (dispatch) => {
     }
 };
 
+export const getEventDetails = (eventId) => async (dispatch) => {
+    try {
+        const response = await fetch(`/api/events/${eventId}`);
+        if (!response.ok) {
+            const error = await response.text();
+            let errorJSON;
+            try {
+                // check to see if error is JSON
+                errorJSON = JSON.parse(error);
+            } catch {
+                // error was not from server
+                throw new Error(error);
+            }
+            throw new Error(`${errorJSON.title}: ${errorJSON.message}`);
+        }
+        const detailedEvent = await response.json();
+        dispatch(detail(detailedEvent));
+        return detailedEvent;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const initialState = {
     allIds: [],
     eventDetails: {}

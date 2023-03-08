@@ -212,6 +212,9 @@ const groupReducer = (state = initialState, action) => {
             return {...state, ...allGroups, allIds};
 
         case DETAIL:
+            action.payload.GroupImages.forEach((img) => {
+                if (img.preview) action.payload.previewImage = img.url;
+            });
             return {...state, groupDetails: {...action.payload}};
 
         case ADD_GROUP:
