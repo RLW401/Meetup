@@ -1,4 +1,4 @@
-import { normalizeAll } from "../utils/normalization";
+import { normalizeAll, normalizeDetail } from "../utils/normalization";
 
 const LOAD = "events/LOAD";
 const DETAIL = "events/DETAIL";
@@ -64,6 +64,9 @@ const eventReducer = (state = initialState, action) => {
             const allIds = normalizedEvents[1];
 
             return {...state, ...allEvents, allIds};
+        case DETAIL:
+            const normalizedEventDetails = normalizeDetail(action.payload);
+            return { ...state, ...normalizedEventDetails};
         default:
             return state
     }

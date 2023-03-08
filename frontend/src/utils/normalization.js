@@ -4,7 +4,6 @@ export const normalizeAll = (obj) => {
 
     if (Object.keys(obj). length !== 1) {
         throw new Error("Cannot normalize object that doesn't have exactly one key");
-        return;
     }
     // all groups / events returned in an object with a single
     // key ("Groups" / "Events") whose value is an array
@@ -26,4 +25,49 @@ const makeIdList = (objArr) => {
     });
     const idList = objArr.map((obj) => obj.id);
     return idList;
+};
+
+export const normalizeDetail = (obj) => {
+    obj = { ...obj };
+    const allKeys = Object.keys(obj);
+    let type = null;
+    const normalized = {};
+
+    if (allKeys.includes("groupId")) {
+        type = "event"
+    } else if (allKeys.includes("organizerId")) {
+        type = "group";
+    }
+
+    if (type) {
+        const detailKey = (type + "Details");
+        const imageKey = (
+            type.slice(0, 1).toUpperCase()
+            + type.slice(1) + "Images"
+        );
+        // const images = obj[imageKey];
+        normalized[detailKey] = {};
+        console.log("allKeys from norm: ", allKeys);
+        console.log("imageKey from norm: ", imageKey)
+        allKeys.forEach((key) => {
+            if (obj[key] instanceof Array) {
+                normalized[key] = [...obj[key]];
+            } else if (obj[key] instanceof Object) {
+                normalized[key] = { ...obj[key] };
+            } else {
+                normalized[detailKey][key] = obj[key];
+            }
+        });
+
+
+
+        const images = normalized[imageKey];
+        normalized[detailKey]["previewImage"] = "";
+        images.forEach((img) => {
+            if (img.preview) {
+                normalized[detailKey]["previewImage"] = img.url;
+            }
+        });
+    }
+    return normalized;
 };

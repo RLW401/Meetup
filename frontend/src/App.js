@@ -9,6 +9,7 @@ import GroupDetailPage from "./components/GroupDetailPage/GroupDetailIndex";
 import CreateGroupForm from "./components/GroupForm/CreateGroupForm";
 import UpdateGroupForm from "./components/GroupForm/UpdateGroupForm";
 import EventsPage from "./components/EventsPage/EventIndex";
+import EventDetailPage from "./components/EventDetailPage/EventDetailIndex";
 import * as sessionActions from "./store/session";
 
 function App() {
@@ -42,6 +43,9 @@ function App() {
             </Route>
             <Route exact path="/events">
               <EventsPage />
+            </Route>
+            <Route exact path="/events/:eventId">
+              <EventDetailPage />
             </Route>
           </Switch>
         ))}

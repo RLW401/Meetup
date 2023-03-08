@@ -28,10 +28,7 @@ const GroupDetailPage = () => {
     const images = group.GroupImages;
     const venues = group.Venues;
     const authorized = (currentUser && (currentUser.id === organizer.id));
-    let previewImage = "No Preview image";
-    images.forEach((img) => {
-        if (img.preview) previewImage = img.url;
-    });
+    const previewImage = group.previewImage;
 
     const joinGroupButton = <button>Join this group</button>;
     const organizerButtons = (
