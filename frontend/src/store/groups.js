@@ -171,7 +171,7 @@ export const groupImageAdd = (url, isPreview, groupId) => async (dispatch) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: imgData
+            body: JSON.stringify(imgData)
         });
 
         if (!response.ok) {
@@ -194,6 +194,8 @@ export const groupImageAdd = (url, isPreview, groupId) => async (dispatch) => {
         throw error;
     }
 };
+
+// export const groupImageDelete
 
 const initialState = {
     allIds: [],
