@@ -25,9 +25,13 @@ const GroupDetailPage = () => {
     if (!Object.keys(group).length) return null;
 
     const organizer = group.Organizer;
-    const images = group.Images;
+    const images = group.GroupImages;
     const venues = group.Venues;
     const authorized = (currentUser && (currentUser.id === organizer.id));
+    let previewImage = "No Preview image";
+    images.forEach((img) => {
+        if (img.preview) previewImage = img.url;
+    });
 
     const joinGroupButton = <button>Join this group</button>;
     const organizerButtons = (
@@ -40,9 +44,12 @@ const GroupDetailPage = () => {
 
     return (
         <Fragment>
+            <div className="breadcrumb">
+                <NavLink to="/groups">{"< Groups"}</NavLink>
+            </div>
             <div className="group-detail-top">
-                <div className="breadcrumb">
-                    <NavLink to="/groups">{"< Groups"}</NavLink>
+                <div className="group-image">
+                    <img src={previewImage} alt="group-preview-image" />
                 </div>
                 <h2>{group.name}</h2>
                 <h3>{`Location: ${group.city}, ${group.state}`}</h3>

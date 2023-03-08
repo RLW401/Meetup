@@ -89,8 +89,10 @@ const GroupForm = ({ group, formType }) => {
             if (imageUrl) {
                 if (prevImage && (imageUrl !== prevImage.url)) {
                     await dispatch(deleteImage(prevImage.id, "group", changedGroup.id));
+                    await dispatch(groupImageAdd(imageUrl, changedGroup.id));
+                } else if (!prevImage) {
+                    await dispatch(groupImageAdd(imageUrl, changedGroup.id));
                 }
-                await dispatch(groupImageAdd(imageUrl, changedGroup.id));
             }
             history.push(`/groups/${changedGroup.id}`);
         }
