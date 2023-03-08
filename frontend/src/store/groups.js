@@ -1,6 +1,6 @@
-import { useSelector } from "react-redux";
 import { csrfFetch } from "./csrf";
 import { normalizeAll } from "../utils/normalization";
+import { REMOVE_IMAGE } from "./images";
 
 const groupActionPrefix = "groups/";
 const LOAD = groupActionPrefix + "LOAD";
@@ -10,6 +10,7 @@ const UPDATE_GROUP = groupActionPrefix + "UPDATE_GROUP";
 const REMOVE_GROUP = groupActionPrefix + "REMOVE_GROUP";
 const ADD_GROUP_IMAGE = groupActionPrefix + "ADD_GROUP_IMAGE";
 const REMOVE_GROUP_IMAGE = groupActionPrefix + "REMOVE_GROUP_IMAGE";
+const groupImageType = "group";
 
 const load = (groups) => ({
     type: LOAD,
@@ -163,7 +164,7 @@ export const deleteGroup = (groupId) => async (dispatch) => {
     }
 };
 
-export const groupImageAdd = (url, isPreview, groupId) => async (dispatch) => {
+export const groupImageAdd = (url, groupId, isPreview = true) => async (dispatch) => {
     const imgData = { url, preview: isPreview };
     try {
         const response = await csrfFetch(`/api/groups/${groupId}/images`, {
@@ -240,7 +241,33 @@ const groupReducer = (state = initialState, action) => {
                 }
             }
             return newImageState;
-
+        case REMOVE_IMAGE:
+            if ((action.payload.imageType === groupImageType)
+                && (state.groupDetails.id === action.payload.objId)) {
+                const removeImgState = { ...state };
+                const removeImageArr = [];
+                let previewImage = "No preview image";
+                state.groupDetails.GroupImages.forEach((img) => {
+                    if (img.id !== action.payload.imageId) {
+                        removeImageArr.push(img);
+                        if (img.preview) previewImage = img.url;
+                    }
+                });
+                // if the group the image belonged to has already been
+                // loaded into state
+                if (state[action.payload.objId]) {
+                    // update its preview image value
+                    removeImgState[action.payload.objId] = {
+                        ...removeImgState[action.payload.objId],
+                        previewImage
+                    };
+                }
+                removeImgState.groupDetails = {
+                    ...removeImgState.groupDetails,
+                    GroupImages: removeImageArr
+                };
+                return removeImgState;
+            }
         default:
             return state;
     }

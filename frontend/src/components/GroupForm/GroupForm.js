@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { createGroup, getAllGroups, editGroup, groupImageAdd } from '../../store/groups';
+import { deleteImage } from '../../store/images';
 import getImages from '../../utils/getImages';
 
 const GroupForm = ({ group, formType }) => {
@@ -77,12 +78,19 @@ const GroupForm = ({ group, formType }) => {
 
         if (formType === "Create group") {
             const newGroup = await dispatch(createGroup(group));
-            await dispatch(groupImageAdd(imageUrl, true, newGroup.id));
+            await dispatch(groupImageAdd(imageUrl, newGroup.id));
             history.push(`/groups/${newGroup.id}`);
         } else if (formType === "Update group") {
             const changedGroup = await dispatch(editGroup(group));
-            if (imageUrl && (imageUrl !== prevImage.url)) {
-                console.log("");
+            // if (imageUrl && (!prevImage || (imageUrl !== prevImage.url))) {
+            //     await dispatch(deleteImage(prevImage.id, "group", changedGroup.id));
+            //     await dispatch(groupImageAdd(imageUrl, changedGroup.id));
+            // }
+            if (imageUrl) {
+                if (prevImage && (imageUrl !== prevImage.url)) {
+                    await dispatch(deleteImage(prevImage.id, "group", changedGroup.id));
+                }
+                await dispatch(groupImageAdd(imageUrl, changedGroup.id));
             }
             history.push(`/groups/${changedGroup.id}`);
         }
