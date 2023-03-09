@@ -25,8 +25,9 @@ export const getGroupDetails = (groupId) => async (dispatch) => {
             throw new Error(`${errorJSON.title}: ${errorJSON.message}`);
         }
         const detailedGroup = await response.json();
-        dispatch(detail(detailedGroup));
-        return detailedGroup;
+        const normalizedGroupDetails = normalizeDetail(detailedGroup);
+        dispatch(detail(normalizedGroupDetails));
+        return normalizedGroupDetails;
     } catch (error) {
         throw error;
     }
@@ -37,8 +38,7 @@ const initialState = {};
 const groupDetailReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_DETAILS:
-            const normalizedGroupDetails = normalizeDetail(action.payload);
-            return { ...normalizedGroupDetails };
+            return { ...action.payload };
         case REMOVE_IMAGE:
             if ((action.payload.imageType === "group")
                 && (state.id === action.payload.objId)) {

@@ -1,7 +1,9 @@
 import { normalizeDetail } from "../utils/normalization";
+import { getGroupDetails } from "./groupDetails";
 
 const prefix = "eventDetails/";
 const GET_DETAILS = (prefix + "GET_DETAILS");
+
 
 const detail = (event) => ({
     type: GET_DETAILS,
@@ -24,8 +26,11 @@ export const getEventDetails = (eventId) => async (dispatch) => {
             throw new Error(`${errorJSON.title}: ${errorJSON.message}`);
         }
         const detailedEvent = await response.json();
-        dispatch(detail(detailedEvent));
-        return detailedEvent;
+        const normalizedEventDetails = normalizeDetail(detailedEvent);
+        const groupId = normalizedEventDetails.id;
+        await dispatch(getGroupDetails(groupId));
+        dispatch(detail(normalizedEventDetails));
+        return normalizedEventDetails;
     } catch (error) {
         throw error;
     }
@@ -36,8 +41,7 @@ const initialState = {};
 const eventDetailReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_DETAILS:
-            const normalizedEventDetails = normalizeDetail(action.payload);
-            return { ...normalizedEventDetails };
+            return { ...action.payload };
         default:
             return state;
     }
