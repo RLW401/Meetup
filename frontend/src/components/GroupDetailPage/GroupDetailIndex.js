@@ -1,7 +1,7 @@
 import React, { useEffect, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useParams, useHistory } from 'react-router-dom';
-import { getGroupDetails } from "../../store/groups";
+import { getGroupDetails } from "../../store/groupDetails";
 import GroupDeleteModal from "../GroupDelete";
 
 const GroupDetailPage = () => {
@@ -10,7 +10,7 @@ const GroupDetailPage = () => {
     const { groupId } = useParams();
 
     const group = useSelector((state) => {
-        return state.groups.groupDetails;
+        return state.groupDetails;
     });
 
     const currentUser = useSelector((state) =>{

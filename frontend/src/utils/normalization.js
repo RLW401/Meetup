@@ -40,32 +40,31 @@ export const normalizeDetail = (obj) => {
     }
 
     if (type) {
-        const detailKey = (type + "Details");
+        // const detailKey = (type + "Details");
         const imageKey = (
             type.slice(0, 1).toUpperCase()
             + type.slice(1) + "Images"
         );
         // const images = obj[imageKey];
-        normalized[detailKey] = {};
-        console.log("allKeys from norm: ", allKeys);
-        console.log("imageKey from norm: ", imageKey)
+        // normalized[detailKey] = {};
+
         allKeys.forEach((key) => {
             if (obj[key] instanceof Array) {
                 normalized[key] = [...obj[key]];
             } else if (obj[key] instanceof Object) {
                 normalized[key] = { ...obj[key] };
             } else {
-                normalized[detailKey][key] = obj[key];
+                normalized[key] = obj[key];
             }
         });
 
 
 
         const images = normalized[imageKey];
-        normalized[detailKey]["previewImage"] = "";
+        normalized["previewImage"] = "";
         images.forEach((img) => {
             if (img.preview) {
-                normalized[detailKey]["previewImage"] = img.url;
+                normalized["previewImage"] = img.url;
             }
         });
     }
