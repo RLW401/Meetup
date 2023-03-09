@@ -39,6 +39,7 @@ const EventDetailPage = () => {
     const venue = event.Venue;
     console.log("event from eventDetails: ", event);
     console.log("group from eventDetails: ", group);
+    console.log("groupId from eventDetails: ", groupId);
     const authorized = (currentUser && (currentUser.id === organizer.id));
     const previewImage = event.previewImage;
 
