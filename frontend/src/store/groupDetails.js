@@ -51,6 +51,8 @@ const groupDetailReducer = (state = initialState, action) => {
                     }
                 });
                 return {...state, previewImage, GroupImages: removeImageArr};
+            } else {
+                return state;
             }
         default:
             return state;

@@ -258,6 +258,8 @@ const groupReducer = (state = initialState, action) => {
                     previewImage: "No preview image"
                 };
                 return removeImgState;
+            } else {
+                return state;
             }
         default:
             return state;

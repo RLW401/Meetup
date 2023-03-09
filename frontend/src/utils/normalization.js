@@ -2,7 +2,7 @@ export const normalizeAll = (obj) => {
     obj = { ...obj };
     const normalized = {};
 
-    if (Object.keys(obj). length !== 1) {
+    if (Object.keys(obj).length !== 1) {
         throw new Error("Cannot normalize object that doesn't have exactly one key");
     }
     // all groups / events returned in an object with a single
