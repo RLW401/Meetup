@@ -10,6 +10,7 @@ import CreateGroupForm from "./components/GroupForm/CreateGroupForm";
 import UpdateGroupForm from "./components/GroupForm/UpdateGroupForm";
 import EventsPage from "./components/EventsPage/EventIndex";
 import EventDetailPage from "./components/EventDetailPage/EventDetailIndex";
+import CreateEventForm from "./components/EventForm/CreateEventForm";
 import * as sessionActions from "./store/session";
 
 function App() {
@@ -46,6 +47,9 @@ function App() {
             </Route>
             <Route exact path="/events/:eventId">
               <EventDetailPage />
+            </Route>
+            <Route exact path="/groups/:groupId/events/new">
+              <CreateEventForm />
             </Route>
           </Switch>
         ))}
