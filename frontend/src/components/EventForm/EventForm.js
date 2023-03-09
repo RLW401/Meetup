@@ -17,10 +17,11 @@ const EventForm = ({ event, formType, group }) => {
     const [description, setDescription] = useState(event.description);
     const [startDate, setStartDate] = useState(event.startDate);
     const [endDate, setEndDate] = useState(event.endDate);
+    const [imageUrl, setImageUrl] = useState('');
 
     let eventFormHeader = null;
 
-    if (formType === "Create event") {
+    if (formType === "Create Event") {
         eventFormHeader = (<h2>{`Create an event for ${group.name}`}</h2>);
     }
 
@@ -81,15 +82,47 @@ const EventForm = ({ event, formType, group }) => {
                 </div>
                 <div className='schedule'>
                     <div className='start'>
-                        <label for="event-start">When does your event start?</label>
+                        <label htmlFor="event-start">When does your event start?</label>
                         <input type="datetime-local" id="meeting-time"
                             name="event-start" value={startDate}
-                            min="1300-06-07T00:00" max="2100-06-14T00:00" />
+                            min="1300-06-07T00:00" max="2100-06-14T00:00"
+                            onChange={(e) => setStartDate(e.target.value)} />
+                    </div>
+                    <div className='end'>
+                        <label htmlFor="event-end">When does your event end?</label>
+                        <input type="datetime-local" id="meeting-time"
+                            name="event-end" value={endDate}
+                            min="1300-06-07T00:00" max="2100-06-14T00:00"
+                            onChange={(e) => setEndDate(e.target.value)} />
                     </div>
                 </div>
+                <div className='img-input'>
+                    <p>Please add in image url for your event below: </p>
+                    <label>
+                        <input
+                            type="text"
+                            value={imageUrl}
+                            placeholder="Image URL"
+                            onChange={(e) => setImageUrl(e.target.value)}
+                        />
+                    </label>
+                </div>
+                <div className='description'>
+                    <p>Please describe your event: </p>
+                    <label>
+                        <textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder='Please include at least 30 characters'
+                            rows={10}
+                            cols={60}
+                        />
+                    </label>
+                </div>
             </div>
-
-
+            <div className='bottom'>
+                <input type="submit" value={formType} />
+            </div>
         </form>
     );
 };

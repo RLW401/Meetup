@@ -4,8 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { getGroupDetails } from "../../store/groupDetails";
 import EventForm from "./EventForm";
 
-const formType = "Create event";
-const dev = false;
+const formType = "Create Event";
+const dev = true;
 
 const name = "Witch Burning";
 const type = "In person";

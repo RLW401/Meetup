@@ -36,7 +36,7 @@ const GroupDetailPage = () => {
     const joinGroupButton = <button>Join this group</button>;
     const organizerButtons = (
         <div className="organizer-buttons">
-            <button>Create event</button>
+            <button onClick={() => history.push(`/groups/${groupId}/events/new`)}>Create event</button>
             <button onClick={() => history.push(`/groups/${groupId}/edit`)}>Update</button>
             <GroupDeleteModal />
         </div>
