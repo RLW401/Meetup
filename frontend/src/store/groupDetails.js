@@ -2,7 +2,7 @@ import { normalizeDetail } from "../utils/normalization";
 import { REMOVE_IMAGE } from "./images";
 
 const prefix = "groupDetails/";
-const GET_DETAILS = (prefix + "GET_DETAILS");
+export const GET_DETAILS = (prefix + "GET_DETAILS");
 
 const detail = (group) => ({
     type: GET_DETAILS,

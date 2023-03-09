@@ -13,6 +13,10 @@ const GroupDetailPage = () => {
         return state.groupDetails;
     });
 
+    const organizer = useSelector((state) => {
+        return state.organizer;
+    });
+
     const currentUser = useSelector((state) =>{
         return state.session.user;
     });
@@ -24,7 +28,6 @@ const GroupDetailPage = () => {
 
     if (!Object.keys(group).length) return null;
 
-    const organizer = group.Organizer;
     const images = group.GroupImages;
     const venues = group.Venues;
     const authorized = (currentUser && (currentUser.id === organizer.id));

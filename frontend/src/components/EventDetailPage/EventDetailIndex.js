@@ -20,6 +20,10 @@ const EventDetailPage = () => {
         return state.groupDetails;
     });
 
+    const organizer = useSelector((state) => {
+        return state.organizer;
+    });
+
     const groupId = event.groupId;
 
     const currentUser = useSelector((state) =>{
@@ -28,7 +32,6 @@ const EventDetailPage = () => {
 
     if (!Object.keys(event).length) return null;
 
-    const organizer = group.Organizer;
     const images = event.EventImages;
     const venue = event.Venue;
     const authorized = (currentUser && (currentUser.id === organizer.id));
