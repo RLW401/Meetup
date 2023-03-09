@@ -21,9 +21,7 @@ const EventDetailPage = () => {
     const groupId = event.groupId;
 
     useEffect(() => {
-        if (groupId) {
-            dispatch(getGroupDetails(groupId));
-        }
+        dispatch(getGroupDetails(groupId));
     }, [dispatch, groupId]);
 
     const group = useSelector((state) => {
@@ -39,7 +37,6 @@ const EventDetailPage = () => {
     const organizer = group.Organizer;
     const images = event.EventImages;
     const venue = event.Venue;
-    console.log("organizer from eventDetails: ", organizer);
     console.log("event from eventDetails: ", event);
     console.log("group from eventDetails: ", group);
     const authorized = (currentUser && (currentUser.id === organizer.id));
@@ -81,7 +78,11 @@ const EventDetailPage = () => {
 
 export default EventDetailPage;
 
-
+   // useEffect(() => {
+    //     if (groupId) {
+    //         dispatch(getGroupDetails(groupId));
+    //     }
+    // }, [dispatch, groupId]);
 
     // useEffect(() => {
     //     const loadGroup = async () => {
