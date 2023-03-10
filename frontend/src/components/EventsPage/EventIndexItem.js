@@ -6,8 +6,10 @@ const EventIndexItem = ({ event }) => {
     let location;
     if (event.type === "Online") {
         location = event.type
-    } else if (event.Venue) {
+    } else if (event.venueId ) {
         location = `${event.Venue.city}, ${event.Venue.state}`;
+    } else if (event.Group) {
+        location = `${event.Group.city}, ${event.Group.state}`;
     }
 
     return (

@@ -1,11 +1,14 @@
 import { csrfFetch } from "./csrf";
 import { normalizeAll, normalizeDetail } from "../utils/normalization";
+import { ADD_IMAGE } from "./images";
 
 const prefix = "events/";
 const LOAD = (prefix + "LOAD");
 const DETAIL = (prefix + "DETAIL");
 const ADD_EVENT = (prefix + "ADD_EVENT");
 const REMOVE_EVENT = (prefix + "REMOVE_EVENT");
+
+const eventImageType = "event";
 
 const load = (events) => ({
     type: LOAD,
@@ -135,6 +138,18 @@ const eventReducer = (state = initialState, action) => {
             delete stateMinusEvent[action.eventId];
 
             return {...stateMinusEvent, allIds: newIds};
+            case ADD_IMAGE:
+                if ((action.payload.imageType === eventImageType)
+                    && state.allIds.includes(action.payload.objId)) {
+                        // const  = [...state[objId], action.payload.image];
+                        return {
+                             ...state,
+                             [action.payload.objId]: { ...state[action.payload.objId],
+                                previewImage: action.payload.image.url }
+                            };
+                } else {
+                    return state;
+                }
         default:
             return state
     }

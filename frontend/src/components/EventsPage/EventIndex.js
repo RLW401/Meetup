@@ -19,7 +19,7 @@ const EventsPage = () => {
         setEventState(loadEventState);
     }, [loadEventState]);
 
-    if (!eventState.allIds.length) return <h1>no events</h1>
+    if ((!eventState.allIds || !eventState.allIds.length)) return <h1>no events</h1>
 
     let ePage;
 

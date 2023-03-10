@@ -56,9 +56,11 @@ const CreateEventForm = () => {
     } else {
         event = productionEvent;
     }
-    return (
-        <EventForm event={event} formType={formType} group={group} />
-    );
+    if (group.id) {
+        return (
+            <EventForm event={event} formType={formType} group={group} />
+        );
+    }
 };
 
 export default CreateEventForm;
