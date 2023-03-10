@@ -2,7 +2,7 @@ import { useState, useEffect, Fragment } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { createGroup, getAllGroups, editGroup, groupImageAdd } from '../../store/groups';
+import { createEvent } from '../../store/events';
 import { deleteImage } from '../../store/images';
 import getImages from '../../utils/getImages';
 
@@ -27,6 +27,14 @@ const EventForm = ({ event, formType, group }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        event = {...event, name, type, capacity, price,
+            description, startDate, endDate};
+
+            if (formType === "Create Event") {
+                const newEvent = await dispatch(createEvent(event, group.id));
+                history.push(`/events/${newEvent.id}`);
+            }
     };
 
     return (

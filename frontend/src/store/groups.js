@@ -2,14 +2,14 @@ import { csrfFetch } from "./csrf";
 import { normalizeAll } from "../utils/normalization";
 import { REMOVE_IMAGE } from "./images";
 
-const groupActionPrefix = "groups/";
-const LOAD = groupActionPrefix + "LOAD";
-const DETAIL = groupActionPrefix + "DETAIL";
-const ADD_GROUP = groupActionPrefix + "ADD_GROUP";
-const UPDATE_GROUP = groupActionPrefix + "UPDATE_GROUP";
-const REMOVE_GROUP = groupActionPrefix + "REMOVE_GROUP";
-const ADD_GROUP_IMAGE = groupActionPrefix + "ADD_GROUP_IMAGE";
-const REMOVE_GROUP_IMAGE = groupActionPrefix + "REMOVE_GROUP_IMAGE";
+const prefix = "groups/";
+const LOAD = prefix + "LOAD";
+const DETAIL = prefix + "DETAIL";
+const ADD_GROUP = prefix + "ADD_GROUP";
+const UPDATE_GROUP = prefix + "UPDATE_GROUP";
+const REMOVE_GROUP = prefix + "REMOVE_GROUP";
+const ADD_GROUP_IMAGE = prefix + "ADD_GROUP_IMAGE";
+const REMOVE_GROUP_IMAGE = prefix + "REMOVE_GROUP_IMAGE";
 
 const load = (groups) => ({
     type: LOAD,
