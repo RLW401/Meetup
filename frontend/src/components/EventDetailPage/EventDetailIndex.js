@@ -2,6 +2,7 @@ import React, { useEffect, useState, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useParams, useHistory } from 'react-router-dom';
 import { getEventDetails } from "../../store/eventDetails";
+import { getGroupDetails } from "../../store/groupDetails";
 import GroupPreview from "./GroupPreview";
 import EventBasics from "./EventBasics";
 
@@ -10,26 +11,48 @@ const EventDetailPage = () => {
     const history = useHistory();
     const eventId = Number(useParams().eventId);
 
+    const [currentUser, setCurrentUser] = useState({});
+    const [event, setEvent] = useState({});
+    const [group, setGroup] = useState({});
+    const [organizer, setOrganizer] = useState({});
+
+    const loadCurrentUser = useSelector((state) =>{
+        return state.session.user;
+    });
+    const loadEvent = useSelector((state) => {
+        return state.eventDetails;
+    });
+    const loadGroup = useSelector((state) => {
+        return state.groupDetails;
+    });
+    const loadOrganizer = useSelector((state) => {
+        return state.organizer;
+    });
+
     useEffect(() => {
         dispatch(getEventDetails(eventId));
     }, [dispatch, eventId]);
 
-    const event = useSelector((state) => {
-        return state.eventDetails;
-    });
-    const group = useSelector((state) => {
-        return state.groupDetails;
-    });
+    useEffect(() => {
+        dispatch(getGroupDetails(event.groupId));
+    }, [dispatch, event]);
 
-    const organizer = useSelector((state) => {
-        return state.organizer;
-    });
+    useEffect(() => {
+        setCurrentUser(loadCurrentUser);
+        setEvent(loadEvent);
+        setGroup(loadGroup);
+        setOrganizer(loadOrganizer);
+    }, [loadCurrentUser, loadEvent, loadGroup, loadOrganizer]);
+
+
+
+
+
+
 
     const groupId = event.groupId;
 
-    const currentUser = useSelector((state) =>{
-        return state.session.user;
-    });
+
 
     if (!Object.keys(event).length) return null;
 
