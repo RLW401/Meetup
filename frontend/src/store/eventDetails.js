@@ -1,5 +1,4 @@
 import { normalizeDetail } from "../utils/normalization";
-import { getGroupDetails } from "./groupDetails";
 import { ADD_IMAGE } from "./images";
 
 const prefix = "eventDetails/";
@@ -30,8 +29,6 @@ export const getEventDetails = (eventId) => async (dispatch) => {
         }
         const detailedEvent = await response.json();
         const normalizedEventDetails = normalizeDetail(detailedEvent);
-        const groupId = normalizedEventDetails.id;
-        await dispatch(getGroupDetails(groupId));
         dispatch(detail(normalizedEventDetails));
         return normalizedEventDetails;
     } catch (error) {
