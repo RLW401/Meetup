@@ -7,6 +7,7 @@ import { deleteImage } from '../../store/images';
 import getImages from '../../utils/getImages';
 
 const GroupForm = ({ group, formType }) => {
+    // console.log("group from group form:, ", group);
     const history = useHistory();
     const dispatch = useDispatch();
     const [errors, setErrors] = useState([]);
@@ -99,7 +100,7 @@ const GroupForm = ({ group, formType }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form className='group' onSubmit={handleSubmit}>
             <div className='group-form header'>
                 {groupFormHeader}
             </div>

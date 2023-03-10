@@ -1,42 +1,49 @@
-import React, { useEffect, Fragment } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useParams, useHistory } from 'react-router-dom';
-import { getGroupDetails } from "../../store/groups";
+import { getGroupDetails } from "../../store/groupDetails";
 import GroupDeleteModal from "../GroupDelete";
 
 const GroupDetailPage = () => {
     const dispatch = useDispatch();
     const history = useHistory();
-    const { groupId } = useParams();
+    const groupId = Number(useParams().groupId);
 
-    const group = useSelector((state) => {
-        return state.groups.groupDetails;
-    });
+    const [currentUser, setCurrentUser] = useState({});
+    const [group, setGroup] = useState({});
+    const [organizer, setOrganizer] = useState({});
 
-    const currentUser = useSelector((state) =>{
+    const loadCurrentUser = useSelector((state) =>{
         return state.session.user;
     });
-
+    const loadGroup = useSelector((state) => {
+        return state.groupDetails;
+    });
+    const loadOrganizer = useSelector((state) => {
+        return state.organizer;
+    });
 
     useEffect(() => {
         dispatch(getGroupDetails(groupId));
     }, [dispatch, groupId]);
 
+    useEffect(() => {
+        setCurrentUser(loadCurrentUser);
+        setGroup(loadGroup);
+        setOrganizer(loadOrganizer);
+    }, [loadCurrentUser, loadGroup, loadOrganizer]);
+
     if (!Object.keys(group).length) return null;
 
-    const organizer = group.Organizer;
     const images = group.GroupImages;
     const venues = group.Venues;
     const authorized = (currentUser && (currentUser.id === organizer.id));
-    let previewImage = "No Preview image";
-    images.forEach((img) => {
-        if (img.preview) previewImage = img.url;
-    });
+    const previewImage = group.previewImage;
 
     const joinGroupButton = <button>Join this group</button>;
     const organizerButtons = (
         <div className="organizer-buttons">
-            <button>Create event</button>
+            <button onClick={() => history.push(`/groups/${groupId}/events/new`)}>Create event</button>
             <button onClick={() => history.push(`/groups/${groupId}/edit`)}>Update</button>
             <GroupDeleteModal />
         </div>

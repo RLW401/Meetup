@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from 'react-router-dom';
 
@@ -7,11 +7,17 @@ import EventIndexItem from "./EventIndexItem";
 
 const EventsPage = () => {
     const dispatch = useDispatch();
-    const eventState = useSelector((state) => state.events);
+    const loadEventState = useSelector((state) => state.events);
+
+    const [eventState, setEventState] = useState({});
 
     useEffect(() => {
         dispatch(getAllEvents());
     }, [dispatch]);
+
+    useEffect(() => {
+        setEventState(loadEventState);
+    }, [loadEventState]);
 
     if (!eventState.allIds.length) return <h1>no events</h1>
 
