@@ -4,7 +4,7 @@ const formType = "Create group";
 const dev = true;
 
 const name = 'Mountain Group';
-const about = 'Come wander into the mountains with us. No experience required. No need to bring supplies! Nature will provide :)';
+const about = 'Come wander into the mountains with us. No experience required. No need to bring supplies! Nature will provide :) \n\nUse this image: \n\nhttps://res.cloudinary.com/dqswruico/image/upload/v1678298838/initial_meetup_seeder/Mountain_group_uouwy3.jpg';
 const type = 'In person';
 const isPrivate = false;
 const city = 'Asheville';

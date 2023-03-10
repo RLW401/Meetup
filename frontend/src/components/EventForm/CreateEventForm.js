@@ -11,7 +11,7 @@ const name = "Witch Burning";
 const type = "In person";
 const capacity = 9001;
 const price = 3.5;
-const description = "These odious crones have bedevilled us with their foul plague for long enough!";
+const description = "These odious crones have bedevilled us with their foul plague for long enough! \n\nUse this image: \n\nhttps://res.cloudinary.com/dqswruico/image/upload/v1678215281/14th%20Century%20Meetup/burning_woman_witchcraft_1050x700_qxykfx.jpg";
 const startDate = "1350-11-19 19:00:00";
 const endDate = "1350-11-19 23:30:00";
 
@@ -42,7 +42,9 @@ const CreateEventForm = () => {
     const [group, setGroup] = useState({});
 
     useEffect(() => {
-        dispatch(getGroupDetails(groupId));
+        if (groupId) {
+            dispatch(getGroupDetails(groupId));
+        }
     }, [dispatch, groupId]);
 
     useEffect(() => {
