@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useParams, useHistory } from 'react-router-dom';
 import { getGroupDetails } from "../../store/groupDetails";
@@ -7,24 +7,31 @@ import GroupDeleteModal from "../GroupDelete";
 const GroupDetailPage = () => {
     const dispatch = useDispatch();
     const history = useHistory();
-    const { groupId } = useParams();
+    const groupId = Number(useParams().groupId);
 
-    const group = useSelector((state) => {
-        return state.groupDetails;
-    });
+    const [currentUser, setCurrentUser] = useState({});
+    const [group, setGroup] = useState({});
+    const [organizer, setOrganizer] = useState({});
 
-    const organizer = useSelector((state) => {
-        return state.organizer;
-    });
-
-    const currentUser = useSelector((state) =>{
+    const loadCurrentUser = useSelector((state) =>{
         return state.session.user;
     });
-
+    const loadGroup = useSelector((state) => {
+        return state.groupDetails;
+    });
+    const loadOrganizer = useSelector((state) => {
+        return state.organizer;
+    });
 
     useEffect(() => {
         dispatch(getGroupDetails(groupId));
     }, [dispatch, groupId]);
+
+    useEffect(() => {
+        setCurrentUser(loadCurrentUser);
+        setGroup(loadGroup);
+        setOrganizer(loadOrganizer);
+    }, [loadCurrentUser, loadGroup, loadOrganizer]);
 
     if (!Object.keys(group).length) return null;
 
