@@ -3,8 +3,11 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { createEvent } from '../../store/events';
+import { appendImage } from '../../store/images';
 import { deleteImage } from '../../store/images';
 import getImages from '../../utils/getImages';
+
+const imageType = "event";
 
 const EventForm = ({ event, formType, group }) => {
     const history = useHistory();
@@ -33,6 +36,7 @@ const EventForm = ({ event, formType, group }) => {
 
             if (formType === "Create Event") {
                 const newEvent = await dispatch(createEvent(event, group.id));
+                await dispatch(appendImage(imageUrl, imageType, newEvent.id));
                 history.push(`/events/${newEvent.id}`);
             }
     };

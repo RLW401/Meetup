@@ -1,8 +1,11 @@
 import { normalizeDetail } from "../utils/normalization";
 import { getGroupDetails } from "./groupDetails";
+import { ADD_IMAGE } from "./images";
 
 const prefix = "eventDetails/";
 const GET_DETAILS = (prefix + "GET_DETAILS");
+
+const eventImageType = "event";
 
 
 const detail = (event) => ({
@@ -42,6 +45,14 @@ const eventDetailReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_DETAILS:
             return { ...action.payload };
+        case ADD_IMAGE:
+            if ((action.payload.imageType === eventImageType)
+                && (action.payload.objId === state.id)) {
+                    const newImgArr = [...state.EventImages, action.payload.image];
+                    return { ...state, EventImages: newImgArr };
+                } else {
+                    return state;
+                }
         default:
             return state;
     }
