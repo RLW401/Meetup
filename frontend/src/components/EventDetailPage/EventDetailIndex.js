@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useParams, useHistory } from 'react-router-dom';
 import { getEventDetails } from "../../store/eventDetails";
 import GroupPreview from "./GroupPreview";
+import EventBasics from "./EventBasics";
 
 const EventDetailPage = () => {
     const dispatch = useDispatch();
@@ -56,7 +57,7 @@ const EventDetailPage = () => {
                             <GroupPreview group={group} />
                         </div>
                         <div className="event-basics">
-
+                            <EventBasics event={event} authorized={authorized} />
                         </div>
                     </div>
 
