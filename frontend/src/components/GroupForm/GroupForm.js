@@ -14,6 +14,7 @@ import { findErr } from '../../utils/errorHandling';
 const GroupForm = ({ group, formType }) => {
     const history = useHistory();
     const dispatch = useDispatch();
+    const [groups, setGroups] = useState(null);
     const [errors, setErrors] = useState([]);
     const [name, setName] = useState(group.name);
     const [about, setAbout] = useState(group.about);
@@ -33,7 +34,23 @@ const GroupForm = ({ group, formType }) => {
     const priVal = "Visibility Type";
     const imVal = "Image URL";
 
-    const allIds = useSelector((state) => state.groups.allIds);
+    useEffect(() => {
+        dispatch(getAllGroups());
+    }, [dispatch]);
+
+    const loadGroups = useSelector((state) => state.groups);
+    useEffect(() => {
+        setGroups(loadGroups);
+    }, [loadGroups]);
+
+    const groupNames = []
+    if (groups) {
+        groups.allIds.forEach((id) => {
+            groupNames.push(groups[id].name);
+        });
+    }
+
+
 
     useEffect(() => {
         if (group.city && group.state) {
@@ -74,10 +91,12 @@ const GroupForm = ({ group, formType }) => {
             validationErrors.push(`${nameVal} is required`);
         } else if (name.length < 5) {
             validationErrors.push(`${nameVal} must be at least 5 characters long`);
+        } else if (groupNames.includes(name)) {
+            validationErrors.push(`${nameVal} must be unique. A group called ${name} already exists`);
         }
         if (about.length < 30) validationErrors.push(`${aboutVal} must be at least 30 characters long`);
         if (!type) validationErrors.push(`${typeVal} is required`);
-        if (typeof isPrivate !== "boolean") validationErrors.push(`${priVal} is required`);
+        if ((typeof isPrivate) !== "boolean") validationErrors.push(`${priVal} is required`);
         if (!(imgExt === "png" || imgExt === "jpg" || imgExt === "jpeg") || urlComponents.length < 2) {
             validationErrors.push(`${imVal} must end in .png, .jpg, or .jpeg`);
         }
@@ -116,11 +135,6 @@ const GroupForm = ({ group, formType }) => {
                 private: isPrivate, city, state};
 
         setSubmissionAttempt(false);
-
-        // if no groups have yet been loaded into state
-        if (!allIds.length) {
-            await dispatch(getAllGroups());
-        }
 
         if (formType === "Create group") {
             const newGroup = await dispatch(createGroup(group));
@@ -173,6 +187,7 @@ const GroupForm = ({ group, formType }) => {
                         onChange={(e) => setName(e.target.value)}
                         />
                 </label>
+                {submissionAttempt && findErr(errors, nameVal)}
             </div>
             <div className='group-form about'>
                 <h2>Now describe what your group will be about</h2>
@@ -198,6 +213,7 @@ const GroupForm = ({ group, formType }) => {
                             cols={60}
                         />
                     </label>
+                    {submissionAttempt && findErr(errors, aboutVal)}
             </div>
             <div className='group-form final-steps'>
                 <h2>Final steps...</h2>
@@ -209,14 +225,16 @@ const GroupForm = ({ group, formType }) => {
                         <option value="Online">Online</option>
                     </select>
                 </label>
+                {submissionAttempt && findErr(errors, typeVal)}
                 <p>Is this group private or public?</p>
                 <label>
-                    <select value={isPrivate} onChange={(e) => setIsPrivate(e.target.value)}>
+                    <select value={isPrivate} onChange={(e) => setIsPrivate(e.target.value === "true")}>
                         <option disabled={true} value='' >(choose one)</option>
                         <option value={true}>Private</option>
                         <option value={false}>Public</option>
                     </select>
                 </label>
+                {submissionAttempt && findErr(errors, priVal)}
                 <label>
                     <input
                         type="text"
@@ -225,6 +243,7 @@ const GroupForm = ({ group, formType }) => {
                         onChange={(e) => setImageUrl(e.target.value)}
                     />
                 </label>
+                {submissionAttempt && findErr(errors, imVal)}
             </div>
             <input type="submit" value={formType} />
         </form>
