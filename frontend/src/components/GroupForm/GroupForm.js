@@ -26,6 +26,8 @@ const GroupForm = ({ group, formType }) => {
     const [submissionAttempt, setSubmissionAttempt] = useState(false);
 
     const formIntroStart = "We'll walk you through a few steps to";
+    const createFormType = "Create group";
+    const updateFormType = "Update group";
 
     const locVal = "Location";
     const nameVal = "Name";
@@ -91,7 +93,7 @@ const GroupForm = ({ group, formType }) => {
             validationErrors.push(`${nameVal} is required`);
         } else if (name.length < 5) {
             validationErrors.push(`${nameVal} must be at least 5 characters long`);
-        } else if (groupNames.includes(name)) {
+        } else if (groupNames.includes(name) && formType === createFormType) {
             validationErrors.push(`${nameVal} must be unique. A group called ${name} already exists`);
         }
         if (about.length < 30) validationErrors.push(`${aboutVal} must be at least 30 characters long`);
