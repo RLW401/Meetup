@@ -34,7 +34,9 @@ const EventDetailPage = () => {
     }, [dispatch, eventId]);
 
     useEffect(() => {
-        dispatch(getGroupDetails(event.groupId));
+        if (event.groupId) {
+            dispatch(getGroupDetails(event.groupId));
+        }
     }, [dispatch, event]);
 
     useEffect(() => {
@@ -43,15 +45,6 @@ const EventDetailPage = () => {
         setGroup(loadGroup);
         setOrganizer(loadOrganizer);
     }, [loadCurrentUser, loadEvent, loadGroup, loadOrganizer]);
-
-
-
-
-
-
-
-    const groupId = event.groupId;
-
 
 
     if (!Object.keys(event).length) return null;

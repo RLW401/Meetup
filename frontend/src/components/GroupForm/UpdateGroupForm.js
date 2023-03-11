@@ -1,4 +1,4 @@
-import { Dispatch, useEffect } from "react";
+import { Dispatch, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getGroupDetails } from "../../store/groupDetails";
@@ -8,20 +8,26 @@ const UpdateGroupForm = () => {
     const dispatch = useDispatch();
     const formType = "Update group";
     const groupId = Number(useParams().groupId);
-    // useEffect(() => {
-    //     const fetchGroup = async (groupId) => {
-    //         await dispatch(getGroupDetails(groupId));
-    //     };
-    //     fetchGroup(groupId);
-    // }, [dispatch, groupId]);
+
+    const [group, setGroup] = useState(null);
+
     useEffect(() => {
         dispatch(getGroupDetails(groupId));
     }, [dispatch, groupId]);
-    const group = useSelector((state) => ({ ...state.groupDetails }));
+    const loadGroup = useSelector((state) => state.groupDetails);
 
-    return (
-        <GroupForm group={group} formType={formType} />
-    );
+
+    useEffect(() => {
+        setGroup(loadGroup);
+    }, [loadGroup]);
+
+    if (group && (group.id === groupId)) {
+        return (
+            <GroupForm group={group} formType={formType} />
+        );
+    } else {
+        return <h2>Group not found</h2>
+    }
 };
 
 export default UpdateGroupForm;

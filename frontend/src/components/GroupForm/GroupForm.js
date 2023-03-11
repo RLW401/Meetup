@@ -5,11 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createGroup, getAllGroups, editGroup, groupImageAdd } from '../../store/groups';
 import { deleteImage } from '../../store/images';
 import getImages from '../../utils/getImages';
+import { findErr } from '../../utils/errorHandling';
+
+
+
+
 
 const GroupForm = ({ group, formType }) => {
-    // console.log("group from group form:, ", group);
     const history = useHistory();
     const dispatch = useDispatch();
+    const [groups, setGroups] = useState(null);
     const [errors, setErrors] = useState([]);
     const [name, setName] = useState(group.name);
     const [about, setAbout] = useState(group.about);
@@ -18,10 +23,36 @@ const GroupForm = ({ group, formType }) => {
     const [location, setLocation] = useState('');
     const [prevImage, setPrevImage] = useState(null);
     const [imageUrl, setImageUrl] = useState('');
+    const [submissionAttempt, setSubmissionAttempt] = useState(false);
 
     const formIntroStart = "We'll walk you through a few steps to";
+    const createFormType = "Create group";
+    const updateFormType = "Update group";
 
-    const allIds = useSelector((state) => state.groups.allIds);
+    const locVal = "Location";
+    const nameVal = "Name";
+    const aboutVal = "Description";
+    const typeVal = "Group Type";
+    const priVal = "Visibility Type";
+    const imVal = "Image URL";
+
+    useEffect(() => {
+        dispatch(getAllGroups());
+    }, [dispatch]);
+
+    const loadGroups = useSelector((state) => state.groups);
+    useEffect(() => {
+        setGroups(loadGroups);
+    }, [loadGroups]);
+
+    const groupNames = []
+    if (groups) {
+        groups.allIds.forEach((id) => {
+            groupNames.push(groups[id].name);
+        });
+    }
+
+
 
     useEffect(() => {
         if (group.city && group.state) {
@@ -43,6 +74,36 @@ const GroupForm = ({ group, formType }) => {
             getImg().catch(console.error);
         }
     }, [group.id]);
+
+    // form validation
+    useEffect(() => {
+        const validationErrors = [];
+        const cityState = location.split(", ");
+        const city = cityState[0];
+        const state = cityState[1];
+        const urlComponents = imageUrl.split('.');
+        const imgExt = urlComponents[urlComponents.length - 1];
+
+        if (!location) {
+            validationErrors.push(`${locVal} is required`);
+        } else if (cityState.length !== 2 || !(city  && state)) {
+            validationErrors.push(`${locVal} must be of form: CITY, STATE`);
+        }
+        if (!name) {
+            validationErrors.push(`${nameVal} is required`);
+        } else if (name.length < 5) {
+            validationErrors.push(`${nameVal} must be at least 5 characters long`);
+        } else if (groupNames.includes(name) && formType === createFormType) {
+            validationErrors.push(`${nameVal} must be unique. A group called ${name} already exists`);
+        }
+        if (about.length < 30) validationErrors.push(`${aboutVal} must be at least 30 characters long`);
+        if (!type) validationErrors.push(`${typeVal} is required`);
+        if ((typeof isPrivate) !== "boolean") validationErrors.push(`${priVal} is required`);
+        if (!(imgExt === "png" || imgExt === "jpg" || imgExt === "jpeg") || urlComponents.length < 2) {
+            validationErrors.push(`${imVal} must end in .png, .jpg, or .jpeg`);
+        }
+        setErrors(validationErrors);
+    }, [location, name, about, type, isPrivate, imageUrl]);
 
     let groupFormHeader = null;
 
@@ -68,14 +129,15 @@ const GroupForm = ({ group, formType }) => {
         const cityState = location.split(", ");
         const city = cityState[0];
         const state = cityState[1];
+        setSubmissionAttempt(true);
+
+        // if (errors.length) return alert(`Cannot Submit`);
+        if (errors.length) return;
 
         group = {...group, name, about, type,
                 private: isPrivate, city, state};
 
-        // if no groups have yet been loaded into state
-        if (!allIds.length) {
-            await dispatch(getAllGroups());
-        }
+        setSubmissionAttempt(false);
 
         if (formType === "Create group") {
             const newGroup = await dispatch(createGroup(group));
@@ -83,10 +145,7 @@ const GroupForm = ({ group, formType }) => {
             history.push(`/groups/${newGroup.id}`);
         } else if (formType === "Update group") {
             const changedGroup = await dispatch(editGroup(group));
-            // if (imageUrl && (!prevImage || (imageUrl !== prevImage.url))) {
-            //     await dispatch(deleteImage(prevImage.id, "group", changedGroup.id));
-            //     await dispatch(groupImageAdd(imageUrl, changedGroup.id));
-            // }
+
             if (imageUrl) {
                 if (prevImage && (imageUrl !== prevImage.url)) {
                     await dispatch(deleteImage(prevImage.id, "group", changedGroup.id));
@@ -115,8 +174,8 @@ const GroupForm = ({ group, formType }) => {
                     value={location}
                     placeholder='City, STATE'
                     onChange={(e) => setLocation(e.target.value)} />
-
                 </label>
+                {submissionAttempt && findErr(errors, locVal)}
             </div>
             <div className='group-form name'>
                 <h2>What will your group's name be?</h2>
@@ -131,6 +190,7 @@ const GroupForm = ({ group, formType }) => {
                         onChange={(e) => setName(e.target.value)}
                         />
                 </label>
+                {submissionAttempt && findErr(errors, nameVal)}
             </div>
             <div className='group-form about'>
                 <h2>Now describe what your group will be about</h2>
@@ -156,6 +216,7 @@ const GroupForm = ({ group, formType }) => {
                             cols={60}
                         />
                     </label>
+                    {submissionAttempt && findErr(errors, aboutVal)}
             </div>
             <div className='group-form final-steps'>
                 <h2>Final steps...</h2>
@@ -167,14 +228,16 @@ const GroupForm = ({ group, formType }) => {
                         <option value="Online">Online</option>
                     </select>
                 </label>
+                {submissionAttempt && findErr(errors, typeVal)}
                 <p>Is this group private or public?</p>
                 <label>
-                    <select value={isPrivate} onChange={(e) => setIsPrivate(e.target.value)}>
+                    <select value={isPrivate} onChange={(e) => setIsPrivate(e.target.value === "true")}>
                         <option disabled={true} value='' >(choose one)</option>
                         <option value={true}>Private</option>
                         <option value={false}>Public</option>
                     </select>
                 </label>
+                {submissionAttempt && findErr(errors, priVal)}
                 <label>
                     <input
                         type="text"
@@ -183,6 +246,7 @@ const GroupForm = ({ group, formType }) => {
                         onChange={(e) => setImageUrl(e.target.value)}
                     />
                 </label>
+                {submissionAttempt && findErr(errors, imVal)}
             </div>
             <input type="submit" value={formType} />
         </form>
