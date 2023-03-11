@@ -50,9 +50,14 @@ const LoginForm = () => {
             required
           />
         </label>
-        <button type="submit">Log In</button>
+        <button
+        type="submit"
+        disabled={credential.length < 4 || password.length < 6}
+        >Log In</button>
       </form>
-      <button onClick={logInDemo}>Demo User</button>
+      <button
+      onClick={logInDemo}
+      >Demo User</button>
       </>
     );
 };
