@@ -2,6 +2,7 @@ import React, { useEffect, useState, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useParams, useHistory } from 'react-router-dom';
 import { getGroupDetails } from "../../store/groupDetails";
+import { getAllEvents } from "../../store/events";
 import GroupDeleteModal from "../GroupDelete";
 
 const GroupDetailPage = () => {
@@ -12,6 +13,8 @@ const GroupDetailPage = () => {
     const [currentUser, setCurrentUser] = useState({});
     const [group, setGroup] = useState({});
     const [organizer, setOrganizer] = useState({});
+    const [events, setEvents] = useState({});
+
 
     const loadCurrentUser = useSelector((state) =>{
         return state.session.user;
@@ -22,6 +25,7 @@ const GroupDetailPage = () => {
     const loadOrganizer = useSelector((state) => {
         return state.organizer;
     });
+    const loadEvents = useSelector((state) => state.events);
 
     useEffect(() => {
         dispatch(getGroupDetails(groupId));
@@ -32,6 +36,27 @@ const GroupDetailPage = () => {
         setGroup(loadGroup);
         setOrganizer(loadOrganizer);
     }, [loadCurrentUser, loadGroup, loadOrganizer]);
+
+    useEffect(() => {
+        if (!loadEvents.allIds.length) {
+            dispatch(getAllEvents());
+        }
+        setEvents(loadEvents);
+    }, [dispatch, loadEvents]);
+
+    const groupEvents = [];
+    if (events.allIds) {
+        events.allIds.forEach((eventId) => {
+            if (events[eventId].groupId === groupId) {
+                groupEvents.push({...events[eventId]});
+            }
+        });
+    }
+
+    let numGroupEvents = `${groupEvents.length} event`;
+    if (groupEvents.length !== 1) {
+        numGroupEvents += 's';
+    }
 
     if (!Object.keys(group).length) return null;
 
@@ -61,7 +86,7 @@ const GroupDetailPage = () => {
                 <h2>{group.name}</h2>
                 <h3>{`Location: ${group.city}, ${group.state}`}</h3>
                 <div className="group-events-public">
-                        <NavLink to={`/groups/${groupId}/events`}>## events</NavLink>
+                        <NavLink to={`/groups/${groupId}/events`}>{numGroupEvents}</NavLink>
                         {/* <p onClick={() => history.push(`/groups/${groupId}/events`)}>## events</p> */}
                         <p>{group.private? " · Private" : " · Public"}</p>
                 </div>

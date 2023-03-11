@@ -15,6 +15,7 @@ const SignupFormPage = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState([]);
+    const [modal, setShowModal] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -88,7 +89,10 @@ const SignupFormPage = () => {
               required
             />
           </label>
-          <button type="submit">Sign Up</button>
+          <button
+          type="submit"
+          disabled={!firstName || !lastName || username.length < 4 || password.length < 6 || password != confirmPassword}
+          >Sign Up</button>
         </form>
       );
 
