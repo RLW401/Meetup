@@ -30,6 +30,7 @@ const EventForm = ({ event, formType, group }) => {
         eventFormHeader = (<h2>{`Create an event for ${group.name}`}</h2>);
     }
 
+    // form validation
     useEffect(() => {
         const validationErrors = [];
         const urlComponents = imageUrl.split('.');
