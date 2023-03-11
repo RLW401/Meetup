@@ -77,7 +77,8 @@ const GroupDetailPage = () => {
     return (
         <Fragment>
             <div className="breadcrumb">
-                <NavLink to="/groups">{"< Groups"}</NavLink>
+                &lt;
+                <NavLink to="/groups">{"Groups"}</NavLink>
             </div>
             <div className="group-detail-top">
                 <div className="group-image">

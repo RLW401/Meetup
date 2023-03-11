@@ -57,7 +57,8 @@ const EventDetailPage = () => {
     return (
         <Fragment>
             <div className="breadcrumb">
-                <NavLink to="/events">{"< Events"}</NavLink>
+                &lt;
+                <NavLink to="/events">{"Events"}</NavLink>
             </div>
             <div className="event-detail-top">
                 <h2>{event.name}</h2>
