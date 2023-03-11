@@ -23,6 +23,7 @@ const EventForm = ({ event, formType, group }) => {
     const [startDate, setStartDate] = useState(event.startDate);
     const [endDate, setEndDate] = useState(event.endDate);
     const [imageUrl, setImageUrl] = useState('');
+    const [submissionAttempt, setSubmissionAttempt] = useState(false);
 
     let eventFormHeader = null;
 
@@ -35,7 +36,11 @@ const EventForm = ({ event, formType, group }) => {
         const validationErrors = [];
         const urlComponents = imageUrl.split('.');
         const imgExt = urlComponents[urlComponents.length - 1];
-        if (name.length < 5) validationErrors.push("Name must be at least 5 characters");
+        if (!name) {
+            validationErrors.push("Name is required");
+        } else if (name.length < 5) {
+             validationErrors.push("Name must be at least 5 characters");
+        }
         if (!type) validationErrors.push("Event Type is required");
         if (!capacity && capacity !== 0) {
             validationErrors.push("Capacity is required");
@@ -57,15 +62,19 @@ const EventForm = ({ event, formType, group }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmissionAttempt(true);
+        if (errors.length) return;
 
         event = {...event, name, type, capacity, price,
             description, startDate, endDate};
 
-            if (formType === "Create Event") {
-                const newEvent = await dispatch(createEvent(event, group.id));
-                await dispatch(appendImage(imageUrl, imageType, newEvent.id));
-                history.push(`/events/${newEvent.id}`);
-            }
+        setSubmissionAttempt(false);
+
+        if (formType === "Create Event") {
+            const newEvent = await dispatch(createEvent(event, group.id));
+            await dispatch(appendImage(imageUrl, imageType, newEvent.id));
+            history.push(`/events/${newEvent.id}`);
+        }
     };
 
     return (
@@ -78,71 +87,68 @@ const EventForm = ({ event, formType, group }) => {
                     <p>What is the name of your event?</p>
                     <label>
                         <input
-                        required={true}
                         type='text'
                         value={name}
                         placeholder='Event Name'
                         onChange={(e) => setName(e.target.value)}
                         />
                     </label>
-                    {findErr(errors, "Name")}
+                    {submissionAttempt && findErr(errors, "Name")}
 
                 </div>
                 <div className='basics'>
                     <div className='type'>
                     <p>Is this an in person or online event?</p>
                         <label>
-                            <select value={type} required={true} onChange={(e) => setType(e.target.value)}>
+                            <select value={type} onChange={(e) => setType(e.target.value)}>
                                 <option disabled={true} value='' >(select one)</option>
                                 <option value="In person">In Person</option>
                                 <option value="Online">Online</option>
                             </select>
                         </label>
-                        {findErr(errors, "Type")}
+                        {submissionAttempt && findErr(errors, "Type")}
                     </div>
                     <div className='capacity'>
                         <p>How many people can your event accommodate?</p>
                         <label>
                             <input
-                            required={true}
                             type='number'
                             value={capacity}
                             placeholder='Event Capacity'
                             onChange={(e) => setCapacity(Number(e.target.value))}
                             />
                         </label>
-                        {findErr(errors, "Capacity")}
+                        {submissionAttempt && findErr(errors, "Capacity")}
                     </div>
                     <div className='price'>
                         <p>What is the price for your event?</p>
                         <label>
                             <input
-                            required={true}
                             type='number'
                             value={price}
                             placeholder={0}
                             onChange={(e) => setPrice(e.target.value)}
                             />
                         </label>
-                        {findErr(errors, "Price")}
+                        {submissionAttempt && findErr(errors, "Price")}
                     </div>
                 </div>
                 <div className='schedule'>
                     <div className='start'>
                         <label htmlFor="event-start">When does your event start?</label>
-                        <input type="datetime-local" id="meeting-time" required={true}
+                        <input type="datetime-local" id="meeting-time"
                             name="event-start" value={startDate}
                             min="1300-06-07T00:00" max="2100-06-14T00:00"
                             onChange={(e) => setStartDate(e.target.value)} />
-                        {findErr(errors, "Start")}
+                        {submissionAttempt && findErr(errors, "Start")}
                     </div>
                     <div className='end'>
                         <label htmlFor="event-end">When does your event end?</label>
-                        <input type="datetime-local" id="event-end" required={true}
+                        <input type="datetime-local" id="event-end"
                             name="event-end" value={endDate}
                             min="1300-06-07T00:00" max="2100-06-14T00:00"
                             onChange={(e) => setEndDate(e.target.value)} />
-                        {findErr(errors, "End")}
+                        {submissionAttempt && findErr(errors, "End")}
                     </div>
                 </div>
                 <div className='img-input'>
@@ -150,31 +156,29 @@ const EventForm = ({ event, formType, group }) => {
                     <label>
                         <input
                             type="text"
-                            required={true}
                             value={imageUrl}
                             placeholder="Image URL"
                             onChange={(e) => setImageUrl(e.target.value)}
                         />
                     </label>
-                    {findErr(errors, "Image")}
+                    {submissionAttempt && findErr(errors, "Image")}
                 </div>
                 <div className='description'>
                     <p>Please describe your event: </p>
                     <label>
                         <textarea
                             value={description}
-                            required={true}
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder='Please include at least 30 characters'
                             rows={10}
                             cols={60}
                         />
                     </label>
-                    {findErr(errors, "Description")}
+                    {submissionAttempt && findErr(errors, "Description")}
                 </div>
             </div>
             <div className='bottom'>
-                <input type="submit" value={formType} disabled={!!errors.length} />
+                <input type="submit" value={formType} />
             </div>
         </form>
     );

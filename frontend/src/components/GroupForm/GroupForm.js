@@ -129,7 +129,8 @@ const GroupForm = ({ group, formType }) => {
         const state = cityState[1];
         setSubmissionAttempt(true);
 
-        if (errors.length) return alert(`Cannot Submit`);
+        // if (errors.length) return alert(`Cannot Submit`);
+        if (errors.length) return;
 
         group = {...group, name, about, type,
                 private: isPrivate, city, state};
