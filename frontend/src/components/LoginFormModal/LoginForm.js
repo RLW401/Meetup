@@ -18,7 +18,8 @@ const LoginForm = () => {
         return dispatch(sessionActions.login({ credential, password }))
         .catch(async (res) => {
           const data = await res.json();
-          if (data && data.errors) setErrors(data.errors);
+          if (data && data.message) setErrors(data.message);
+          console.log("errors from login:", errors);
         });
     };
 
@@ -29,9 +30,10 @@ const LoginForm = () => {
     return (
       <>
         <form className="login-form" onSubmit={handleSubmit}>
-        <ul>
+        {/* <ul>
           {errors.map((error, idx) => <li key={idx}>{error}</li>)}
-        </ul>
+        </ul> */}
+        <p className="validation-error">{errors}</p>
         <label>
           Username or Email
           <input
