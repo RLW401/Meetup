@@ -1,10 +1,12 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import { useDispatch } from 'react-redux';
+import { useHistory } from "react-router-dom";
 import { login } from "../../store/session";
 import * as sessionActions from '../../store/session';
 
 const ProfileButton = ({ user }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef(null);
 
@@ -30,6 +32,7 @@ const ProfileButton = ({ user }) => {
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logout());
+    history.push('/');
   };
 
   const ulClassName = ("profile-dropdown" + (showMenu ? "" : " hidden"));

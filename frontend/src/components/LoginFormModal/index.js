@@ -5,7 +5,7 @@ import { Modal } from "../../context/Modal";
 const LoginFormModal = () => {
     const [showModal, setShowModal] = useState(false);
 
-    const loginButton = (<button
+    const loginButton = (<button className='log-in'
         onClick={() =>{
         setShowModal(true);
     }}>Log In</button>);

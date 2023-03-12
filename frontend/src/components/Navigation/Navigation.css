@@ -1,6 +1,6 @@
 .fa-user-circle {
     color: darkblue;
-    font-size: 100px;
+    font-size: 64px;
 }
 
 .hidden {
@@ -8,5 +8,26 @@
 }
 
 .logo {
-    font-size: 24px;
+    /* font-size: 24px; */
+    max-height: 64px;
+    width: auto;
 }
+
+.top-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.session-links {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 32px;
+    /* justify-content: space-between; */
+}
+
+.session-links > * {
+    margin: 16px;
+  }

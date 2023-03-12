@@ -44,12 +44,10 @@ const GroupIndexItem = ({ group }) => {
                     <h2>{group.name}</h2>
                     <h3>{`Location: ${group.city}, ${group.state}`}</h3>
                     <p className="group-description">{group.about}</p>
+                    <div className="group-events-public">
+                            <p>{numGroupEvents + " · " + (group.private? "Private" : "Public")}</p>
+                    </div>
                 </NavLink>
-                <div className="group-events-public">
-                        <NavLink to={`/groups/${groupId}/events`}>{`${numGroupEvents}`}</NavLink>
-                        {/* <p onClick={() => history.push(`/groups/${groupId}/events`)}>## events</p> */}
-                        <p>{group.private? " · Private" : " · Public"}</p>
-                </div>
             </div>
         </li>
         );

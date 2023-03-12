@@ -1,0 +1,17 @@
+.group-submit {
+    border: 2px solid red;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 16px;
+    margin: 16px;
+}
+
+.bad-submit {
+    background-color: rgba(128, 128, 128, 0.5);
+}
+
+.good-submit {
+    background-color: rgba(255, 0, 0, 1);
+}
