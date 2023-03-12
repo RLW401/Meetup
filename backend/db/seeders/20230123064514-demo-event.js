@@ -6,7 +6,7 @@ if (process.env.NODE_ENV === "production") {
 }
 options.tableName = "Events";
 
-const eventNames = ["Tennis Group First Meet and Greet", "North Pole hangout", "South Pole Hangout"];
+const eventNames = ["Tennis Group First Meet and Greet", "North Pole hangout", "South Pole Hangout", "Witch Burning", "Rat Party"];
 
 const event1 = {
   "groupId": 1,
@@ -16,8 +16,8 @@ const event1 = {
   "type": "Online",
   "capacity": 10,
   "price": 18.50,
-  "startDate": new Date("2021-09-19 20:00:00"),
-  "endDate": new Date("2021-09-19 22:00:00")
+  "startDate": new Date("2024-09-19 20:00:00"),
+  "endDate": new Date("2024-09-19 22:00:00")
 };
 
 const event2 = {
@@ -28,8 +28,8 @@ const event2 = {
   "type": "In person",
   "capacity": 999,
   "price": 19.50,
-  "startDate": new Date("2022-10-19 20:00:00"),
-  "endDate": new Date("2022-10-19 22:00:00")
+  "startDate": new Date("2024-10-19 20:00:00"),
+  "endDate": new Date("2024-10-19 22:00:00")
 };
 
 const event3 = {
@@ -40,10 +40,31 @@ const event3 = {
   "type": "In person",
   "capacity": 9001,
   "price": 3.50,
-  "startDate": new Date("2023-12-19 20:00:00"),
-  "endDate": new Date("3023-12-19 22:00:00")
+  "startDate": new Date("2024-12-19 20:00:00"),
+  "endDate": new Date("3024-12-19 22:00:00")
 };
 
+const witchBurning = {
+  "groupId": 4,
+  "name": eventNames[3],
+  "description": "These odious crones have bedevilled us with their foul plague for long enough!",
+  "type": "In person",
+  "capacity": 9001,
+  "price": 0,
+  "startDate": new Date("1350-11-19 19:00:00"),
+  "endDate": new Date("1350-11-19 23:30:00")
+};
+
+const ratParty = {
+  "groupId": 4,
+  "name": eventNames[4],
+  "description": "Come take a much deserved break from witch-hunting with a variety of fun rat related activities, including (but not limited to) rat catching, rat grooming, and Ratsketball.",
+  "type": "In person",
+  "capacity": 400,
+  "price": 3.50,
+  "startDate": new Date("1350-09-17 19:00:00"),
+  "endDate": new Date("1350-09-18 02:30:00")
+}
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -58,7 +79,7 @@ module.exports = {
      * }], {});
     */
    await queryInterface.bulkInsert(options, [
-    event1, event2, event3
+    event1, event2, event3, witchBurning, ratParty
   ], {});
   },
 
