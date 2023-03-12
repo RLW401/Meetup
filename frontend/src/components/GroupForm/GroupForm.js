@@ -6,6 +6,7 @@ import { createGroup, getAllGroups, editGroup, groupImageAdd } from '../../store
 import { deleteImage } from '../../store/images';
 import getImages from '../../utils/getImages';
 import { findErr } from '../../utils/errorHandling';
+import "./groupForm.css";
 
 
 
@@ -238,17 +239,21 @@ const GroupForm = ({ group, formType }) => {
                     </select>
                 </label>
                 {submissionAttempt && findErr(errors, priVal)}
-                <label>
-                    <input
-                        type="text"
-                        value={imageUrl}
-                        placeholder="https://somewhere.com/image.gif"
-                        onChange={(e) => setImageUrl(e.target.value)}
-                    />
-                </label>
+                <div className='image-input'>
+                    <p>Please add an image url for your group below:</p>
+                    <label for='image-url'>
+                        <input
+                            type="text"
+                            name='image-url'
+                            value={imageUrl}
+                            placeholder="https://somewhere.com/image.gif"
+                            onChange={(e) => setImageUrl(e.target.value)}
+                        />
+                    </label>
+                </div>
                 {submissionAttempt && findErr(errors, imVal)}
             </div>
-            <input type="submit" value={formType} />
+            <input className={(errors.length ? "bad-submit" : "good-submit") + " group-submit"} type="submit" value={formType} />
         </form>
     );
 };

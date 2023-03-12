@@ -10,3 +10,7 @@
     color: red;
     font-size: 12px;
 }
+
+button.log-in {
+    background-color: green;
+}
