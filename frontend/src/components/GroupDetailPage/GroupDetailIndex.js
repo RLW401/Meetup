@@ -65,7 +65,7 @@ const GroupDetailPage = () => {
     const authorized = (currentUser && (currentUser.id === organizer.id));
     const previewImage = group.previewImage;
 
-    const joinGroupButton = <button>Join this group</button>;
+    const joinGroupButton = <button onClick={() => window.alert("feature coming soon")}>Join this group</button>;
     const organizerButtons = (
         <div className="organizer-buttons">
             <button onClick={() => history.push(`/groups/${groupId}/events/new`)}>Create event</button>

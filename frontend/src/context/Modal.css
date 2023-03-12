@@ -18,7 +18,10 @@
     background-color: rgba(0, 0, 0, 0.7);
 }
 
-  #modal-content {
-    position: absolute;
+#modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color:white;
 }
