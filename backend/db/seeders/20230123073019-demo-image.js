@@ -52,7 +52,7 @@ const image5 = {
 };
 
 const uoCCImg = {
-  groupId: 3,
+  groupId: 4,
   url: imageURLs[5],
   groupPreview: true,
   eventPreview: false

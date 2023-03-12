@@ -5,8 +5,8 @@ const seedUsernames = [
   'Demo-lition', 'FakeUser1', 'BobJohnson'
 ];
 
-const seedFirstNames = ["Demo", "Fake", "Bob"];
-const seedLastNames = ["Lition", "User1", "Johnson"];
+const seedFirstNames = ["Demo", "Fake", "Bob", "Stilton"];
+const seedLastNames = ["Lition", "User1", "Johnson", "Cheesewright"];
 
 let options = {};
 if (process.env.NODE_ENV === "production") {
@@ -29,8 +29,8 @@ module.exports = {
    await queryInterface.bulkInsert(options, [{
         email: 'demo@user.io',
         username: seedUsernames[0],
-        firstName: seedFirstNames[0],
-        lastName: seedLastNames[0],
+        firstName: seedFirstNames[3],
+        lastName: seedLastNames[3],
         hashedPassword: bcrypt.hashSync('password')
       },
       {
