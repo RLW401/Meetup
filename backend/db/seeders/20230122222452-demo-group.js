@@ -6,7 +6,7 @@ if (process.env.NODE_ENV === "production") {
 }
 options.tableName = "Groups";
 
-const groupNames = ["Evening Tennis in the aqua-zone", "Dog Group", "Group X"]
+const groupNames = ["Evening Tennis in the aqua-zone", "Dog Group", "Group X", "Union of Concerned Citizens"]
 
 const groupObj1 = {
   "organizerId": 1,
@@ -39,6 +39,16 @@ const groupObj3 = {
   "state": "NY",
 }
 
+const uoCC = {
+  "organizerId": 1,
+  "name": groupNames[3],
+  "about": `The ${groupNames[3]} is dedicated to putting an end to the pestilence that has cursed this land through the elimination of the practice of witchcraft.`,
+  "type": "In person",
+  "private": false,
+  "city": "Gloucester",
+  "state": "Gloucestershire",
+}
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -52,7 +62,7 @@ module.exports = {
      * }], {});
     */
    await queryInterface.bulkInsert(options, [
-    groupObj1, groupObj2, groupObj3
+    groupObj1, groupObj2, groupObj3, uoCC
   ], {});
   },
 

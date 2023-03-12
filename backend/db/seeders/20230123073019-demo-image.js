@@ -8,10 +8,15 @@ options.tableName = "Images";
 
 const imageURLs = [
   "https://res.cloudinary.com/dqswruico/image/upload/v1678298111/initial_meetup_seeder/Tennis_aqua_zone_elxpcl.jpg",
-  "./images/north-pole",
-  "./images/south-pole.jpg",
+  "https://res.cloudinary.com/dqswruico/image/upload/v1678662552/initial_meetup_seeder/North_Pole.jpg",
+  "https://res.cloudinary.com/dqswruico/image/upload/v1678662552/initial_meetup_seeder/Antarctica_Angry_Penguins.jpg",
   "https://res.cloudinary.com/dqswruico/image/upload/v1678298110/initial_meetup_seeder/Group_X_image_fp5src.jpg",
-  "https://res.cloudinary.com/dqswruico/image/upload/v1678298110/initial_meetup_seeder/Dog_Group_image_o4afwe.jpg"
+  "https://res.cloudinary.com/dqswruico/image/upload/v1678298110/initial_meetup_seeder/Dog_Group_image_o4afwe.jpg",
+  "https://res.cloudinary.com/dqswruico/image/upload/v1678298573/14th_Century_Meetup/Union-of-Concerned-Citizens.jpg",
+  "https://res.cloudinary.com/dqswruico/image/upload/v1678298574/14th_Century_Meetup/Rat-Party-Painting.jpg",
+  "https://res.cloudinary.com/dqswruico/image/upload/v1678661965/14th_Century_Meetup/Witch_Burning.jpg"
+
+
 ]
 
 const image1 = {
@@ -46,6 +51,27 @@ const image5 = {
   eventPreview: false
 };
 
+const uoCCImg = {
+  groupId: 3,
+  url: imageURLs[5],
+  groupPreview: true,
+  eventPreview: false
+}
+
+const ratPartyImg = {
+  eventId: 5,
+  url: imageURLs[6],
+  groupPreview: false,
+  eventPreview: true
+}
+
+const witchBurningImg = {
+  eventId: 4,
+  url: imageURLs[7],
+  groupPreview: false,
+  eventPreview: true
+}
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -59,7 +85,7 @@ module.exports = {
      * }], {});
     */
    await queryInterface.bulkInsert(options, [
-    image1, image2, image3, image4, image5
+    image1, image2, image3, image4, image5, uoCCImg, ratPartyImg, witchBurningImg
    ], {});
   },
 
