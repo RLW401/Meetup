@@ -21,7 +21,7 @@ div.group-detail.body {
 .group-buttons {
     display: inline-flex;
     flex-direction: row;
-    align-items: end;
+    align-items: flex-end;
     justify-content: flex-end;
 }
 
