@@ -18,7 +18,7 @@ const EventIndexItem = ({ event }) => {
                 <NavLink key={eventId} to={`/events/${eventId}`}>
                     <div className='top'>
                         <div className='image'>
-
+                        <img src={event.previewImage} alt="event-preview" />
                         </div>
                         <div className='basic-info'>
                             <h3>{event.startDate}</h3>
@@ -28,7 +28,7 @@ const EventIndexItem = ({ event }) => {
 
                     </div>
                     <div className='bottom'>
-                    <p className="event-description">{event.about}</p>
+                    <p className="event-description">{event.description}</p>
                     </div>
 
                 </NavLink>

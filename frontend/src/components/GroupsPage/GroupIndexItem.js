@@ -38,8 +38,8 @@ const GroupIndexItem = ({ group }) => {
         <li>
             <div className='group-index-item'>
                 <NavLink key={groupId} to={`/groups/${groupId}`}>
-                    <div className='group-image'>
-                        <img src={group.previewImage} alt="group-preview-image" />
+                    <div className='image'>
+                        <img src={group.previewImage} alt="group-preview" />
                     </div>
                     <h2>{group.name}</h2>
                     <h3>{`Location: ${group.city}, ${group.state}`}</h3>

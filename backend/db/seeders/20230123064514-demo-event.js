@@ -24,7 +24,7 @@ const event2 = {
   "groupId": 3,
   "venueId": 2,
   "name": "North Pole hangout",
-  "description": "First meet and greet event for the evening tennis on the water group! Join us online for happy times!",
+  "description": "First meet and greet event for the polar exploration group! Join us at the North Pole for happy times!",
   "type": "In person",
   "capacity": 999,
   "price": 19.50,
@@ -36,12 +36,12 @@ const event3 = {
   "groupId": 3,
   "venueId": 3,
   "name": "South Pole Hangout",
-  "description": "First meet and greet event for the evening tennis on the water group! Join us online for happy times!",
+  "description": "Come join us for fun times at the South Pole! We'll go in the summer so it won't be too cold!",
   "type": "In person",
   "capacity": 9001,
   "price": 3.50,
-  "startDate": new Date("2024-12-19 20:00:00"),
-  "endDate": new Date("3024-12-19 22:00:00")
+  "startDate": new Date("2024-06-19 20:00:00"),
+  "endDate": new Date("3024-06-19 22:00:00")
 };
 
 const witchBurning = {
