@@ -25,7 +25,7 @@ const Navigation = ({ isLoaded }) => {
           <div className='profile-button'>
           <ProfileButton user={sessionUser} />
           </div>
-          <div className='start-group link'>
+          <div className='start-group link top-link'>
             <NavLink to="/groups/new">Start a new group</NavLink>
           </div>
         </div>
@@ -35,7 +35,7 @@ const Navigation = ({ isLoaded }) => {
         <div className='session-links'>
 
           <LoginFormModal />
-          <NavLink to="/signup">Sign Up</NavLink>
+          <NavLink className="top-link" to="/signup">Sign Up</NavLink>
         </div>
       );
     }

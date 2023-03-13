@@ -44,3 +44,12 @@ button.demo-login {
     color: blue;
     text-decoration: underline;
 }
+
+.top-link {
+    color: blue;
+    text-decoration: underline;
+}
+
+.profile-button {
+    border-color: white;
+}
