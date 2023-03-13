@@ -1,0 +1,36 @@
+div.group-detail.body {
+    display: grid;
+    height: 80vh;
+    max-width: 85vw;
+    margin: 70px auto auto auto;
+    grid-template-rows: 2fr 1fr 2fr;
+}
+
+.group-detail.top {
+    display: flex;
+    align-items: stretch;
+}
+
+.group-info {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+}
+
+.group-buttons {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: flex-end;
+}
+
+.group-image-container img {
+    min-width: 400px;
+    max-height: 400px;
+    max-width: 400px;
+    height: fit-content;
+    object-fit: cover;
+    margin-right: 1rem;
+    border-radius: 5px;
+ }

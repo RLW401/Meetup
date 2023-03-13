@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useParams, useHistory } from 'react-router-dom';
 import { getGroupDetails } from "../../store/groupDetails";
 import { getAllEvents } from "../../store/events";
 import GroupDeleteModal from "../GroupDelete";
 import EventIndexItem from "../EventsPage/EventIndexItem";
+import "./groupDetail.css";
 
 const GroupDetailPage = () => {
     const dispatch = useDispatch();
@@ -84,11 +85,14 @@ const GroupDetailPage = () => {
 
     const joinGroupButton = <button onClick={() => window.alert("feature coming soon")}>Join this group</button>;
     const organizerButtons = (
-        <div className="organizer-buttons">
+        // <div className="organizer-buttons">
+        <Fragment>
             <button onClick={() => history.push(`/groups/${groupId}/events/new`)}>Create event</button>
             <button onClick={() => history.push(`/groups/${groupId}/edit`)}>Update</button>
             <GroupDeleteModal />
-        </div>
+            </Fragment>
+
+            // </div>
     );
 
     let groupEvents = (
@@ -144,13 +148,17 @@ const GroupDetailPage = () => {
                     <div className="group-image-container">
                         <img src={previewImage} alt="group-preview" />
                     </div>
-                    <h2>{group.name}</h2>
-                    <h3>{`Location: ${group.city}, ${group.state}`}</h3>
-                    <div className="group-events-public">
-                            <p>{numGroupEvents + " · " + (group.private? "Private" : "Public")}</p>
+                    <div className="group-info">
+                        <h2>{group.name}</h2>
+                        <h3>{`Location: ${group.city}, ${group.state}`}</h3>
+                        <div className="group-events-public">
+                                <p>{numGroupEvents + " · " + (group.private? "Private" : "Public")}</p>
+                        </div>
+                        <p>{`Organized by ${organizer.firstName} ${organizer.lastName}`}</p>
+                        <div className="group-buttons">
+                            {authorized ? organizerButtons : joinGroupButton}
+                        </div>
                     </div>
-                    <p>{`Organized by ${organizer.firstName} ${organizer.lastName}`}</p>
-                    {authorized ? organizerButtons : joinGroupButton}
                 </div>
                 <div className="group-detail middle">
                     <h2>Organizer</h2>
