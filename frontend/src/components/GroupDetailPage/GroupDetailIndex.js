@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useParams, useHistory } from 'react-router-dom';
 import { getGroupDetails } from "../../store/groupDetails";
@@ -52,7 +52,7 @@ const GroupDetailPage = () => {
     const pastEvents = [];
     const futureEvents = [];
     if (events.allIds) {
-        const currentDate = new Date("1980-10-15");
+        const currentDate = new Date();
         console.log("currentDate: ", currentDate);
         events.allIds.forEach((eventId) => {
             if (events[eventId].groupId === groupId) {
@@ -80,8 +80,6 @@ const GroupDetailPage = () => {
 
     if (!Object.keys(group).length) return null;
 
-    const images = group.GroupImages;
-    const venues = group.Venues;
     const authorized = (currentUser && (currentUser.id === organizer.id));
     const previewImage = group.previewImage;
 
@@ -144,8 +142,8 @@ const GroupDetailPage = () => {
             </div>
             <div className="group-detail body">
                 <div className="group-detail top">
-                    <div className="group-image">
-                        <img src={previewImage} alt="group-preview-image" />
+                    <div className="group-image-container">
+                        <img src={previewImage} alt="group-preview" />
                     </div>
                     <h2>{group.name}</h2>
                     <h3>{`Location: ${group.city}, ${group.state}`}</h3>
