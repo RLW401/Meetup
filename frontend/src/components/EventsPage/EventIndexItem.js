@@ -27,9 +27,9 @@ const EventIndexItem = ({ event }) => {
                         </div>
 
                     </div>
-                    <div className='bottom'>
+                    {/* <div className='bottom'>
                     <p className="event-description">{event.description}</p>
-                    </div>
+                    </div> */}
 
                 </NavLink>
             </div>
