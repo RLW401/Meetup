@@ -1,0 +1,97 @@
+div.container {
+    display: grid;
+    height: 80vh;
+    max-width: 85vw;
+    margin: 70px auto auto auto;
+    grid-template-rows: 2fr 1fr 3fr 1fr;
+}
+
+/* section-1 */
+div.what-meetup {
+    display: flex;
+    align-items: stretch;
+    height: 30vh;
+    /* height: auto; */
+}
+
+.intro {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.infographic {
+    height: 100%;
+    width: auto;
+    flex: 1;
+}
+
+.infographic img {
+    height: 100%;
+    width: auto;
+}
+
+/* section-2 */
+.how-works {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    width: 25%;
+    text-align: center;
+    margin: auto;
+}
+
+.how-works h2 {
+    margin-bottom: 10px;
+}
+
+/* section 3 */
+div.landing-links {
+    display: inline-flex;
+    align-items: stretch;
+}
+
+.landing-link {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    text-align: center;
+}
+
+.link-text-disabled {
+    color: grey;
+    text-decoration: none;
+}
+
+.link-text {
+    color: teal;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    /* display: inline-block;
+    border-bottom-width: 1; */
+}
+
+.link-text:hover {
+    border-color: teal; /* change the underline color on hover */
+}
+
+.landing-link img {
+    height: 60%;
+    width: auto;
+}
+
+button.join {
+    border-radius: 8px;
+    cursor: pointer;
+    color: #fff;
+    fill: #fff;
+    padding: 8px 16px;
+    background-color: #008294;
+    border-color: #008294;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}

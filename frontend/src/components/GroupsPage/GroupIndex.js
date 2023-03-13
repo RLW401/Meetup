@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 
 import { getAllGroups } from "../../store/groups";
 import GroupIndexItem from "./GroupIndexItem";
+import "./groupIndex.css";
 
 const GroupsPage = () => {
     const dispatch = useDispatch();
@@ -31,9 +32,9 @@ const GroupsPage = () => {
                 <NavLink to="/events">Events </NavLink>
                 <NavLink to="/groups"> Groups</NavLink>
             </div>
-            <ul>
+            <div className='all-groups'>
                 {gPage}
-            </ul>
+            </div>
         </Fragment>
         );
 };

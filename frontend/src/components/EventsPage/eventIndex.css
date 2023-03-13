@@ -1,0 +1,19 @@
+.index-item {
+    display: flex;
+    flex-direction: row;
+}
+
+/* * {
+    text-decoration: none;
+    color: black;
+} */
+
+.image img {
+    min-width: 300px;
+    max-height: 200px;
+    max-width: 300px;
+    height: fit-content;
+    object-fit: cover;
+    margin-right: 1rem;
+    border-radius: 5px;
+ }

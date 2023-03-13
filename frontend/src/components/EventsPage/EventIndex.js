@@ -48,9 +48,9 @@ const EventsPage = () => {
                     <NavLink to="/groups"> Groups</NavLink>
                 </div>
             </div>
-            <ul>
+            <div className="all-events">
                 {ePage}
-            </ul>
+            </div>
         </div>
     );
 };
