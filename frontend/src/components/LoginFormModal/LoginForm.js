@@ -19,7 +19,6 @@ const LoginForm = () => {
         .catch(async (res) => {
           const data = await res.json();
           if (data && data.message) setErrors(data.message);
-          console.log("errors from login:", errors);
         });
     };
 

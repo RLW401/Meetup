@@ -53,7 +53,6 @@ const GroupDetailPage = () => {
     const futureEvents = [];
     if (events.allIds) {
         const currentDate = new Date();
-        console.log("currentDate: ", currentDate);
         events.allIds.forEach((eventId) => {
             if (events[eventId].groupId === groupId) {
                 if (new Date(events[eventId].startDate) > currentDate) {

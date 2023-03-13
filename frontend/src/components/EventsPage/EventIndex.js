@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 
 import { getAllEvents } from "../../store/events";
 import EventIndexItem from "./EventIndexItem";
+import sortEvents from "../../utils/sortEvents";
 
 const EventsPage = () => {
     const dispatch = useDispatch();
@@ -21,25 +22,37 @@ const EventsPage = () => {
 
     if ((!eventState.allIds || !eventState.allIds.length)) return <h1>no events</h1>
 
-    let ePage;
+    let sortedEvents = sortEvents({ ...eventState, allIds: [...eventState.allIds] });
+    const pastEvents = sortedEvents[0];
+    const futureEvents = sortedEvents[1];
+    sortedEvents = [...futureEvents, ...pastEvents];
 
-    if (eventState.allIds) {
-        ePage = eventState.allIds.map((eventId) => {
-            return <EventIndexItem key={eventId} event={eventState[eventId]}/>
-        });
-    }
+    // let ePage;
+
+    // if (eventState.allIds) {
+    //     ePage = eventState.allIds.map((eventId) => {
+    //         return <EventIndexItem key={eventId} event={eventState[eventId]}/>
+    //     });
+    // }
+
+    const ePage = sortedEvents.map((event) => {
+        return <EventIndexItem key={event.id} event={event}/>
+    });
 
     return (
-        <Fragment>
-            <div className="event-group-links">
-                <NavLink to="/events">Events </NavLink>
-                <NavLink to="/groups"> Groups</NavLink>
+        <div className="event-page container">
+            <div className="event-page header">
+                <h4>Events in Meetup</h4>
+                <div className="event-group-links">
+                    <NavLink to="/events">Events </NavLink>
+                    <NavLink to="/groups"> Groups</NavLink>
+                </div>
             </div>
             <ul>
                 {ePage}
             </ul>
-        </Fragment>
-        );
+        </div>
+    );
 };
 
 export default EventsPage;

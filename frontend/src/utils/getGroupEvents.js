@@ -6,7 +6,6 @@ const getGroupEvents = async (groupId) => {
         // the response should be an object with a single
         // key, "Events", with the value of an array of
         // event objects.
-        console.log("eventObj from getGroupEvents: ", eventObj);
         if (eventObj.Events) return eventObj.events;
 
     } catch (error) {
