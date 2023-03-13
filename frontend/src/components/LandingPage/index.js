@@ -21,8 +21,6 @@ const LandingPage = () => {
 
     const loggedIn = !!(currentUser);
 
-    console.log("logged in: ", loggedIn);
-
     const disabledLink = (<p className='link-text-disabled'>Start a new group</p>);
     const enabledLink = (<NavLink to="/groups/new"
                          className="link-text"

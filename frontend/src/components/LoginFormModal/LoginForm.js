@@ -57,7 +57,7 @@ const LoginForm = () => {
         disabled={credential.length < 4 || password.length < 6}
         >Log In</button>
       </form>
-      <button
+      <button className="demo-login"
       onClick={logInDemo}
       >Demo User</button>
       </>

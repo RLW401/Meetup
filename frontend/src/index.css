@@ -27,4 +27,20 @@ button {
 
 button.log-in {
     background-color: green;
+    border-color: green;
+}
+
+button.delete {
+    background-color: red;
+    border-color: red;
+}
+
+button.demo-login {
+    background-color: blue;
+    border-color: blue;
+}
+
+.breadcrumb * {
+    color: blue;
+    text-decoration: underline;
 }

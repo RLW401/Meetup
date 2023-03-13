@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { getAllEvents } from "../../store/events";
 import EventIndexItem from "./EventIndexItem";
 import sortEvents from "../../utils/sortEvents";
+import "./eventIndex.css";
 
 const EventsPage = () => {
     const dispatch = useDispatch();
@@ -44,8 +45,8 @@ const EventsPage = () => {
             <div className="event-page header">
                 <h4>Events in Meetup</h4>
                 <div className="event-group-links">
-                    <NavLink to="/events">Events </NavLink>
-                    <NavLink to="/groups"> Groups</NavLink>
+                    <NavLink className="events-on-events" to="/events">Events </NavLink>
+                    <NavLink className="groups-on-events" to="/groups"> Groups</NavLink>
                 </div>
             </div>
             <div className="all-events">

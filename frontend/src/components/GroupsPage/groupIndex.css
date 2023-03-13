@@ -17,3 +17,14 @@
     margin-right: 1rem;
     border-radius: 5px;
  }
+
+ .groups-on-groups {
+    color: teal;
+    text-decoration: underline;
+    cursor: pointer;
+ }
+
+ .events-on-groups {
+    color: gray;
+    text-decoration: none;
+ }

@@ -5,6 +5,7 @@ import { getEventDetails } from "../../store/eventDetails";
 import { getGroupDetails } from "../../store/groupDetails";
 import GroupPreview from "./GroupPreview";
 import EventBasics from "./EventBasics";
+import "./eventDetail.css";
 
 const EventDetailPage = () => {
     const dispatch = useDispatch();
@@ -60,29 +61,31 @@ const EventDetailPage = () => {
                 &lt;
                 <NavLink to="/events">{"Events"}</NavLink>
             </div>
-            <div className="event-detail-top">
-                <h2>{event.name}</h2>
-                <p>{`Hosted by ${organizer.firstName} ${organizer.lastName}`}</p>
-            </div>
-            <div className="event-detail-body">
-                <div className="event-detail-display">
-                    <div className="event-detail-image">
-                        <img src={previewImage} alt="event-preview-image" />
-                    </div>
-                    <div className="event-detail-sidebar">
-                        <div className="group-preview">
-                            <GroupPreview group={group} />
+            <div className="event-detail-container">
+                <div className="event-detail-top">
+                    <h2>{event.name}</h2>
+                    <p>{`Hosted by ${organizer.firstName} ${organizer.lastName}`}</p>
+                </div>
+                {/* <div className="event-detail-body"> */}
+                    <div className="event-detail-display">
+                        <div className="event-detail-image">
+                            <img src={previewImage} alt="event-preview-image" />
                         </div>
-                        <div className="event-basics">
-                            <EventBasics event={event} authorized={authorized} />
+                        <div className="event-detail-sidebar">
+                            <div className="group-preview">
+                                <GroupPreview group={group} />
+                            </div>
+                            {/* <div className="event-basics"> */}
+                                <EventBasics event={event} authorized={authorized} />
+                            {/* </div> */}
                         </div>
-                    </div>
 
-                </div>
-                <div className="event-detail-description">
-                    <h3>Details</h3>
-                    <p>{event.description}</p>
-                </div>
+                    </div>
+                    <div className="event-detail-description">
+                        <h3>Details</h3>
+                        <p>{event.description}</p>
+                    </div>
+                {/* </div> */}
             </div>
         </Fragment>
     );
