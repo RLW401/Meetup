@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 
 import { getAllGroups } from "../../store/groups";
 import GroupIndexItem from "./GroupIndexItem";
+import "./groupIndex.css";
 
 const GroupsPage = () => {
     const dispatch = useDispatch();
@@ -28,12 +29,12 @@ const GroupsPage = () => {
     return (
         <Fragment>
             <div className="event-group-links">
-                <NavLink to="/events">Events </NavLink>
-                <NavLink to="/groups"> Groups</NavLink>
+                <NavLink className="events-on-groups" to="/events">Events </NavLink>
+                <NavLink className="groups-on-groups" to="/groups"> Groups</NavLink>
             </div>
-            <ul>
+            <div className='all-groups'>
                 {gPage}
-            </ul>
+            </div>
         </Fragment>
         );
 };

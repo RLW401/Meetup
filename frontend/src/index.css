@@ -11,6 +11,36 @@
     font-size: 12px;
 }
 
+button {
+    border-radius: 16px;
+    cursor: pointer;
+    color: #fff;
+    fill: #fff;
+    padding: 8px 16px;
+    background-color: #008294;
+    border-color: #008294;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
 button.log-in {
-    background-color: green;
+    background-color: red;
+    border-color: red;
+}
+
+button.delete {
+    background-color: red;
+    border-color: red;
+}
+
+button.demo-login {
+    background-color: blue;
+    border-color: blue;
+}
+
+.breadcrumb * {
+    color: blue;
+    text-decoration: underline;
 }

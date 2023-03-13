@@ -14,7 +14,8 @@ const imageURLs = [
   "https://res.cloudinary.com/dqswruico/image/upload/v1678298110/initial_meetup_seeder/Dog_Group_image_o4afwe.jpg",
   "https://res.cloudinary.com/dqswruico/image/upload/v1678298573/14th_Century_Meetup/Union-of-Concerned-Citizens.jpg",
   "https://res.cloudinary.com/dqswruico/image/upload/v1678298574/14th_Century_Meetup/Rat-Party-Painting.jpg",
-  "https://res.cloudinary.com/dqswruico/image/upload/v1678661965/14th_Century_Meetup/Witch_Burning.jpg"
+  "https://res.cloudinary.com/dqswruico/image/upload/v1678661965/14th_Century_Meetup/Witch_Burning.jpg",
+  "https://res.cloudinary.com/dqswruico/image/upload/v1678719483/initial_meetup_seeder/Not_a_Cult.jpg"
 
 
 ]
@@ -35,14 +36,14 @@ const image3 = {
   eventId: 3,
   url: imageURLs[2],
   groupPreview: false,
-  eventPreview: false
+  eventPreview: true
 };
 const image4 = {
   groupId: 3,
   eventId: 3,
   url: imageURLs[3],
   groupPreview: true,
-  eventPreview: true
+  eventPreview: false
 };
 const image5 = {
   groupId: 2,
@@ -72,6 +73,13 @@ const witchBurningImg = {
   eventPreview: true
 }
 
+const notACult = {
+  eventId: 1,
+  url: imageURLs[8],
+  groupPreview: false,
+  eventPreview: true
+}
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -85,7 +93,7 @@ module.exports = {
      * }], {});
     */
    await queryInterface.bulkInsert(options, [
-    image1, image2, image3, image4, image5, uoCCImg, ratPartyImg, witchBurningImg
+    image1, image2, image3, image4, image5, uoCCImg, ratPartyImg, witchBurningImg, notACult
    ], {});
   },
 

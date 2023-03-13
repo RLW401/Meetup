@@ -30,11 +30,11 @@ const EventBasics = ({ event, authorized }) => {
 
                 </div>
                 <div className="cost">
-                    <i class="fas fa-dollar-sign"></i>
+                    <i className="fas fa-dollar-sign"></i>
                     {(Number(event.price) === 0) ? "FREE" : event.price}
                 </div>
                 <div className="type">
-                    <i class="fas fa-map-pin">{event.type}</i>
+                    <i className="fas fa-map-pin">{event.type}</i>
                     {/* <p>{event.type}</p> */}
                     {authorized && <EventDeleteModal />}
                 </div>

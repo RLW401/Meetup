@@ -19,7 +19,6 @@ const LoginForm = () => {
         .catch(async (res) => {
           const data = await res.json();
           if (data && data.message) setErrors(data.message);
-          console.log("errors from login:", errors);
         });
     };
 
@@ -58,7 +57,7 @@ const LoginForm = () => {
         disabled={credential.length < 4 || password.length < 6}
         >Log In</button>
       </form>
-      <button
+      <button className="demo-login"
       onClick={logInDemo}
       >Demo User</button>
       </>

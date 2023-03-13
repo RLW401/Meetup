@@ -13,12 +13,13 @@ const EventIndexItem = ({ event }) => {
     }
 
     return (
-        <li>
-            <div className='event-index-item'>
-                <NavLink key={eventId} to={`/events/${eventId}`}>
-                    <div className='top'>
-                        <div className='image'>
+        // <li>
+        <NavLink key={eventId} to={`/events/${eventId}`}>
+            <div className='event index-item'>
 
+                    {/* <div className='top'> */}
+                        <div className='image'>
+                        <img src={event.previewImage} alt="event-preview" />
                         </div>
                         <div className='basic-info'>
                             <h3>{event.startDate}</h3>
@@ -26,14 +27,15 @@ const EventIndexItem = ({ event }) => {
                             <h3>{`Location: ${location}`}</h3>
                         </div>
 
-                    </div>
-                    <div className='bottom'>
-                    <p className="event-description">{event.about}</p>
-                    </div>
+                    {/* </div> */}
+                    {/* <div className='bottom'>
+                    <p className="event-description">{event.description}</p>
+                    </div> */}
 
-                </NavLink>
-            </div>
-        </li>
+
+                </div>
+            </NavLink>
+        // </li>
     );
 };
 
