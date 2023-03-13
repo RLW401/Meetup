@@ -35,14 +35,14 @@ const image3 = {
   eventId: 3,
   url: imageURLs[2],
   groupPreview: false,
-  eventPreview: false
+  eventPreview: true
 };
 const image4 = {
   groupId: 3,
   eventId: 3,
   url: imageURLs[3],
   groupPreview: true,
-  eventPreview: true
+  eventPreview: false
 };
 const image5 = {
   groupId: 2,

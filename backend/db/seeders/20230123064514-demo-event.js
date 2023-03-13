@@ -28,8 +28,8 @@ const event2 = {
   "type": "In person",
   "capacity": 999,
   "price": 19.50,
-  "startDate": new Date("2024-10-19 20:00:00"),
-  "endDate": new Date("2024-10-19 22:00:00")
+  "startDate": new Date("2022-10-19 20:00:00"),
+  "endDate": new Date("2022-10-19 22:00:00")
 };
 
 const event3 = {
@@ -51,8 +51,8 @@ const witchBurning = {
   "type": "In person",
   "capacity": 9001,
   "price": 0,
-  "startDate": new Date("1350-11-19 19:00:00"),
-  "endDate": new Date("1350-11-19 23:30:00")
+  "startDate": new Date("1970-11-19 19:00:00"),
+  "endDate": new Date("1970-11-19 23:30:00")
 };
 
 const ratParty = {
@@ -62,8 +62,8 @@ const ratParty = {
   "type": "In person",
   "capacity": 400,
   "price": 3.50,
-  "startDate": new Date("1350-09-17 19:00:00"),
-  "endDate": new Date("1350-09-18 02:30:00")
+  "startDate": new Date("1970-09-17 19:00:00"),
+  "endDate": new Date("1970-09-18 02:30:00")
 }
 
 /** @type {import('sequelize-cli').Migration} */
